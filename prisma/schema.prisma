@@ -32,15 +32,22 @@ enum ProductStatus {
 }
 
 model Category {
-  id        Int        @id @default(autoincrement())
-  parentId  Int?       @map("parent_id")
-  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryTree")
-  slug      String     @unique @db.VarChar(80)
-  name      String     @db.VarChar(120)
-  icon      String?    @db.VarChar(255)
-  sortOrder Int        @default(0) @map("sort_order")
-  products  Product[]
+  id                  Int              @id @default(autoincrement())
+  parentId            Int?             @map("parent_id")
+  parent              Category?        @relation("CategoryTree", fields: [parentId], references: [id])
+  children            Category[]       @relation("CategoryTree")
+  slug                String           @unique @db.VarChar(80)
+  name                String           @db.VarChar(120)
+  icon                String?          @db.VarChar(255)
+  sortOrder           Int              @default(0) @map("sort_order")
+  /// false = disembunyikan dari menu Kategori, dropdown pencarian, dan filter (produknya tetap tayang).
+  isActive            Boolean          @default(true) @map("is_active")
+  /// Tujuan khusus di menu Kategori, mis. Membership → koleksi membership. Kosong = /produk?category=…
+  landingCollectionId Int?             @map("landing_collection_id")
+  landingCollection   Collection?      @relation("CategoryLanding", fields: [landingCollectionId], references: [id], onDelete: SetNull)
+  products            Product[]
+  navigationItems     NavigationItem[]
+  seeAllSections      HomeSection[]    @relation("SectionSeeAllCategory")
 
   @@map("categories")
 }
@@ -86,12 +93,12 @@ model Product {
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String  @db.VarChar(500)
-  alt       String? @db.VarChar(255)
-  sortOrder Int     @default(0) @map("sort_order")
+  id            Int                 @id @default(autoincrement())
+  productId     Int                 @map("product_id")
+  product       Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url           String              @db.VarChar(500)
+  alt           String?             @db.VarChar(255)
+  sortOrder     Int                 @default(0) @map("sort_order")
   /// Foto milik pilihan tertentu (mis. Warna: Putih). Saat pilihan itu dipilih, galeri pindah ke foto pertamanya.
   optionValueId Int?                @map("option_value_id")
   optionValue   ProductOptionValue? @relation(fields: [optionValueId], references: [id], onDelete: SetNull)
@@ -190,13 +197,53 @@ model Banner {
   @@map("banners")
 }
 
-model HomeSection {
-  id        Int               @id @default(autoincrement())
-  key       String            @unique @db.VarChar(60)
-  title     String            @db.VarChar(120)
-  sortOrder Int               @default(0) @map("sort_order")
-  items     HomeSectionItem[]
+enum SectionPlacement {
+  /// Seksi produk di beranda.
+  HOME
+  /// "Produk terkait" di halaman detail, keranjang, dan pencarian.
+  PRODUCT_RELATED
+}
 
+enum SectionSource {
+  /// Produk dipilih manual (home_section_items).
+  MANUAL
+  /// Produk otomatis dari aturan (rules).
+  RULE
+}
+
+enum SeeAllType {
+  NONE
+  /// Halaman /seksi/:key berisi semua produk seksi ini.
+  SECTION_PAGE
+  COLLECTION
+  CATEGORY
+  URL
+}
+
+/// Seksi produk (beranda atau produk terkait). Tidak ada seksi yang dikunci; semua diatur dari CMS.
+model HomeSection {
+  id                 Int               @id @default(autoincrement())
+  key                String            @unique @db.VarChar(60)
+  title              String            @db.VarChar(120)
+  placement          SectionPlacement  @default(HOME)
+  sortOrder          Int               @default(0) @map("sort_order")
+  isActive           Boolean           @default(true) @map("is_active")
+  source             SectionSource     @default(MANUAL)
+  /// Aturan isi otomatis (FeedRules): { kcat?, ksub?, discounted?, recentDays?, sort? }
+  rules              Json?
+  /// Jumlah produk yang tampil.
+  productLimit       Int               @default(4) @map("product_limit")
+  seeAllType         SeeAllType        @default(NONE) @map("see_all_type")
+  seeAllCollectionId Int?              @map("see_all_collection_id")
+  seeAllCollection   Collection?       @relation("SectionSeeAllCollection", fields: [seeAllCollectionId], references: [id], onDelete: Restrict)
+  seeAllCategoryId   Int?              @map("see_all_category_id")
+  seeAllCategory     Category?         @relation("SectionSeeAllCategory", fields: [seeAllCategoryId], references: [id], onDelete: Restrict)
+  seeAllUrl          String?           @map("see_all_url") @db.VarChar(500)
+  /// Tombol "Lihat semua" tambahan di bawah grid.
+  showMoreButton     Boolean           @default(false) @map("show_more_button")
+  items              HomeSectionItem[]
+
+  @@index([placement, sortOrder])
   @@map("home_sections")
 }
 
@@ -217,12 +264,53 @@ model Collection {
   key       String           @unique @db.VarChar(60)
   title     String           @db.VarChar(120)
   icon      String?          @db.VarChar(255)
-  /// Aturan filter: { only?: bool, discounted?: bool, kcat?: string, ksub?: string, sort?: string }
+  /// Aturan isi (FeedRules + only): { only?, discounted?, kcat?, ksub?, recentDays?, sort? }
   rules     Json?
   sortOrder Int              @default(0) @map("sort_order")
+  /// false = halaman /koleksi/:key tidak tersedia (404).
+  isActive  Boolean          @default(true) @map("is_active")
   items     CollectionItem[]
 
+  navigationItems NavigationItem[]
+  landingFor      Category[]       @relation("CategoryLanding")
+  seeAllSections  HomeSection[]    @relation("SectionSeeAllCollection")
+
   @@map("collections")
+}
+
+enum NavPlacement {
+  /// Menu di bawah kolom pencarian.
+  SEARCH_MENU
+  /// Kartu "Kategori Pilihan" di beranda.
+  HOME_SHORTCUT
+}
+
+enum LinkType {
+  COLLECTION
+  CATEGORY
+  URL
+}
+
+/// Item menu bawah pencarian dan kartu Kategori Pilihan.
+model NavigationItem {
+  id           Int          @id @default(autoincrement())
+  placement    NavPlacement
+  label        String       @db.VarChar(80)
+  /// Gambar kartu Kategori Pilihan.
+  imageUrl     String?      @map("image_url") @db.VarChar(500)
+  linkType     LinkType     @map("link_type")
+  collectionId Int?         @map("collection_id")
+  collection   Collection?  @relation(fields: [collectionId], references: [id], onDelete: Restrict)
+  categoryId   Int?         @map("category_id")
+  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  url          String?      @db.VarChar(500)
+  sortOrder    Int          @default(0) @map("sort_order")
+  isActive     Boolean      @default(true) @map("is_active")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([placement, sortOrder])
+  @@map("navigation_items")
 }
 
 /// Produk kurasi yang tampil paling depan di sebuah koleksi.
@@ -306,13 +394,13 @@ model StockMovement {
 // ───────────────────────── Pengguna ─────────────────────────
 
 model User {
-  id          Int           @id @default(autoincrement())
-  ssoId       String?       @unique @map("sso_id") @db.VarChar(120)
-  name        String        @db.VarChar(160)
-  email       String        @unique @db.VarChar(191)
-  phone       String?       @db.VarChar(30)
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  id          Int               @id @default(autoincrement())
+  ssoId       String?           @unique @map("sso_id") @db.VarChar(120)
+  name        String            @db.VarChar(160)
+  email       String            @unique @db.VarChar(191)
+  phone       String?           @db.VarChar(30)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
   addresses   Address[]
   wishlists   Wishlist[]
   carts       Cart[]
