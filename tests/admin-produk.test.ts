@@ -78,6 +78,21 @@ describe('Produk', () => {
     expect(await stockMatrix(product.slug)).toEqual(before);
   });
 
+  it('menyimpan produk berdeskripsi kaya (ikon centang, subjudul) tidak mengubah halaman produk di store', async () => {
+    const { user, agent, csrf } = await loggedIn(app, ['EDITOR']);
+    admins.push(user.id);
+    const product = await prisma.product.findUniqueOrThrow({ where: { slug: 'source-18' } });
+    const before = (await store('/produk/source-18')).text;
+    expect(before).toContain('<h2 class="pdp-description-heading">Bundling Plus</h2>');
+    expect(before).toContain('<span class="pdp-description-check" aria-hidden="true">');
+    expect((await postForm(agent, `/admin/produk/${product.id}`, csrf, await formBody(product.id))).status).toBe(303);
+    expect((await store('/produk/source-18')).text).toBe(before);
+    // Disimpan semantik (tanpa ikon); ikon ditambahkan saat dirender
+    const saved = await prisma.product.findUniqueOrThrow({ where: { id: product.id } });
+    expect(saved.description).not.toContain('<svg');
+    expect(saved.description).toContain('<li>');
+  });
+
   it('ganti nama warna mempertahankan SKU & stoknya', async () => {
     const { user, agent, csrf } = await loggedIn(app, ['ADMIN']);
     admins.push(user.id);

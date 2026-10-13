@@ -9,6 +9,18 @@ export function productUrl(p: { slug: string; externalUrl?: string | null }) {
   return p.externalUrl || `/produk/${p.slug}`;
 }
 
+const CHECK_ICON =
+  '<span class="pdp-description-check" aria-hidden="true"><svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg></span>';
+
+/**
+ * Deskripsi dari CMS disimpan semantik (<li>teks</li>); di store tiap poin daftar diberi ikon centang
+ * seperti desain prototipe. Poin yang sudah berikon (data lama) dibiarkan.
+ */
+export function decorateDescription(html: string | null) {
+  if (!html) return '';
+  return html.replace(/<li>(?!<span class="pdp-description-check")([\s\S]*?)<\/li>/g, `<li>${CHECK_ICON}<span>$1</span></li>`);
+}
+
 /** Varian yang tampil di kartu & dipilih pertama di halaman detail. */
 function primaryVariant(p: ProductWithRelations) {
   return p.variants[0];
@@ -103,7 +115,7 @@ export function toPdpJson(p: ProductWithRelations) {
     sku: p.sku ?? v?.sku ?? '',
     images: p.images.map((i) => i.url),
     desc: [] as string[],
-    descHtml: p.description ?? '',
+    descHtml: decorateDescription(p.description),
     specs: (p.specs as string[] | null) ?? null,
     stock,
     playlist: p.video?.playlist ?? undefined,
@@ -151,7 +163,7 @@ export function toPdpVM(p: ProductWithRelations, wishlisted = false) {
     variants,
     stockTracked: stock !== null,
     stockLabel: stock === null ? '' : stock > 0 ? `Stok ${stock}` : 'Stock habis',
-    descriptionHtml: p.description ?? '',
+    descriptionHtml: decorateDescription(p.description),
     specRows: [...((p.specs as string[] | null) ?? [`Produk: ${p.title}`]), `SKU: ${p.sku ?? v?.sku ?? ''}`].map(specRow),
     sku: p.sku ?? v?.sku ?? '',
     category: p.category ? { name: p.label ?? p.category.parent?.name ?? p.category.name, href: `/produk?category=${kcat}${ksub ? `&sub=${ksub}` : ''}` } : null,

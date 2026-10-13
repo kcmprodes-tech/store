@@ -24,16 +24,27 @@ export type OptionMode = 'NONE' | 'VARIAN' | 'APPAREL';
 
 const AXES: Record<OptionMode, string[]> = { NONE: [], VARIAN: ['Varian'], APPAREL: ['Warna', 'Ukuran'] };
 
-/** Deskripsi dari editor teks → HTML aman. */
+/**
+ * Deskripsi dari editor teks → HTML aman dengan kosakata deskripsi store:
+ * subjudul = h2.pdp-description-heading, daftar = ul > li (ikon centang ditambahkan saat dirender,
+ * lihat decorateDescription di src/view/mappers.ts), paragraf, tebal/miring, link aman.
+ */
 export function sanitizeDescription(html: string) {
+  const heading = () => ({ tagName: 'h2', attribs: { class: 'pdp-description-heading' } });
   return sanitizeHtml(html, {
-    allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'h3', 'h4', 'ul', 'ol', 'li', 'a'],
-    allowedAttributes: { a: ['href', 'target', 'rel'] },
+    allowedTags: ['p', 'br', 'strong', 'em', 'u', 'h2', 'ul', 'li', 'a'],
+    allowedAttributes: { a: ['href', 'target', 'rel'], h2: ['class'] },
+    allowedClasses: { h2: ['pdp-description-heading'] },
     allowedSchemes: ['https', 'mailto'],
     allowProtocolRelative: false,
     transformTags: {
       b: 'strong',
       i: 'em',
+      h1: heading,
+      h2: heading,
+      h3: heading,
+      h4: heading,
+      ol: 'ul',
       // Link tidak aman (javascript:, http:, …) dibuang, teksnya tetap.
       a: (tagName, attribs) =>
         isSafeUrl(attribs.href ?? '')

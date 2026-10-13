@@ -748,6 +748,9 @@ img {
 .form-grid {
   display: grid;
   gap: 16px;
+  > * {
+    min-width: 0;
+  }
 }
 
 @media (min-width: $bp-tablet) {
@@ -1977,9 +1980,18 @@ ol.picker-list > .picker-item::before {
 
 // ───────────────────────── Stok ─────────────────────────
 
-.stock-row .qty-input {
-  flex: none;
-  width: 104px;
+.stock-row {
+  flex-wrap: wrap;
+  .qty-input {
+    flex: none;
+    width: 104px;
+  }
+  .list-main {
+    flex: 1 1 160px;
+    strong {
+      white-space: normal;
+    }
+  }
 }
 
 .adjust-sku {
