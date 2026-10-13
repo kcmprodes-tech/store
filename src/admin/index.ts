@@ -14,6 +14,8 @@ import { HttpError, handle } from './http.js';
 import { adminRenderMiddleware } from './render.js';
 import { dashboardRouter } from './modules/dashboard/routes.js';
 import { kategoriRouter } from './modules/kategori/kategori.routes.js';
+import { menuRouter } from './modules/menu/menu.routes.js';
+import { uploadRouter } from './modules/upload/upload.routes.js';
 
 export const adminRouter = Router();
 
@@ -143,7 +145,9 @@ adminRouter.use(authRouter);
 
 adminRouter.use(requireLogin);
 adminRouter.use(dashboardRouter);
+adminRouter.use(uploadRouter);
 adminRouter.use(kategoriRouter);
+adminRouter.use(menuRouter);
 
 adminRouter.use(
   handle(async (_req, _res) => {

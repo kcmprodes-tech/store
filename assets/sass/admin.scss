@@ -22,6 +22,10 @@ $sidebar-w: 248px;
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
 }
@@ -1077,6 +1081,24 @@ img {
   height: 36px;
 }
 
+.thumb-contain {
+  object-fit: contain;
+  padding: 4px;
+  background: var(--kds-background-paper-elevation-1);
+}
+
+.thumb-wide {
+  width: 96px;
+  height: 48px;
+}
+
+.warning-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--kds-warning-dark);
+}
+
 @media (max-width: $bp-tablet - 1px) {
   .table-cards {
     thead {
@@ -1526,6 +1548,70 @@ img {
   }
   .tree-add {
     padding-left: 48px;
+  }
+}
+
+// ───────────────────────── Kolom gambar ─────────────────────────
+
+.image-field-body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.image-field-preview {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: var(--kds-radius-lg);
+  border: 1px dashed var(--kds-stroke-medium);
+  background: var(--kds-background-paper-elevation-1);
+  color: var(--kds-text-disable);
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.image-field-wide .image-field-preview {
+  width: 160px;
+  height: 88px;
+  img {
+    object-fit: cover;
+  }
+}
+
+.image-field-controls {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.image-field-upload {
+  position: relative;
+  overflow: hidden;
+  input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.image-field.is-uploading .image-field-preview {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  to {
+    opacity: 0.5;
   }
 }
 

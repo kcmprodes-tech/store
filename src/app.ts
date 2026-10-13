@@ -12,6 +12,11 @@ export function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
+  // Gambar unggahan CMS: browser tidak boleh menebak jenis file selain yang dikirim server.
+  app.use('/uploads', (_req, res, next) => {
+    res.set('X-Content-Type-Options', 'nosniff');
+    next();
+  });
   app.use(
     express.static(join(process.cwd(), 'public'), {
       maxAge: isProd ? '7d' : 0,

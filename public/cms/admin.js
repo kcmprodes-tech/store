@@ -210,6 +210,48 @@
     on(form, 'change', function () { refreshConditional(form); });
   });
 
+  /* ---------- Upload gambar (satu file per request ke /admin/upload) ---------- */
+  var MAX_IMAGE = 5 * 1024 * 1024;
+  function uploadImage(file) {
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
+      return Promise.reject(new Error('Format foto harus JPG, PNG, atau WebP.'));
+    }
+    if (file.size > MAX_IMAGE) return Promise.reject(new Error('Ukuran foto maksimal 5 MB.'));
+    return api('/admin/upload', { method: 'POST', body: file, headers: { 'Content-Type': file.type } }).then(function (d) { return d.url; });
+  }
+  window.CMS.uploadImage = uploadImage;
+
+  $$('[data-image-field]').forEach(function (box) {
+    var input = $('[data-image-url]', box);
+    var file = $('[data-image-file]', box);
+    var preview = $('[data-image-preview]', box);
+    var empty = $('[data-image-empty]', box);
+    var label = $('[data-image-upload-label]', box);
+    function show() {
+      var url = input.value.trim();
+      preview.hidden = !url;
+      empty.hidden = !!url;
+      if (url) preview.src = url;
+    }
+    on(input, 'input', show);
+    on(preview, 'error', function () { preview.hidden = true; empty.hidden = false; });
+    on(file, 'change', function () {
+      var f = file.files && file.files[0];
+      if (!f) return;
+      box.classList.add('is-uploading');
+      label.textContent = 'Mengunggah…';
+      uploadImage(f).then(function (url) {
+        input.value = url;
+        show();
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }).catch(function (err) { toast(err.message, 'error'); }).then(function () {
+        box.classList.remove('is-uploading');
+        label.textContent = 'Unggah foto';
+        file.value = '';
+      });
+    });
+  });
+
   /* ---------- Filter otomatis: <select data-autosubmit> ---------- */
   $$('[data-autosubmit]').forEach(function (el) {
     on(el, 'change', function () { if (el.form) el.form.submit(); });

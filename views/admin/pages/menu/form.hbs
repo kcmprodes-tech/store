@@ -1,0 +1,73 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/menu">Menu & pintasan</a>{{icon "caret-right" size=12}}<span>{{place.title}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    <p class="page-subtitle">{{place.desc}}</p>
+  </div>
+  {{#if item}}
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="/admin/log?entitas=navigation_item&id={{item.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+  {{/if}}
+</div>
+
+<form class="box narrow" method="post" action="{{#if item}}/admin/menu/{{item.id}}{{else}}/admin/menu{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <input type="hidden" name="placement" value="{{values.placement}}">
+  <fieldset class="form-grid plain-fieldset"{{#if readOnly}} disabled{{/if}}>
+    <div class="field">
+      <label class="label label-req" for="label">Label</label>
+      <input class="input{{#if errors.label}} is-invalid{{/if}}" id="label" name="label" value="{{values.label}}" maxlength="80" required>
+      {{#if errors.label}}<p class="field-error">{{errors.label}}</p>{{/if}}
+    </div>
+
+    <div class="field">
+      <span class="label label-req" id="linkType-label">Tujuan</span>
+      <div class="choice-group" role="radiogroup" aria-labelledby="linkType-label">
+        <label class="choice"><input type="radio" name="linkType" value="COLLECTION" {{checked (eq values.linkType "COLLECTION")}}><span>{{icon "stack" size=16}} Koleksi</span></label>
+        <label class="choice"><input type="radio" name="linkType" value="CATEGORY" {{checked (eq values.linkType "CATEGORY")}}><span>{{icon "tree-structure" size=16}} Kategori</span></label>
+        <label class="choice"><input type="radio" name="linkType" value="URL" {{checked (eq values.linkType "URL")}}><span>{{icon "link" size=16}} Link lain</span></label>
+      </div>
+      {{#if errors.linkType}}<p class="field-error">{{errors.linkType}}</p>{{/if}}
+    </div>
+
+    <div class="field" data-show-when="linkType=COLLECTION">
+      <label class="label label-req" for="collectionId">Koleksi</label>
+      <select class="select{{#if errors.collectionId}} is-invalid{{/if}}" id="collectionId" name="collectionId">
+        <option value="">Pilih koleksi…</option>
+        {{#each collections}}<option value="{{id}}" {{selected id ../values.collectionId}}>{{title}} (/koleksi/{{key}}){{#unless isActive}} — nonaktif{{/unless}}</option>{{/each}}
+      </select>
+      {{#if errors.collectionId}}<p class="field-error">{{errors.collectionId}}</p>{{/if}}
+    </div>
+
+    <div class="field" data-show-when="linkType=CATEGORY">
+      <label class="label label-req" for="categoryId">Kategori</label>
+      <select class="select{{#if errors.categoryId}} is-invalid{{/if}}" id="categoryId" name="categoryId">
+        <option value="">Pilih kategori…</option>
+        {{#each categoryOptions}}<option value="{{id}}" {{selected id ../values.categoryId}}>{{name}}</option>{{/each}}
+      </select>
+      {{#if errors.categoryId}}<p class="field-error">{{errors.categoryId}}</p>{{/if}}
+    </div>
+
+    <div class="field" data-show-when="linkType=URL">
+      <label class="label label-req" for="url">Link</label>
+      <input class="input mono{{#if errors.url}} is-invalid{{/if}}" id="url" name="url" value="{{values.url}}" inputmode="url" placeholder="/produk/… atau https://…">
+      {{#if errors.url}}<p class="field-error">{{errors.url}}</p>{{else}}<p class="help">Halaman store diawali "/", situs lain harus "https://".</p>{{/if}}
+    </div>
+
+    {{#if (eq values.placement "HOME_SHORTCUT")}}
+    {{> image-field name="imageUrl" id="imageUrl" value=values.imageUrl label="Gambar kartu" error=errors.imageUrl help="Ikon persegi berlatar transparan (PNG/WebP). Kosongkan untuk memakai ikon koleksi."}}
+    {{/if}}
+
+    <label class="switch">
+      <input type="checkbox" name="isActive" {{checked values.isActive}}>
+      <span class="check-text"><span class="label">Tampil di store</span></span>
+    </label>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/menu">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>
