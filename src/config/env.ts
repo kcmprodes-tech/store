@@ -10,6 +10,8 @@ export const env = {
   port: Number(process.env.PORT ?? 3000),
   nodeEnv: process.env.NODE_ENV ?? 'development',
   databaseUrl: required('DATABASE_URL'),
+  /** Nomor WhatsApp store (62...). Kosong = tombol WhatsApp disembunyikan. */
+  whatsappNumber: (process.env.WHATSAPP_NUMBER ?? '').replace(/\D/g, ''),
 };
 
 export const isProd = env.nodeEnv === 'production';

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { NextFunction, Request, Response } from 'express';
 import { create, type ExpressHandlebars } from 'express-handlebars';
 import { isProd } from '../config/env.js';
+import { getWhatsappNumber } from '../lib/settings.js';
 import type { Platform } from '../lib/device.js';
 
 const viewsRoot = join(process.cwd(), 'views');
@@ -39,7 +40,12 @@ const assetVersion = Date.now().toString(36);
 export function renderMiddleware(req: Request, res: Response, next: NextFunction) {
   res.renderPage = async (view, data = {}, status = 200) => {
     const platform = req.platform ?? 'desktop';
+    const waNumber = await getWhatsappNumber();
+    const whatsapp = waNumber
+      ? { number: waNumber, helpUrl: `https://wa.me/${waNumber}?text=${encodeURIComponent('Halo Store Kompas.com, saya butuh bantuan.')}` }
+      : null;
     const html = await engines[platform].renderView(join(viewsRoot, platform, 'pages', `${view}.hbs`), {
+      whatsapp,
       ...data,
       bodyClass: pageMeta[view]?.[platform]?.bodyClass ?? '',
       platform,

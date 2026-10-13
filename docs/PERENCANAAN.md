@@ -220,7 +220,13 @@ Tabel admin/role/audit dibuat di Tahap 4.
 - **Tahap 4 — CMS `/admin`**
   - Login admin + role (Admin, Editor, Gudang, CS) + audit log.
   - CRUD produk, varian/SKU, gambar, kategori, banner, kurasi beranda/koleksi, dan promo.
+  - **Seksi produk beranda** — termasuk 4 seksi yang ada sekarang (Terlaris, Rekomendasi untukmu, Merchandise pilihan, Baru di store), tidak ada seksi yang dikunci: tambah seksi baru (tanpa batas jumlah) atau hapus seksi, judul, urutan, isi (pilih produk manual atau otomatis dari aturan: kategori, terlaris, terbaru, diskon), jumlah produk, link Lihat semua (ke halaman koleksi yang dibuat otomatis untuk seksi itu, atau ke kategori/link lain), tampil/sembunyi.
+  - **Menu navigasi** di bawah kolom pencarian (Terlaris, Rekomendasi, Merchandise, …): tambah/hapus item, label, tujuan, urutan, tampil/sembunyi — tabel baru `navigation_items`.
+  - **Kategori:** tambah/ubah/sembunyikan/hapus kategori dan subkategori; langsung tampil di menu Kategori header, kartu Kategori Pilihan, dan filter.
+  - Prasyarat di store: menu di bawah pencarian, menu Kategori (`.sv2k`), kartu Kategori Pilihan, dan daftar seksi beranda saat ini masih tertulis di `views/*/partials/store_header*.hbs` dan `views/*/pages/index.hbs` → ubah dulu supaya dirender dari database.
   - Kelola pesanan: status, input no resi, batal, invoice, scan QR pickup.
+  - **CMS mobile (PWA, satu web CMS yang responsif):** MVP = scan QR pengambilan (cocokkan nama & isi pesanan, input manual invoice), daftar & cari pesanan, scan barcode resi, notifikasi push (dibayar, terlambat diproses, refund, stok menipis, belum diambil; pilihan per orang + jam tenang), setujui refund dari notifikasi, halaman awal sesuai peran, login sidik jari/Face ID (passkey), hubungi pembeli via WhatsApp. Berikutnya = daftar kemas + foto paket, serah terima kurir massal, scan barcode SKU (stok/opname), foto retur, mode sinyal lemah, dasbor ringkas, foto produk dari kamera, cetak label thermal Bluetooth.
+  - **Chat pembeli = WhatsApp dulu:** tombol "Butuh bantuan?" + "Tanya pesanan ini" (pesan otomatis berisi no invoice) → nanti WhatsApp Business API + inbox bersama. Chat buatan sendiri hanya bila volume sangat besar. Nomor WhatsApp resmi masih ditunggu.
 - **Tahap 5 — Stok**
   - Dasbor per SKU × lokasi.
   - Barang masuk, penyesuaian, opname, retur, dan transfer antarlokasi, semuanya lewat `stock_movements`.

@@ -5,6 +5,7 @@ import request from 'supertest';
 import { afterAll, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/lib/prisma.js';
+import { resetWhatsappCache } from '../src/lib/settings.js';
 
 const app = createApp();
 const DESKTOP_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/140 Safari/537.36';
@@ -188,6 +189,23 @@ describe('data dari database', () => {
       expect(list.text).toContain('href="https://vik.kompas.com/contoh"');
     } finally {
       await prisma.product.update({ where: { id: vik.id }, data: { externalUrl: vik.externalUrl } });
+    }
+  });
+
+  it('tombol WhatsApp memakai nomor dari pengaturan (menimpa .env)', async () => {
+    const fake = '6200000000001'; // nomor contoh, bukan nomor asli
+    try {
+      await prisma.setting.upsert({ where: { key: 'whatsapp_number' }, update: { value: fake }, create: { key: 'whatsapp_number', value: fake } });
+      resetWhatsappCache();
+      const home = await request(app).get('/').set('User-Agent', MOBILE_UA);
+      expect(home.text).toContain(`href="https://wa.me/${fake}?text`);
+      expect(home.text).toContain('class="btn-whatsapp"');
+      const order = await request(app).get('/pesanan').set('User-Agent', DESKTOP_UA);
+      expect(order.text).toContain(`data-wa-ask data-wa-number="${fake}"`);
+      expect(order.text).toContain('Tanya pesanan ini');
+    } finally {
+      await prisma.setting.deleteMany({ where: { key: 'whatsapp_number' } });
+      resetWhatsappCache();
     }
   });
 

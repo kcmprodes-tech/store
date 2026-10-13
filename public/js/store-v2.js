@@ -140,6 +140,21 @@
     syncArrows();
   }
 
+  /* ---------- Detail transaksi: "Tanya pesanan ini" → WhatsApp store dengan no invoice terisi ---------- */
+  function initWhatsappAsk() {
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('[data-wa-ask]');
+      if (!a) return;
+      var invoice = '';
+      Array.prototype.forEach.call(document.querySelectorAll('.od-item'), function (item) {
+        var dt = item.querySelector('dt');
+        if (dt && /no invoice/i.test(dt.textContent)) invoice = (item.querySelector('dd') || {}).textContent || '';
+      });
+      var text = 'Halo Store Kompas.com, saya mau tanya pesanan ' + invoice.trim() + '.';
+      a.setAttribute('href', 'https://wa.me/' + a.getAttribute('data-wa-number') + '?text=' + encodeURIComponent(text));
+    }, true);
+  }
+
   /* ---------- PDP lightbox: klik foto utama → popup 480×480, panah kiri/kanan, close kanan atas ----------
      Latar hitam 50%. Panah kiri tersembunyi di foto pertama, panah kanan di foto terakhir.
      Esc / klik latar = tutup, ← → = ganti foto, swipe di HP. Saat ditutup, galeri halaman ikut ke foto terakhir. */
@@ -2303,6 +2318,7 @@
     initApparelPdp();
     initProductGallery();
     initPdpLightbox();
+    initWhatsappAsk();
     initPdpQuantity();
     initPdpOptions();
     initDescriptionToggle();
