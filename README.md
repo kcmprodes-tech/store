@@ -40,6 +40,7 @@ Template desktop/mobile dipilih dari User-Agent. Untuk mencoba di browser deskto
 | `npm run typecheck` | Cek TypeScript |
 | `npm run build` / `npm start` | Build produksi ke `dist/` lalu jalankan |
 | `npm run db:studio` | Lihat/ubah isi database di browser (Prisma Studio) |
+| `npm run db:seed-admin` | Buat akun CMS (Admin pertama + akun uji dev) tanpa menghapus data lain |
 | `npm run db:reset` | Hapus database, migrasi ulang, dan seed |
 | `node scripts/purge-legacy-css.mjs ../dummy-kompascom-product` | Bangun ulang CSS chrome kompas.com (footer, popup login) dari prototipe |
 
@@ -87,7 +88,7 @@ URL lama prototipe (`koleksi.html?tab=…`, `detail.html?product=…`, dst.) di-
 CMS untuk tim Editor, Marketing, CS / Order, Gudang, Finance, dan Admin. Tampilan responsif dengan sidebar di desktop dan menu bawah di HP, bisa dipasang sebagai aplikasi (PWA), dan memakai KOMPAS.com Design System.
 
 **Masuk:** buka `http://localhost:3000/admin` (atau port server Anda).
-- `npm run db:seed` membuat **Admin pertama** (`ADMIN_EMAIL`, default `ardi.suhanda@kompas.com`).
+- `npm run db:seed` (atau `npm run db:seed-admin`, yang **tidak** menyentuh data lain — pakai ini untuk database yang sudah berisi) membuat **Admin pertama** (`ADMIN_EMAIL`, default `ardi.suhanda@kompas.com`).
   - Password awalnya dibaca dari `ADMIN_INITIAL_PASSWORD` di `.env`. Kalau kosong, seed membuat password acak dan menuliskannya ke `.env`.
   - Password ini wajib diganti saat login pertama.
 - Khusus development, seed juga membuat **akun uji per peran**: `admin|editor|marketing|cs|gudang|finance@cms.test`. Passwordnya `CMS_TEST_PASSWORD` di `.env` (dibuat otomatis kalau kosong).
