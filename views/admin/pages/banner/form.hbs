@@ -1,0 +1,51 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/banner">Banner hero</a>{{icon "caret-right" size=12}}<span>{{#if banner}}{{banner.title}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+  </div>
+  {{#if banner}}
+  <div class="page-actions"><a class="btn btn-secondary" href="/admin/log?entitas=banner&id={{banner.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a></div>
+  {{/if}}
+</div>
+
+<form class="box" method="post" action="{{#if banner}}/admin/banner/{{banner.id}}{{else}}/admin/banner{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <fieldset class="form-grid plain-fieldset"{{#if readOnly}} disabled{{/if}}>
+    <div class="field">
+      <label class="label label-req" for="title">Judul (teks alternatif)</label>
+      <input class="input{{#if errors.title}} is-invalid{{/if}}" id="title" name="title" value="{{values.title}}" maxlength="255" required>
+      {{#if errors.title}}<p class="field-error">{{errors.title}}</p>{{else}}<p class="help">Dibaca pembaca layar dan muncul kalau gambar gagal dimuat.</p>{{/if}}
+    </div>
+    <div class="form-grid form-grid-2">
+      <div class="image-field-wide">{{> image-field name="imageUrl" id="imageUrl" value=values.imageUrl label="Gambar desktop" required=true error=errors.imageUrl help="Rasio lebar seperti banner sekarang (mis. 1440 × 480)."}}</div>
+      <div class="image-field-wide">{{> image-field name="imageMobileUrl" id="imageMobileUrl" value=values.imageMobileUrl label="Gambar mobile" error=errors.imageMobileUrl help="Opsional. Kosong = memakai gambar desktop."}}</div>
+    </div>
+    <div class="field">
+      <label class="label" for="href">Link saat diklik</label>
+      <input class="input mono{{#if errors.href}} is-invalid{{/if}}" id="href" name="href" value="{{values.href}}" inputmode="url" placeholder="/koleksi/terbaru">
+      {{#if errors.href}}<p class="field-error">{{errors.href}}</p>{{else}}<p class="help">Halaman store diawali "/", situs lain harus "https://".</p>{{/if}}
+    </div>
+    <div class="form-grid form-grid-2">
+      <div class="field">
+        <label class="label" for="startsAt">Mulai tayang (WIB)</label>
+        <input class="input" id="startsAt" name="startsAt" type="datetime-local" value="{{dtlocal values.startsAt}}">
+        <p class="help">Kosong = langsung tayang.</p>
+      </div>
+      <div class="field">
+        <label class="label" for="endsAt">Selesai tayang (WIB)</label>
+        <input class="input{{#if errors.endsAt}} is-invalid{{/if}}" id="endsAt" name="endsAt" type="datetime-local" value="{{dtlocal values.endsAt}}">
+        {{#if errors.endsAt}}<p class="field-error">{{errors.endsAt}}</p>{{else}}<p class="help">Kosong = tidak berakhir.</p>{{/if}}
+      </div>
+    </div>
+    <label class="switch">
+      <input type="checkbox" name="isActive" {{checked values.isActive}}>
+      <span class="check-text"><span class="label">Aktif</span></span>
+    </label>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/banner">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>

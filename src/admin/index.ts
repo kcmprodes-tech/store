@@ -15,6 +15,10 @@ import { adminRenderMiddleware } from './render.js';
 import { dashboardRouter } from './modules/dashboard/routes.js';
 import { kategoriRouter } from './modules/kategori/kategori.routes.js';
 import { menuRouter } from './modules/menu/menu.routes.js';
+import { bannerRouter } from './modules/kurasi/banner.routes.js';
+import { feedApiRouter } from './modules/kurasi/feed.js';
+import { koleksiRouter } from './modules/kurasi/koleksi.routes.js';
+import { seksiRouter } from './modules/kurasi/seksi.routes.js';
 import { uploadRouter } from './modules/upload/upload.routes.js';
 
 export const adminRouter = Router();
@@ -148,6 +152,10 @@ adminRouter.use(dashboardRouter);
 adminRouter.use(uploadRouter);
 adminRouter.use(kategoriRouter);
 adminRouter.use(menuRouter);
+adminRouter.use(feedApiRouter);
+adminRouter.use(bannerRouter);
+adminRouter.use(seksiRouter);
+adminRouter.use(koleksiRouter);
 
 adminRouter.use(
   handle(async (_req, _res) => {

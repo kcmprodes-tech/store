@@ -1092,6 +1092,18 @@ img {
   height: 48px;
 }
 
+.thumb-empty {
+  display: inline-grid;
+  place-items: center;
+  color: var(--kds-text-disable);
+}
+
+.thumb-banner {
+  width: 128px;
+  height: 48px;
+  border-radius: var(--kds-radius-md);
+}
+
 .warning-text {
   display: inline-flex;
   align-items: center;
@@ -1613,6 +1625,78 @@ img {
   to {
     opacity: 0.5;
   }
+}
+
+// ───────────────────────── Pemilih produk ─────────────────────────
+
+.picker-search {
+  position: relative;
+  display: flex;
+}
+
+.picker-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 15;
+  max-height: 320px;
+  overflow: auto;
+  padding: 4px 12px;
+  border-radius: var(--adm-radius-cta);
+  background: var(--kds-background-paper-elevation-0);
+  box-shadow: var(--kds-shadow-lg), var(--kds-shadow-line);
+}
+
+.picker-none {
+  padding: 12px 0;
+}
+
+.picker-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: picker;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--kds-stroke-soft);
+  &:first-child {
+    border-top: 0;
+  }
+  .list-main {
+    margin-right: auto;
+  }
+}
+
+ol.picker-list > .picker-item::before {
+  counter-increment: picker;
+  content: counter(picker);
+  flex: none;
+  width: 20px;
+  color: var(--kds-text-tertiary);
+  font-size: var(--kds-font-size-c1);
+  font-weight: var(--kds-font-weight-semibold);
+  text-align: center;
+}
+
+.picker-result .btn {
+  flex: none;
+}
+
+.section-block {
+  padding-top: 16px;
+  border-top: 1px solid var(--kds-stroke-soft);
+}
+
+.section-block-title {
+  margin-bottom: 12px;
+  font-size: var(--kds-font-size-b2);
+  font-weight: var(--kds-font-weight-semibold);
 }
 
 .plain-fieldset {

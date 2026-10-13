@@ -1,0 +1,32 @@
+{{!-- Field aturan isi otomatis (seksi & koleksi). Parameter: values, categoryOptions, preview (bool), limitField (nama input jumlah) --}}
+<div class="form-grid form-grid-2 rules-fields" data-rules{{#if preview}} data-rules-preview data-limit-field="{{limitField}}"{{/if}}>
+  <div class="field">
+    <label class="label" for="ruleCategory">Kategori</label>
+    <select class="select" id="ruleCategory" name="ruleCategory">
+      <option value="">Semua kategori</option>
+      {{#each categoryOptions}}<option value="{{value}}" {{selected value ../values.ruleCategory}}>{{label}}</option>{{/each}}
+    </select>
+  </div>
+  <div class="field">
+    <label class="label" for="ruleSort">Urutan</label>
+    <select class="select" id="ruleSort" name="ruleSort">
+      <option value="terbaru" {{selected "terbaru" values.ruleSort}}>Terbaru tayang</option>
+      <option value="terlaris" {{selected "terlaris" values.ruleSort}}>Terlaris</option>
+    </select>
+    <p class="help">Angka terjual masih data awal sampai transaksi pindah ke database (Tahap 3).</p>
+  </div>
+  <div class="field">
+    <label class="label" for="ruleRecentDays">Tayang dalam … hari terakhir</label>
+    <input class="input" id="ruleRecentDays" name="ruleRecentDays" type="number" min="1" max="3650" inputmode="numeric" value="{{values.ruleRecentDays}}" placeholder="Kosongkan = semua">
+  </div>
+  <div class="field">
+    <span class="label">Filter</span>
+    <label class="check"><input type="checkbox" name="ruleDiscounted" {{checked values.ruleDiscounted}}><span>Hanya produk diskon</span></label>
+  </div>
+  {{#if preview}}
+  <div class="field span-2">
+    <span class="label">Pratinjau isi</span>
+    <div class="picker-list" data-rules-preview-list aria-live="polite"><p class="help">Memuat pratinjau…</p></div>
+  </div>
+  {{/if}}
+</div>

@@ -1,0 +1,38 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Seksi produk</h1>
+    <p class="page-subtitle">Daftar produk di beranda, berurutan dari atas. Tidak ada seksi yang dikunci — tambah sebanyak yang dibutuhkan.</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/seksi/baru">{{icon "plus" size=18}} Seksi baru</a></div>
+  {{/if}}
+</div>
+
+{{#*inline "section-row"}}
+<div class="tree-row" id="seksi-{{id}}">
+  <div class="tree-main">
+    <a href="/admin/seksi/{{id}}"><strong>{{title}}</strong></a>
+    <span class="small muted">{{sourceText}} · tampil {{productLimit}} produk</span>
+    {{#if seeAllHref}}<span class="small muted">Lihat semua → <span class="mono">{{seeAllHref}}</span>{{#if showMoreButton}} + tombol di bawah grid{{/if}}</span>{{/if}}
+  </div>
+  {{#unless isActive}}<span class="badge badge-warning">Disembunyikan</span>{{/unless}}
+  {{#if canEdit}}{{> row-actions base=(concat "/admin/seksi/" id) label=title isActive=isActive first=first last=last deleteMessage=(concat "Hapus seksi \"" title "\"? Seksi langsung hilang dari store.")}}{{/if}}
+</div>
+{{/inline}}
+
+<div class="stack">
+  <section class="box box-flush">
+    <div class="box-head">
+      <div><h2 class="box-title">Beranda</h2><p class="box-desc">Tampil di bawah Kategori Pilihan. Seksi tanpa produk otomatis tidak tampil.</p></div>
+    </div>
+    {{#each home}}{{> section-row canEdit=../canEdit}}{{else}}<div class="empty">{{icon "rows" size=40}}<strong>Belum ada seksi beranda</strong></div>{{/each}}
+  </section>
+
+  <section class="box box-flush">
+    <div class="box-head">
+      <div><h2 class="box-title">Produk terkait</h2><p class="box-desc">Di halaman detail produk, keranjang, dan pencarian (seksi aktif pertama yang dipakai).</p></div>
+      {{#if canEdit}}<a class="btn btn-ghost btn-sm" href="/admin/seksi/baru?tempat=terkait">{{icon "plus" size=16}} Tambah</a>{{/if}}
+    </div>
+    {{#each related}}{{> section-row canEdit=../canEdit}}{{else}}<div class="empty">{{icon "rows" size=40}}<strong>Tidak ada</strong><span>Bagian produk terkait tidak tampil.</span></div>{{/each}}
+  </section>
+</div>

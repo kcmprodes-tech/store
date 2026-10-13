@@ -23,6 +23,8 @@ export function formatDate(value: Date | string | null | undefined) {
 /** Date → nilai <input type="datetime-local"> (jam WIB). */
 export function toDateTimeLocal(value: Date | string | null | undefined) {
   if (!value) return '';
+  // Nilai form yang dikirim ulang (sudah format datetime-local) dipakai apa adanya.
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return value;
   return new Date(new Date(value).getTime() + WIB_OFFSET_MS).toISOString().slice(0, 16);
 }
 

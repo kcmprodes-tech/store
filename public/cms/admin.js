@@ -195,13 +195,18 @@
     return field.value;
   }
   function refreshConditional(form) {
-    $$('[data-show-when]', form).forEach(function (el) {
+    var blocks = $$('[data-show-when]', form);
+    blocks.forEach(function (el) {
       var rule = el.getAttribute('data-show-when').split('=');
       var value = fieldValue(form, rule[0]);
       if (value === null) return;
-      var show = rule[1].split(',').indexOf(value) !== -1;
-      el.hidden = !show;
-      $$('input, select, textarea', el).forEach(function (input) { input.disabled = !show; });
+      el.hidden = rule[1].split(',').indexOf(value) === -1;
+    });
+    // Input di bagian yang tersembunyi (termasuk bagian bertingkat) tidak ikut dikirim.
+    blocks.forEach(function (el) {
+      $$('input, select, textarea', el).forEach(function (input) {
+        input.disabled = !!input.closest('[data-show-when][hidden]');
+      });
     });
   }
   $$('form').forEach(function (form) {
@@ -250,6 +255,127 @@
         file.value = '';
       });
     });
+  });
+
+  /* ---------- Pemilih produk berurutan (seksi & koleksi) ---------- */
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+  function iconButton(cls, label, symbol, attr, value) {
+    var b = el('button', 'btn btn-sm btn-icon ' + cls, symbol);
+    b.type = 'button';
+    b.setAttribute('aria-label', label);
+    b.setAttribute(attr, value);
+    return b;
+  }
+  function productRow(p, withControls) {
+    var li = el('li', 'picker-item');
+    li.setAttribute('data-id', p.id);
+    var img = el('img', 'thumb thumb-sm');
+    img.src = p.image || '';
+    img.alt = '';
+    var main = el('div', 'list-main');
+    main.appendChild(el('strong', null, p.title));
+    main.appendChild(el('span', 'small muted', [p.price, p.status].filter(Boolean).join(' · ')));
+    li.appendChild(img);
+    li.appendChild(main);
+    if (withControls) {
+      li.appendChild(iconButton('btn-secondary', 'Naikkan', '↑', 'data-picker-move', '-1'));
+      li.appendChild(iconButton('btn-secondary', 'Turunkan', '↓', 'data-picker-move', '1'));
+      li.appendChild(iconButton('btn-danger', 'Hapus dari daftar', '×', 'data-picker-remove', ''));
+    }
+    return li;
+  }
+  window.CMS.productRow = productRow;
+
+  $$('[data-picker]').forEach(function (picker) {
+    var input = $('[data-picker-input]', picker);
+    var list = $('[data-picker-list]', picker);
+    var search = $('[data-picker-search]', picker);
+    var results = $('[data-picker-results]', picker);
+    var empty = $('[data-picker-empty]', picker);
+    function sync() {
+      var ids = $$('.picker-item', list).map(function (li) { return li.getAttribute('data-id'); });
+      input.value = ids.join(',');
+      empty.hidden = ids.length > 0;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    on(list, 'click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      var li = btn.closest('.picker-item');
+      if (btn.hasAttribute('data-picker-remove')) li.remove();
+      var move = btn.getAttribute('data-picker-move');
+      if (move === '-1' && li.previousElementSibling) list.insertBefore(li, li.previousElementSibling);
+      if (move === '1' && li.nextElementSibling) list.insertBefore(li.nextElementSibling, li);
+      sync();
+    });
+    var timer = null;
+    function runSearch() {
+      api('/admin/api/produk?q=' + encodeURIComponent(search.value.trim()), { method: 'GET' }).then(function (data) {
+        results.innerHTML = '';
+        var chosen = input.value ? input.value.split(',') : [];
+        if (!data.items.length) results.appendChild(el('p', 'help picker-none', 'Produk tidak ditemukan.'));
+        data.items.forEach(function (p) {
+          var row = productRow(p, false);
+          row.classList.add('picker-result');
+          var added = chosen.indexOf(String(p.id)) !== -1;
+          var add = el('button', 'btn btn-ghost btn-sm', added ? 'Sudah dipilih' : 'Tambah');
+          add.type = 'button';
+          add.disabled = added;
+          on(add, 'click', function () {
+            list.appendChild(productRow(p, true));
+            add.disabled = true;
+            add.textContent = 'Sudah dipilih';
+            sync();
+          });
+          row.appendChild(add);
+          results.appendChild(row);
+        });
+        results.hidden = false;
+      }).catch(function (err) { toast(err.message, 'error'); });
+    }
+    on(search, 'input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(runSearch, 250);
+    });
+    on(search, 'focus', function () { if (!results.innerHTML) runSearch(); else results.hidden = false; });
+    on(search, 'keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); if (e.key === 'Escape') results.hidden = true; });
+    on(document, 'click', function (e) { if (!picker.contains(e.target)) results.hidden = true; });
+  });
+
+  /* ---------- Pratinjau isi aturan otomatis ---------- */
+  $$('[data-rules-preview]').forEach(function (box) {
+    var form = box.closest('form');
+    var list = $('[data-rules-preview-list]', box);
+    var limitName = box.getAttribute('data-limit-field');
+    var timer = null;
+    function refresh() {
+      var params = new URLSearchParams();
+      ['ruleCategory', 'ruleSort', 'ruleRecentDays'].forEach(function (n) { if (form.elements[n]) params.set(n, form.elements[n].value); });
+      if (form.elements.ruleDiscounted && form.elements.ruleDiscounted.checked) params.set('ruleDiscounted', 'on');
+      if (limitName && form.elements[limitName]) params.set('limit', form.elements[limitName].value || '8');
+      api('/admin/api/pratinjau?' + params.toString(), { method: 'GET' }).then(function (data) {
+        list.innerHTML = '';
+        if (!data.items.length) list.appendChild(el('p', 'help', 'Tidak ada produk yang cocok dengan aturan ini — seksi tidak akan tampil.'));
+        data.items.forEach(function (p) { list.appendChild(productRow(p, false)); });
+      }).catch(function () { list.innerHTML = ''; list.appendChild(el('p', 'help', 'Pratinjau gagal dimuat.')); });
+    }
+    on(form, 'input', function (e) {
+      if (!e.target.name || (e.target.name.indexOf('rule') !== 0 && e.target.name !== limitName)) return;
+      clearTimeout(timer);
+      timer = setTimeout(refresh, 300);
+    });
+    on(form, 'change', function (e) { if (e.target.name && e.target.name.indexOf('rule') === 0) refresh(); });
+    if (!box.closest('[hidden]')) refresh();
+    box.__refresh = refresh;
+  });
+  on(document, 'change', function (e) {
+    if (e.target.name !== 'source') return;
+    $$('[data-rules-preview]').forEach(function (box) { if (box.__refresh && !box.closest('[hidden]')) box.__refresh(); });
   });
 
   /* ---------- Filter otomatis: <select data-autosubmit> ---------- */
