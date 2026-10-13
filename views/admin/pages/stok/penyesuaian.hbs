@@ -1,0 +1,63 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/stok">Stok</a>{{icon "caret-right" size=12}}<span>Penyesuaian</span></nav>
+    <h1 class="page-title">Penyesuaian stok</h1>
+    <p class="page-subtitle">Koreksi stok fisik: hasil hitung ulang, barang rusak/hilang, atau salah input.</p>
+  </div>
+</div>
+
+{{#if belowReserved}}
+<div class="alert alert-warning form-errors" role="alert">{{icon "warning" weight="fill"}}<div class="alert-body">
+  <p><strong>Stok fisik baru ({{belowReserved.next}}) lebih kecil dari jumlah yang sedang dipesan ({{belowReserved.reserved}}).</strong></p>
+  <p>Sebagian pesanan mungkin tidak bisa dipenuhi. Centang konfirmasi di bawah lalu simpan lagi kalau memang benar.</p>
+</div></div>
+{{/if}}
+
+<form class="box narrow" method="post" action="/admin/stok/penyesuaian" novalidate data-busy-form data-dirty-guard data-stock-adjust>
+  {{> csrf}}
+  <input type="hidden" name="variantId" value="{{#if sku}}{{sku.id}}{{/if}}" data-adjust-id>
+  <div class="form-grid">
+    <div class="field">
+      <span class="label label-req">SKU</span>
+      <div class="adjust-sku" data-adjust-current{{#unless sku}} hidden{{/unless}}>
+        <img class="thumb thumb-sm" src="{{sku.image}}" alt="" data-adjust-image>
+        <div class="list-main"><strong data-adjust-title>{{sku.title}}</strong><span class="small muted mono" data-adjust-sku>{{sku.sku}}</span></div>
+        <div class="adjust-levels small"><span>Fisik <strong data-adjust-onhand>{{sku.onHand}}</strong></span><span>Dipesan <strong data-adjust-reserved>{{sku.reserved}}</strong></span></div>
+      </div>
+      {{> sku-search label="Cari SKU yang disesuaikan"}}
+      {{#if errors.variantId}}<p class="field-error">{{errors.variantId}}</p>{{/if}}
+    </div>
+    <div class="field">
+      <span class="label">Cara</span>
+      <div class="choice-group">
+        <label class="choice"><input type="radio" name="mode" value="set" {{checked (eq values.mode "set")}}><span>Set jumlah fisik</span></label>
+        <label class="choice"><input type="radio" name="mode" value="delta" {{checked (eq values.mode "delta")}}><span>Tambah / kurang</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label label-req" for="qty"><span data-show-when="mode=set">Jumlah fisik hasil hitung</span><span data-show-when="mode=delta">Tambah (+) / kurang (−)</span></label>
+      <input class="input{{#if errors.qty}} is-invalid{{/if}}" id="qty" name="qty" type="number" inputmode="numeric" value="{{values.qty}}" required data-adjust-qty>
+      {{#if errors.qty}}<p class="field-error">{{errors.qty}}</p>{{else}}<p class="help" data-adjust-preview></p>{{/if}}
+    </div>
+    <div class="field">
+      <label class="label label-req" for="reason">Alasan</label>
+      <select class="select{{#if errors.reason}} is-invalid{{/if}}" id="reason" name="reason">
+        <option value="">Pilih alasan…</option>
+        {{#each reasons}}<option value="{{this}}" {{selected this ../values.reason}}>{{this}}</option>{{/each}}
+      </select>
+      {{#if errors.reason}}<p class="field-error">{{errors.reason}}</p>{{/if}}
+    </div>
+    <div class="field">
+      <label class="label" for="note">Catatan</label>
+      <input class="input{{#if errors.note}} is-invalid{{/if}}" id="note" name="note" value="{{values.note}}" maxlength="300" placeholder="mis. 2 pcs sobek saat bongkar muat">
+      {{#if errors.note}}<p class="field-error">{{errors.note}}</p>{{/if}}
+    </div>
+    {{#if belowReserved}}
+    <label class="check"><input type="checkbox" name="confirmBelowReserved"><span>Saya mengerti stok fisik akan lebih kecil dari jumlah dipesan.</span></label>
+    {{/if}}
+  </div>
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/stok">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan penyesuaian</button>
+  </div>
+</form>

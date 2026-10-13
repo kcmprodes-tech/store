@@ -1,0 +1,39 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/stok">Stok</a>{{icon "caret-right" size=12}}<span>Barang masuk</span></nav>
+    <h1 class="page-title">Barang masuk</h1>
+    <p class="page-subtitle">Tambah stok fisik dari kiriman/produksi. Bisa beberapa SKU sekaligus.</p>
+  </div>
+</div>
+
+{{#if errors.rows}}<div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body">{{errors.rows}}</div></div>{{/if}}
+
+<form class="box" method="post" action="/admin/stok/masuk" novalidate data-busy-form data-dirty-guard data-stock-in>
+  {{> csrf}}
+  <script type="application/json" data-stock-rows>{{{json initialRows}}}</script>
+  <script type="application/json" data-stock-errors>{{{json errors}}}</script>
+  <div class="form-grid">
+    <div class="field">
+      <span class="label label-req">SKU</span>
+      {{> sku-search label="Cari SKU untuk ditambahkan"}}
+    </div>
+    <ol class="picker-list stock-rows" data-stock-list></ol>
+    <p class="help" data-stock-empty>Belum ada SKU. Cari lalu pilih SKU di atas.</p>
+    <div class="form-grid form-grid-2">
+      <div class="field">
+        <label class="label" for="refId">No. referensi</label>
+        <input class="input{{#if errors.refId}} is-invalid{{/if}}" id="refId" name="refId" value="{{values.refId}}" maxlength="80" placeholder="mis. surat jalan / PO">
+        {{#if errors.refId}}<p class="field-error">{{errors.refId}}</p>{{/if}}
+      </div>
+      <div class="field">
+        <label class="label" for="note">Catatan</label>
+        <input class="input{{#if errors.note}} is-invalid{{/if}}" id="note" name="note" value="{{values.note}}" maxlength="500" placeholder="mis. kiriman vendor kaos">
+        {{#if errors.note}}<p class="field-error">{{errors.note}}</p>{{/if}}
+      </div>
+    </div>
+  </div>
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/stok">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Catat barang masuk</button>
+  </div>
+</form>
