@@ -82,6 +82,16 @@ describe('data dari database', () => {
     expect(product.price_disc).toBe('120.000');
   });
 
+  it('apparel: pilihan warna dari database, foto mengikuti warna', async () => {
+    const res = await request(app).get('/produk/kaos-gaspol-paguyuban-cap-orang-dalam').set('User-Agent', DESKTOP_UA);
+    expect(res.text).toContain('data-value="Hijau Army" aria-pressed="false"><span class="pdp-swatch" style="background:#5B5F3A"');
+    expect(res.text).not.toContain('data-value="Grey"');
+    const json = /<script type="application\/json" data-apparel-data>([\s\S]*?)<\/script>/.exec(res.text)?.[1];
+    const [product] = JSON.parse(json!);
+    expect(product.colorImages).toEqual({ 'Hijau Army': 0, Putih: 1 });
+    expect(Object.keys(product.stock)).toEqual(['Hijau Army', 'Putih']);
+  });
+
   it('perubahan stok di database langsung terlihat di halaman', async () => {
     const variant = await prisma.productVariant.findUniqueOrThrow({ where: { sku: 'STORE-PESTABOLA-634812-BUNDLING-PLUS' } });
     const level = await prisma.inventoryLevel.findFirstOrThrow({ where: { variantId: variant.id } });

@@ -92,6 +92,9 @@ model ProductImage {
   url       String  @db.VarChar(500)
   alt       String? @db.VarChar(255)
   sortOrder Int     @default(0) @map("sort_order")
+  /// Foto milik pilihan tertentu (mis. Warna: Putih). Saat pilihan itu dipilih, galeri pindah ke foto pertamanya.
+  optionValueId Int?                @map("option_value_id")
+  optionValue   ProductOptionValue? @relation(fields: [optionValueId], references: [id], onDelete: SetNull)
 
   @@index([productId, sortOrder])
   @@map("product_images")
@@ -119,6 +122,7 @@ model ProductOptionValue {
   swatch    String?              @db.VarChar(20)
   sortOrder Int                  @default(0) @map("sort_order")
   variants  VariantOptionValue[]
+  images    ProductImage[]
 
   @@unique([optionId, value])
   @@map("product_option_values")

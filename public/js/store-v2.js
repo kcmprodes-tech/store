@@ -140,6 +140,38 @@
     syncArrows();
   }
 
+  /* ---------- CTA loading: selama menunggu halaman / proses berikutnya, teks CTA diganti ikon loader ----------
+     Otomatis untuk CTA berupa link ke halaman lain di store; proses lain memanggil setCtaLoading() sendiri. */
+  var CTA_SELECTOR = '.btn, .pdp-sheet-cta, .sv2-empty-btn, .sv2-promo-btn, .storev2-modal__btn, .storev2-addr__submit';
+  function setCtaLoading(el, on) {
+    if (!el) return;
+    if (on) {
+      el.style.setProperty('--sv2-loader-color', getComputedStyle(el).color); // loader = warna teks tombol
+      el.classList.add('sv2-loading');
+      el.setAttribute('aria-busy', 'true');
+    } else {
+      el.classList.remove('sv2-loading');
+      el.removeAttribute('aria-busy');
+      el.style.removeProperty('--sv2-loader-color');
+    }
+  }
+  function initCtaLoading() {
+    document.addEventListener('click', function (e) {
+      // handler lain (login, bottom sheet, tombol nonaktif) yang membatalkan klik → tidak ada loading
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a || !a.matches(CTA_SELECTOR) || a.target === '_blank' || a.hasAttribute('download')) return;
+      var url = new URL(a.getAttribute('href'), location.href);
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname && url.search === location.search) return; // hanya pindah anchor
+      setCtaLoading(a, true);
+    });
+    // kembali lewat tombol Back (halaman dari cache browser) → loader dihapus
+    window.addEventListener('pageshow', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('.sv2-loading'), function (el) { setCtaLoading(el, false); });
+    });
+  }
+
   /* ---------- Detail transaksi: "Tanya pesanan ini" → WhatsApp store dengan no invoice terisi ---------- */
   function initWhatsappAsk() {
     document.addEventListener('click', function (e) {
@@ -345,7 +377,8 @@
           original: digits(p.price),
           discount: digits(p.disc),
           stock: picked.size in row ? row[picked.size] : MAX,
-          image: -1
+          // foto milik warna terpilih (colorImages dari database); warna tanpa foto → galeri tetap
+          image: p.colorImages && picked.color in p.colorImages ? p.colorImages[picked.color] : -1
         };
       }
       var c = chips[state.sel.format];
@@ -1817,6 +1850,8 @@
       var v = m ? m.value : '';
       var pending = v === 'bca-va' || v === 'qris';
       // video premium (digital): paid at once → Selesai straight away; BCA VA / QRIS → Belum dibayar first
+      setCtaLoading(payBtn, true);
+      setCtaLoading(payProxy, true);
       var order = createOrder(v, pending ? 'unpaid' : (digital ? 'completed' : 'processing'));
       window.location.href = pending
         ? '/pembayaran/' + encodeURIComponent(order.id) + '?method=' + v
@@ -2157,6 +2192,7 @@
     if (done) done.addEventListener('click', function (e) {
       if (!order) return; // plain prototype visit → default link
       e.preventDefault();
+      setCtaLoading(done, true);
       updateOrder(order.id, { status: order.digital ? 'completed' : 'processing', paidAt: Date.now() });
       window.location.href = '/pembayaran/' + encodeURIComponent(order.id) + '/berhasil';
     });
@@ -2319,6 +2355,7 @@
     initProductGallery();
     initPdpLightbox();
     initWhatsappAsk();
+    initCtaLoading();
     initPdpQuantity();
     initPdpOptions();
     initDescriptionToggle();

@@ -44,21 +44,17 @@
           </div>
           <div class="pdp-option-group">
             
-            <p class="pdp-option-label">Warna: <span data-pdp-axis-name="color">Hitam</span></p>
+            <p class="pdp-option-label">Warna: <span data-pdp-axis-name="color">{{product.colors.[0].value}}</span></p>
             <div class="pdp-options pdp-options--color" role="group" aria-label="Pilih warna" data-pdp-axis="color">
-              <button type="button" data-value="Hitam" aria-pressed="false"><span class="pdp-swatch" style="background:#1F1F1F" aria-hidden="true"></span>Hitam</button>
-              <button type="button" data-value="Putih" aria-pressed="false"><span class="pdp-swatch" style="background:#FFFFFF" aria-hidden="true"></span>Putih</button>
-              <button type="button" data-value="Grey" aria-pressed="false"><span class="pdp-swatch" style="background:#9A9A9A" aria-hidden="true"></span>Grey</button>
+              {{#each product.colors}}
+              <button type="button" data-value="{{value}}" aria-pressed="false"><span class="pdp-swatch" style="background:{{swatch}}" aria-hidden="true"></span>{{value}}</button>
+              {{/each}}
             </div>
-            <p class="pdp-option-label">Ukuran: <span data-pdp-axis-name="size">XS</span></p>
+            <p class="pdp-option-label">Ukuran: <span data-pdp-axis-name="size">{{product.sizes.[0]}}</span></p>
             <div class="pdp-options pdp-options--size" role="group" aria-label="Pilih ukuran" data-pdp-axis="size">
-              <button type="button" data-value="XS" aria-pressed="false">XS</button>
-              <button type="button" data-value="S" aria-pressed="false">S</button>
-              <button type="button" data-value="M" aria-pressed="false">M</button>
-              <button type="button" data-value="L" aria-pressed="false">L</button>
-              <button type="button" data-value="XL" aria-pressed="false">XL</button>
-              <button type="button" data-value="XXL" aria-pressed="false">XXL</button>
-              <button type="button" data-value="XXXL" aria-pressed="false">XXXL</button>
+              {{#each product.sizes}}
+              <button type="button" data-value="{{this}}" aria-pressed="false">{{this}}</button>
+              {{/each}}
             </div>
             
     <p class="pdp-option-label pdp-selected-product-type">
@@ -150,11 +146,11 @@
             </div>
           </div>
           <div class="pdp-sheet-variants">
-            <p class="pdp-sheet-label">Warna: <strong data-pdp-axis-name="color">Hitam</strong></p>
+            <p class="pdp-sheet-label">Warna: <strong data-pdp-axis-name="color">{{product.colors.[0].value}}</strong></p>
             <div class="pdp-sheet-options" role="group" aria-label="Pilih warna" data-sheet-options="color"></div>
           </div>
           <div class="pdp-sheet-variants pdp-sheet-variants--size">
-            <p class="pdp-sheet-label">Ukuran: <strong data-pdp-axis-name="size">XS</strong></p>
+            <p class="pdp-sheet-label">Ukuran: <strong data-pdp-axis-name="size">{{product.sizes.[0]}}</strong></p>
             <div class="pdp-sheet-options" role="group" aria-label="Pilih ukuran" data-sheet-options="size"></div>
           </div>
           <div class="pdp-sheet-qty">

@@ -7,7 +7,7 @@
 **Tahap 0–2 selesai.** Cara menjalankan ada di [README](../README.md).
 
 - **Database:** MySQL 26.7 (Homebrew), 34 tabel (katalog, stok, pengguna, transaksi), 2 migrasi.
-- **Seed:** 36 produk, 219 SKU, 206 baris stok, 193 mutasi stok awal.
+- **Seed:** 36 produk, 212 SKU, 199 baris stok, 186 mutasi stok awal.
 - **Storefront:** 15 halaman × desktop/mobile dirender server dari MySQL.
 - **QA visual:** dibandingkan per elemen dengan build prototipe.
   - Identik: beranda, semua halaman detail, koleksi (8 tab), pencarian, wishlist, keranjang, checkout, halaman pembayaran & pesanan.
@@ -256,7 +256,7 @@ Tabel admin/role/audit dibuat di Tahap 4.
 ## Verifikasi (Tahap 0–2)
 1. **Database:**
    - `npm run db:migrate && npm run db:seed` sukses, dan seed dua kali tidak menggandakan data.
-   - Hitung baris: 9 apparel × 21 = 189 SKU apparel; video 6; source-18 4 varian. Jumlah total produk sama dengan jumlah id unik di storev2.json.
+   - Hitung baris: 8 apparel × 21 + Paguyuban 2 warna × 7 = 182 SKU apparel; video 6; source-18 4 varian. Jumlah total produk sama dengan jumlah id unik di storev2.json.
    - Jumlah `stock_movements` IN sama dengan jumlah SKU yang `track_stock`.
 2. **Tes otomatis (`npm test`):**
    - Vitest: `format.ts` (parse/format rupiah) dan `toCardVM`/`toPdpVM`.

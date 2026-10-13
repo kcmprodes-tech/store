@@ -63,6 +63,21 @@ function plainText(html: string | null) {
   return (html ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+/** Nilai pilihan (Warna, Ukuran, …) suatu produk, urut sesuai CMS. */
+function optionValues(p: ProductWithRelations, name: string) {
+  return p.options.find((o) => o.name === name)?.values ?? [];
+}
+
+/** Warna → index foto pertama milik warna itu (foto ditandai lewat product_images.option_value_id). */
+export function colorImages(p: ProductWithRelations): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const value of optionValues(p, 'Warna')) {
+    const index = p.images.findIndex((img) => img.optionValueId === value.id);
+    if (index >= 0) out[value.value] = index;
+  }
+  return out;
+}
+
 /**
  * Data inline untuk detail apparel & video (dibaca initApparelPdp / initCheckoutFlow).
  * `price_disc` selalu terisi karena JS membacanya sebagai harga jual.
@@ -81,6 +96,7 @@ export function toPdpJson(p: ProductWithRelations) {
   return {
     id: p.slug,
     title: p.title,
+    colorImages: colorImages(p),
     price: formatNumber(hasDisc ? original! : price),
     price_disc: formatNumber(price),
     disc: hasDisc ? discountPercent(price, original) : '',
@@ -130,6 +146,8 @@ export function toPdpVM(p: ProductWithRelations, wishlisted = false) {
     discount: discountPercent(price, original),
     hasVariants,
     variantLabel: variants[0]?.name ?? '',
+    colors: optionValues(p, 'Warna').map((v) => ({ value: v.value, swatch: v.swatch ?? '#FFFFFF' })),
+    sizes: optionValues(p, 'Ukuran').map((v) => v.value),
     variants,
     stockTracked: stock !== null,
     stockLabel: stock === null ? '' : stock > 0 ? `Stok ${stock}` : 'Stock habis',

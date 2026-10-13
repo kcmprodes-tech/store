@@ -80,6 +80,29 @@ const HOME_SECTIONS: [string, string][] = [
 ];
 
 const COLORS: [string, string][] = [['Hitam', '#1F1F1F'], ['Putih', '#FFFFFF'], ['Grey', '#9A9A9A']];
+
+/**
+ * Warna apparel per produk + foto milik tiap warna (index foto di galeri).
+ * Default: warna prototipe (Hitam/Putih/Grey); semua foto produk berwarna hitam → milik Hitam.
+ * Paguyuban punya foto asli dua warna (hijau army & putih).
+ */
+type ApparelColors = { colors: [string, string][]; photos: Record<string, number[]>; stockFrom: Record<string, string> };
+const APPAREL_COLORS: Record<string, ApparelColors> = {
+  'kaos-gaspol-paguyuban-cap-orang-dalam': {
+    colors: [['Hijau Army', '#5B5F3A'], ['Putih', '#FFFFFF']],
+    photos: { 'Hijau Army': [0, 2, 5, 8], Putih: [1, 3, 4, 6, 7] },
+    stockFrom: { 'Hijau Army': 'Hitam', Putih: 'Putih' },
+  },
+};
+function apparelColors(slug: string, imageCount: number): ApparelColors {
+  return (
+    APPAREL_COLORS[slug] ?? {
+      colors: COLORS,
+      photos: { Hitam: Array.from({ length: imageCount }, (_, i) => i) },
+      stockFrom: { Hitam: 'Hitam', Putih: 'Putih', Grey: 'Grey' },
+    }
+  );
+}
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 const PAYMENT_METHODS: [string, string, 'INSTANT' | 'ASYNC', string][] = [
@@ -251,6 +274,7 @@ async function seedProducts(categoryIds: Map<string, number>) {
       discMismatch.push(`${p.id}: data ${p.disc}% vs hitung ${discountPercent(price, priceOriginal)}%`);
     }
     const isApparel = p.link === 'detail-apparel.html' && p.stock;
+    const colorSet = isApparel ? apparelColors(p.id, (p.images ?? []).length) : null;
     const trackStock = type === 'PHYSICAL' || type === 'EVENT';
     const sku = p.sku ?? `STORE-${SKU_PREFIX[p.kcat ?? ''] ?? 'GEN'}-${skuSeq++}`;
     const publishedAt = publishTime(p.id, index);
@@ -267,7 +291,7 @@ async function seedProducts(categoryIds: Map<string, number>) {
         sku,
         description: p.desc?.length ? p.desc.map((para) => `<p>${escapeHtml(para)}</p>`).join('\n') : null,
         specs: isApparel
-          ? ['Produk: ' + p.title, 'Kategori: Merchandise · Apparel', 'Warna: Hitam, Putih, Grey', 'Ukuran: XS, S, M, L, XL, XXL, XXXL']
+          ? ['Produk: ' + p.title, 'Kategori: Merchandise · Apparel', 'Warna: ' + colorSet!.colors.map(([c]) => c).join(', '), 'Ukuran: XS, S, M, L, XL, XXL, XXXL']
           : undefined,
         externalUrl: p.url || null,
         priceSuffix: suffix,
@@ -285,7 +309,7 @@ async function seedProducts(categoryIds: Map<string, number>) {
       // Opsi Warna × Ukuran → 21 SKU, stok dari matriks prototipe.
       const color = await prisma.productOption.create({
         data: { productId: product.id, name: 'Warna', sortOrder: 0,
-          values: { create: COLORS.map(([value, swatch], i) => ({ value, swatch, sortOrder: i })) } },
+          values: { create: colorSet!.colors.map(([value, swatch], i) => ({ value, swatch, sortOrder: i })) } },
         include: { values: true },
       });
       const size = await prisma.productOption.create({
@@ -293,6 +317,15 @@ async function seedProducts(categoryIds: Map<string, number>) {
           values: { create: SIZES.map((value, i) => ({ value, sortOrder: i })) } },
         include: { values: true },
       });
+      for (const cv of color.values) {
+        const indices = colorSet!.photos[cv.value] ?? [];
+        if (indices.length) {
+          await prisma.productImage.updateMany({
+            where: { productId: product.id, sortOrder: { in: indices } },
+            data: { optionValueId: cv.id },
+          });
+        }
+      }
       let order = 0;
       for (const cv of color.values) {
         for (const sv of size.values) {
@@ -308,7 +341,7 @@ async function seedProducts(categoryIds: Map<string, number>) {
               optionValues: { create: [{ optionValueId: cv.id }, { optionValueId: sv.id }] },
             },
           });
-          variants.push({ id: v.id, stock: p.stock?.[cv.value]?.[sv.value] ?? 0, trackStock: true });
+          variants.push({ id: v.id, stock: p.stock?.[colorSet!.stockFrom[cv.value] ?? cv.value]?.[sv.value] ?? 0, trackStock: true });
         }
       }
     } else {
