@@ -1,0 +1,11 @@
+{{#each nav.groups}}
+<div class="adm-nav-group">
+  {{#if label}}<p class="adm-nav-label">{{label}}</p>{{/if}}
+  {{#each items}}
+  <a class="adm-nav-link{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>
+    {{icon this.icon size=20 weight=(ifv active "fill" "regular")}}<span>{{label}}</span>
+    {{#if badge}}<b class="adm-nav-badge" title="{{badge}} SKU stok menipis">{{badge}}</b>{{/if}}
+  </a>
+  {{/each}}
+</div>
+{{/each}}

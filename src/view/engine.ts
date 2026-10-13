@@ -40,7 +40,7 @@ const engines: Record<Platform, ExpressHandlebars> = {
 };
 
 /** Versi aset untuk cache-busting CSS/JS. */
-const assetVersion = Date.now().toString(36);
+export const assetVersion = Date.now().toString(36);
 
 export function renderMiddleware(req: Request, res: Response, next: NextFunction) {
   res.renderPage = async (view, data = {}, status = 200) => {

@@ -4,8 +4,10 @@
  * Idempoten: semua tabel dikosongkan dulu lalu diisi ulang, jadi menjalankan seed dua kali
  * tidak menggandakan data. HANYA untuk development — seed menghapus pesanan & data lain.
  */
-import { readFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { generatePassword, hashPassword } from '../src/admin/auth/password.js';
 import { createPrisma } from '../src/lib/prisma.js';
 import { discountPercent, parseIndonesianDate, parsePrice } from '../src/lib/format.js';
 
@@ -523,6 +525,8 @@ async function seedCommerce(warehouseId: number, productIds: Map<string, number>
       { key: 'refund_max_days', value: 14 },
       { key: 'invoice_prefix', value: 'SKC' },
       { key: 'video_access_url', value: 'https://store.kompas.com/video-premium/history' },
+      // Ambang peringatan stok menipis untuk SKU yang tidak punya ambang sendiri.
+      { key: 'low_stock_threshold_default', value: 5 },
     ],
   });
 
@@ -547,6 +551,56 @@ async function seedCommerce(warehouseId: number, productIds: Map<string, number>
   });
 }
 
+// ───────────── Akun CMS (tidak ikut dikosongkan clearAll) ─────────────
+
+/** Nilai rahasia dari .env; kalau belum ada, dibuat acak lalu ditulis ke .env (hanya di mesin ini, tidak di-commit). */
+function envSecret(name: string) {
+  const existing = process.env[name]?.trim();
+  if (existing) return existing;
+  const value = generatePassword(16);
+  appendFileSync(join(process.cwd(), '.env'), `\n# Dibuat otomatis oleh npm run db:seed — jangan di-commit.\n${name}=${value}\n`);
+  process.env[name] = value;
+  return value;
+}
+
+/** Akun uji per peran untuk mencoba hak akses CMS (development saja). */
+const TEST_ACCOUNTS: [string, 'ADMIN' | 'EDITOR' | 'MARKETING' | 'CS' | 'GUDANG' | 'FINANCE', string][] = [
+  ['admin', 'ADMIN', 'Admin Uji'],
+  ['editor', 'EDITOR', 'Editor Uji'],
+  ['marketing', 'MARKETING', 'Marketing Uji'],
+  ['cs', 'CS', 'CS Uji'],
+  ['gudang', 'GUDANG', 'Gudang Uji'],
+  ['finance', 'FINANCE', 'Finance Uji'],
+];
+
+async function seedAdmins() {
+  const email = (process.env.ADMIN_EMAIL?.trim() || 'ardi.suhanda@kompas.com').toLowerCase();
+  if (!(await prisma.adminUser.findUnique({ where: { email } }))) {
+    await prisma.adminUser.create({
+      data: {
+        email,
+        name: process.env.ADMIN_NAME?.trim() || 'Ardi Suhanda',
+        passwordHash: await hashPassword(envSecret('ADMIN_INITIAL_PASSWORD')),
+        mustChangePassword: true,
+        roles: { create: [{ role: 'ADMIN' }] },
+      },
+    });
+    console.log(`✔ Admin CMS ${email} dibuat. Password awal ada di .env (ADMIN_INITIAL_PASSWORD), wajib diganti saat login pertama.`);
+  }
+
+  if (process.env.NODE_ENV === 'production') return;
+  const testHash = await hashPassword(envSecret('CMS_TEST_PASSWORD'));
+  for (const [local, role, name] of TEST_ACCOUNTS) {
+    // Akun yang sudah ada tidak diubah (password & peran tetap).
+    await prisma.adminUser.upsert({
+      where: { email: `${local}@cms.test` },
+      create: { email: `${local}@cms.test`, name, passwordHash: testHash, roles: { create: [{ role }] } },
+      update: {},
+    });
+  }
+  console.log('✔ Akun uji CMS (dev): admin|editor|marketing|cs|gudang|finance@cms.test, password = CMS_TEST_PASSWORD di .env.');
+}
+
 async function main() {
   console.log('Mengosongkan tabel…');
   await clearAll();
@@ -555,6 +609,7 @@ async function main() {
   const warehouse = await seedInventory(variants);
   await seedCuration(productIds);
   await seedCommerce(warehouse.id, productIds);
+  await seedAdmins();
 
   const [products, skus, movements, levels] = await Promise.all([
     prisma.product.count(),

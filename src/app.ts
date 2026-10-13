@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import cookieParser from 'cookie-parser';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import { adminRouter } from './admin/index.js';
 import { isProd } from './config/env.js';
 import { deviceMiddleware } from './lib/device.js';
 import { renderMiddleware } from './view/engine.js';
@@ -22,12 +23,19 @@ export function createApp() {
     app.use('/__prototipe', express.static(process.env.PROTOTYPE_DIR));
   }
   app.use(cookieParser());
-  app.use(deviceMiddleware);
-  app.use(renderMiddleware);
 
   app.get('/healthz', (_req, res) => {
     res.json({ ok: true });
   });
+  app.get('/robots.txt', (_req, res) => {
+    res.type('text').send('User-agent: *\nDisallow: /admin\n');
+  });
+
+  // CMS: sebelum middleware store (device & render store tidak dipakai di /admin).
+  app.use('/admin', adminRouter);
+
+  app.use(deviceMiddleware);
+  app.use(renderMiddleware);
 
   app.use(web);
 

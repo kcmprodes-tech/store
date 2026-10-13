@@ -136,24 +136,26 @@ model ProductOptionValue {
 }
 
 model ProductVariant {
-  id            Int                  @id @default(autoincrement())
-  productId     Int                  @map("product_id")
-  product       Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku           String               @unique @db.VarChar(120)
+  id                Int                  @id @default(autoincrement())
+  productId         Int                  @map("product_id")
+  product           Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku               String               @unique @db.VarChar(120)
   /// Label varian untuk tampilan, mis. "Bundling Plus" atau "Hitam, XL".
-  name          String?              @db.VarChar(160)
-  price         Int
-  priceOriginal Int?                 @map("price_original")
+  name              String?              @db.VarChar(160)
+  price             Int
+  priceOriginal     Int?                 @map("price_original")
   /// Indeks gambar galeri yang dipakai saat varian dipilih.
-  imageIndex    Int?                 @map("image_index")
-  trackStock    Boolean              @default(true) @map("track_stock")
-  isActive      Boolean              @default(true) @map("is_active")
-  sortOrder     Int                  @default(0) @map("sort_order")
-  optionValues  VariantOptionValue[]
-  inventory     InventoryLevel[]
-  movements     StockMovement[]
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
+  imageIndex        Int?                 @map("image_index")
+  trackStock        Boolean              @default(true) @map("track_stock")
+  /// Ambang peringatan stok menipis; kosong = pengaturan low_stock_threshold_default.
+  lowStockThreshold Int?                 @map("low_stock_threshold")
+  isActive          Boolean              @default(true) @map("is_active")
+  sortOrder         Int                  @default(0) @map("sort_order")
+  optionValues      VariantOptionValue[]
+  inventory         InventoryLevel[]
+  movements         StockMovement[]
+  cartItems         CartItem[]
+  orderItems        OrderItem[]
 
   @@index([productId, sortOrder])
   @@map("product_variants")
@@ -709,4 +711,87 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("settings")
+}
+
+// ───────────────────────── CMS (/admin) ─────────────────────────
+
+enum AdminRole {
+  ADMIN
+  EDITOR
+  MARKETING
+  CS
+  GUDANG
+  FINANCE
+}
+
+/// Akun CMS (terpisah dari akun pembeli/SSO). Hak akses per peran ada di src/admin/permissions.ts.
+model AdminUser {
+  id                 Int             @id @default(autoincrement())
+  email              String          @unique @db.VarChar(191)
+  name               String          @db.VarChar(120)
+  /// scrypt$N$r$p$salt$hash (lihat src/admin/auth/password.ts).
+  passwordHash       String          @map("password_hash") @db.VarChar(255)
+  isActive           Boolean         @default(true) @map("is_active")
+  /// Wajib ganti password saat login berikutnya (akun baru / password di-reset).
+  mustChangePassword Boolean         @default(false) @map("must_change_password")
+  lastLoginAt        DateTime?       @map("last_login_at")
+  createdAt          DateTime        @default(now()) @map("created_at")
+  updatedAt          DateTime        @updatedAt @map("updated_at")
+  roles              AdminUserRole[]
+  sessions           AdminSession[]
+  auditLogs          AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AdminUserRole {
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  role        AdminRole
+
+  @@id([adminUserId, role])
+  @@map("admin_user_roles")
+}
+
+/// Sesi login CMS. id = SHA-256 dari token di cookie (token asli tidak disimpan).
+model AdminSession {
+  id          String    @id @db.Char(64)
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  csrfToken   String    @map("csrf_token") @db.VarChar(64)
+  ip          String?   @db.VarChar(64)
+  userAgent   String?   @map("user_agent") @db.VarChar(255)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  lastSeenAt  DateTime  @default(now()) @map("last_seen_at")
+  /// Batas mutlak umur sesi (sesi juga berakhir setelah 7 hari tanpa aktivitas).
+  expiresAt   DateTime  @map("expires_at")
+
+  @@index([adminUserId])
+  @@map("admin_sessions")
+}
+
+/// Log perubahan CMS: siapa, kapan, apa (nilai sebelum → sesudah).
+model AuditLog {
+  id          Int        @id @default(autoincrement())
+  adminUserId Int?       @map("admin_user_id")
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  /// Salinan email pelaku, tetap terbaca walau akunnya dihapus.
+  actorEmail  String     @map("actor_email") @db.VarChar(191)
+  /// create, update, delete, login, logout, stock.in, stock.adjust, …
+  action      String     @db.VarChar(40)
+  /// product, category, banner, home_section, collection, navigation_item, promo, setting, admin_user, stock, …
+  entityType  String     @map("entity_type") @db.VarChar(40)
+  entityId    String?    @map("entity_id") @db.VarChar(80)
+  /// Nama objek saat diubah (mis. judul produk).
+  entityLabel String?    @map("entity_label") @db.VarChar(255)
+  summary     String?    @db.VarChar(255)
+  /// { field: [sebelum, sesudah] }; password tidak pernah dicatat.
+  changes     Json?
+  ip          String?    @db.VarChar(64)
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([adminUserId, createdAt])
+  @@map("audit_logs")
 }

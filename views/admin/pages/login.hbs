@@ -1,0 +1,26 @@
+<div class="auth-card">
+  {{> brand}}
+  <h1>Masuk ke CMS</h1>
+  <p class="page-subtitle">Pakai akun CMS Anda (bukan akun Kompas.com).</p>
+
+  {{#if error}}
+  <div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body">{{error}}</div></div>
+  {{/if}}
+
+  <form class="form-grid" method="post" action="/admin/login" novalidate data-busy-form>
+    <input type="hidden" name="next" value="{{next}}">
+    <div class="field">
+      <label class="label" for="email">Email</label>
+      <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" value="{{email}}" required autofocus>
+    </div>
+    <div class="field">
+      <label class="label" for="password">Password</label>
+      <div class="password-field">
+        <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="icon-btn" type="button" data-toggle-password="password" aria-label="Tampilkan password">{{icon "eye" size=20}}</button>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+  </form>
+  <p class="auth-foot">Lupa password? Minta Admin CMS untuk meresetnya.</p>
+</div>

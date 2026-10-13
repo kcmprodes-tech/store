@@ -1,0 +1,141 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Halo, {{admin.name}}</h1>
+    <p class="page-subtitle">{{roleNames}} · ringkasan Store Kompas.com hari ini</p>
+  </div>
+  <div class="page-actions">
+    {{#if perms.produk.edit}}<a class="btn btn-primary" href="/admin/produk/baru">{{icon "plus" size=18}} Produk baru</a>{{/if}}
+    {{#if perms.stok.edit}}<a class="btn btn-ghost" href="/admin/stok/masuk">{{icon "arrow-square-in" size=18}} Barang masuk</a>{{/if}}
+    {{#if perms.promo.edit}}<a class="btn btn-ghost" href="/admin/promo/baru">{{icon "ticket" size=18}} Promo baru</a>{{/if}}
+  </div>
+</div>
+
+<div class="stats">
+  {{#if productStats}}
+  <a class="stat" href="/admin/produk?status=tayang">
+    <span class="stat-label">{{icon "storefront" size=16}} Produk tayang</span>
+    <span class="stat-value">{{number productStats.live}}</span>
+  </a>
+  <a class="stat" href="/admin/produk?status=draft">
+    <span class="stat-label">{{icon "pencil-simple-line" size=16}} Draft</span>
+    <span class="stat-value">{{number productStats.draft}}</span>
+  </a>
+  <a class="stat" href="/admin/produk?status=terjadwal">
+    <span class="stat-label">{{icon "calendar-dots" size=16}} Terjadwal</span>
+    <span class="stat-value">{{number productStats.upcoming}}</span>
+  </a>
+  {{/if}}
+  {{#if perms.stok.view}}
+  <a class="stat{{#if lowCount}} is-warning{{/if}}" href="/admin/stok?status=menipis">
+    <span class="stat-label">{{icon "warning" size=16}} Stok menipis</span>
+    <span class="stat-value">{{number lowCount}}</span>
+  </a>
+  {{/if}}
+</div>
+
+<div class="grid grid-2">
+  {{#if perms.stok.view}}
+  <section class="box">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">Stok menipis</h2>
+        <p class="box-desc">SKU dengan stok tersedia di bawah ambang</p>
+      </div>
+      <a class="btn btn-plain btn-sm" href="/admin/stok?status=menipis">Lihat semua</a>
+    </div>
+    {{#if lowStock.length}}
+    <ul class="list">
+      {{#each lowStock}}
+      <li>
+        <div class="list-main">
+          <strong>{{title}}</strong>
+          <span class="small muted mono">{{sku}}</span>
+        </div>
+        {{#if (lte available 0)}}<span class="badge badge-error">Habis</span>{{else}}<span class="badge badge-warning">Sisa {{available}}</span>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <div class="empty">{{icon "check-circle" size=40}}<strong>Stok aman</strong><span>Tidak ada SKU di bawah ambang.</span></div>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  {{#if perms.produk.view}}
+  <section class="box">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">Draft & terjadwal</h2>
+        <p class="box-desc">Produk yang belum tampil di store</p>
+      </div>
+      <a class="btn btn-plain btn-sm" href="/admin/produk?status=draft">Lihat semua</a>
+    </div>
+    {{#if scheduled.length}}
+    <ul class="list">
+      {{#each scheduled}}
+      <li>
+        <div class="list-main">
+          <a href="/admin/produk/{{id}}"><strong>{{title}}</strong></a>
+          <span class="small muted">Diubah {{datetime updatedAt}}</span>
+        </div>
+        {{#if isScheduled}}<span class="badge badge-info">{{date publishedAt}}</span>{{else}}<span class="badge">Draft</span>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <div class="empty">{{icon "files" size=40}}<strong>Tidak ada draft</strong><span>Semua produk sudah tayang atau diarsipkan.</span></div>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  {{#if perms.promo.view}}
+  <section class="box">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">Promo aktif</h2>
+        <p class="box-desc">Dipakai checkout mulai Tahap 3</p>
+      </div>
+      <a class="btn btn-plain btn-sm" href="/admin/promo">Lihat semua</a>
+    </div>
+    {{#if promos.length}}
+    <ul class="list">
+      {{#each promos}}
+      <li>
+        <div class="list-main">
+          <a href="/admin/promo/{{id}}"><strong class="mono">{{code}}</strong></a>
+          <span class="small muted">{{#if (eq type "PERCENT")}}{{value}}%{{else}}{{rupiah value}}{{/if}}{{#if endsAt}} · sampai {{date endsAt}}{{/if}}</span>
+        </div>
+        {{#if notStarted}}<span class="badge badge-info">Terjadwal</span>{{else if endingSoon}}<span class="badge badge-warning">Segera berakhir</span>{{else}}<span class="badge badge-success">Aktif</span>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <div class="empty">{{icon "ticket" size=40}}<strong>Belum ada promo aktif</strong></div>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  <section class="box">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">{{#if changesAll}}Perubahan terakhir{{else}}Perubahan terakhir Anda{{/if}}</h2>
+        <p class="box-desc">Dari log perubahan CMS</p>
+      </div>
+      <a class="btn btn-plain btn-sm" href="/admin/log">Lihat log</a>
+    </div>
+    {{#if changes.length}}
+    <ul class="list">
+      {{#each changes}}
+      <li>
+        <div class="list-main">
+          <strong>{{actionLabel}} {{entityName}}{{#if entityLabel}}: {{entityLabel}}{{/if}}</strong>
+          <span class="small muted">{{actorEmail}} · {{datetime createdAt}}</span>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <div class="empty">{{icon "clock-counter-clockwise" size=40}}<strong>Belum ada perubahan</strong></div>
+    {{/if}}
+  </section>
+</div>
