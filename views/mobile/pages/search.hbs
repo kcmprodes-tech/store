@@ -1,0 +1,75 @@
+<div class="store-v2-content">
+    {{> store_header_mobile}}
+
+<main class="category-page search-page" data-search-page>
+      <section class="kompas-container search-hero">
+        <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
+          <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
+          <span>/</span>
+          <span>Pencarian</span>
+        </nav>
+        <div class="search-heading">
+          <div>
+            <h1>Hasil Pencarian</h1>
+            <p data-search-summary>Menampilkan semua produk Store Kompas.com.</p>
+          </div>
+          <span class="category-result-count" data-search-count>{{storev2.semua.length}} produk</span>
+        </div>
+        
+    <div class="search-result-toolbar">
+      <div class="search-filter-chips">
+      <div class="search-kategori" data-search-kategori>
+        <button class="search-filter-chip" type="button" data-search-kategori-toggle aria-haspopup="true" aria-expanded="false" aria-controls="search-kategori-panel">
+          <span data-search-kategori-label>Semua kategori</span>
+          <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+        </button>
+        <div class="search-kategori-panel" id="search-kategori-panel" data-search-kategori-panel hidden>
+          <a class="search-kategori-option" href="/cari" data-search-category="">Semua kategori</a>
+          <a class="search-kategori-option" href="/cari?category=merchandise" data-search-category="merchandise">Merchandise</a>
+          <a class="search-kategori-option" href="/cari?category=buku" data-search-category="buku">Buku</a>
+          <a class="search-kategori-option" href="/cari?category=membership" data-search-category="membership">Membership</a>
+          <a class="search-kategori-option" href="/cari?category=digital" data-search-category="digital">Digital</a>
+          <a class="search-kategori-option" href="/cari?category=event" data-search-category="event">Event</a>
+        </div>
+      </div>
+    
+      </div>
+      
+    <label class="wishlist-sort-control search-sort-control">
+      <span>Urutkan</span>
+      <span class="wishlist-sort-select-wrap">
+        <select data-search-sort="">
+          <option value="relevance" selected="">Relevansi</option><option value="newest">Terbaru</option><option value="price-high">Harga Tertinggi</option><option value="price-low">Harga Terendah</option>
+        </select>
+        <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </span>
+    </label>
+  
+    </div>
+  
+        
+      </section>
+
+      <section class="kompas-container category-products-section search-products-section">
+        <div class="category-product-grid" data-search-grid>
+          {{#each storev2.semua}}{{> product_card_v2}}{{/each}}
+        </div>
+        <div class="sv2-empty" data-search-empty hidden>
+          <img class="sv2-empty-img" src="/images/store-v2/empty-search.png" alt="" width="320" height="219">
+          <div class="sv2-empty-body">
+            <p class="sv2-empty-text">Pencarian tidak ditemukan.</p>
+            <button class="sv2-empty-btn" type="button" data-search-edit>Ubah pencarian</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pencarian tidak ditemukan: product suggestions (8 cards, 4x2) -->
+      <section class="kompas-container search-reco" data-search-reco hidden>
+        <div class="section-title">
+          <h2>Mungkin kamu tertarik</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+          {{#each storev2.related}}{{> product_card_v2}}{{/each}}
+        </div>
+      </section>
+    </main>            </div>

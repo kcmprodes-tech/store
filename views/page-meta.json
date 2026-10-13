@@ -1,0 +1,182 @@
+{
+  "index": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "semua-produk": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "koleksi": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "search": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "detail": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    }
+  },
+  "detail-apparel": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    }
+  },
+  "detail-video": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": "<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);\n     behaviour wired in store-v2.js (initLoginGate) instead of the partial's "
+    }
+  },
+  "wishlist": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "cart": {
+    "desktop": {
+      "bodyClass": "sv2-no-footer revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "sv2-no-footer header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "payment": {
+    "desktop": {
+      "bodyClass": "sv2-no-footer revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "sv2-no-footer header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "payment-instruction": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "payment-success": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "pickup-success": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "order-detail": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  },
+  "account": {
+    "desktop": {
+      "bodyClass": "revampV2 --wp",
+      "title": null,
+      "tail": ""
+    },
+    "mobile": {
+      "bodyClass": "header-new --wp",
+      "title": null,
+      "tail": ""
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Memperadabkan Bangsa book cover</title>
+  <desc id="desc">A formal blue and yellow Kompas book cover for a social sciences title.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFF8D6"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="#FFFFFF"/>
+  <rect x="112" y="68" width="416" height="186" rx="24" fill="#00559A"/>
+  <rect x="152" y="300" width="336" height="18" rx="9" fill="#333333"/>
+  <rect x="152" y="336" width="270" height="14" rx="7" fill="#666666"/>
+  <circle cx="320" cy="470" r="118" fill="#E1F0FF"/>
+  <path d="M242 484h156M320 392v184M264 430c30 26 82 26 112 0M264 538c30-26 82-26 112 0" fill="none" stroke="#00559A" stroke-width="18" stroke-linecap="round"/>
+  <rect x="152" y="626" width="150" height="12" rx="6" fill="#FFCC00"/>
+  <text x="152" y="165" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="34" font-weight="700">Memperadabkan</text>
+  <text x="152" y="208" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="34" font-weight="700">Bangsa</text>
+  <text x="152" y="674" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="24" font-weight="700">Paradigma Pancasila</text>
+</svg>

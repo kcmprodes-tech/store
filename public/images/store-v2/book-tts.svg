@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">TTS Pilihan Kompas product cover</title>
+  <desc id="desc">A blue and yellow book cover mockup for a Kompas crossword collection.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#00559A"/>
+      <stop offset="0.56" stop-color="#057DF4"/>
+      <stop offset="1" stop-color="#FFCC00"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <rect width="640" height="800" rx="36" fill="#F4F4F4"/>
+  <g filter="url(#shadow)">
+    <rect x="132" y="68" width="376" height="664" rx="22" fill="url(#bg)"/>
+    <rect x="132" y="68" width="72" height="664" rx="22" fill="#00447B" opacity=".68"/>
+    <rect x="214" y="154" width="210" height="210" rx="18" fill="#fff"/>
+    <g fill="#24292F">
+      <rect x="246" y="188" width="34" height="34"/>
+      <rect x="314" y="188" width="34" height="34"/>
+      <rect x="382" y="188" width="34" height="34"/>
+      <rect x="246" y="256" width="34" height="34"/>
+      <rect x="314" y="256" width="34" height="34"/>
+      <rect x="382" y="256" width="34" height="34"/>
+      <rect x="246" y="324" width="34" height="34"/>
+      <rect x="314" y="324" width="34" height="34"/>
+      <rect x="382" y="324" width="34" height="34"/>
+    </g>
+    <text x="238" y="464" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="44" font-weight="700">TTS</text>
+    <text x="238" y="516" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="30" font-weight="700">Pilihan Kompas</text>
+    <text x="238" y="574" fill="#FFF8D6" font-family="PT Sans, Arial, sans-serif" font-size="24" font-weight="700">Jilid 22</text>
+  </g>
+</svg>

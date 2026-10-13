@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Kompas.id three month subscription card</title>
+  <desc id="desc">A three month Kompas.id starter subscription product mockup.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFF8D6"/>
+  <rect x="104" y="92" width="432" height="616" rx="30" fill="#FFFFFF"/>
+  <rect x="144" y="142" width="352" height="112" rx="20" fill="#FFCC00"/>
+  <text x="174" y="210" fill="#7A5700" font-family="PT Sans, Arial, sans-serif" font-size="36" font-weight="700">Paket Awal</text>
+  <rect x="144" y="318" width="352" height="266" rx="26" fill="#00559A"/>
+  <text x="252" y="452" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="96" font-weight="700">3</text>
+  <text x="336" y="446" fill="#E1F0FF" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Bulan</text>
+  <rect x="174" y="624" width="292" height="34" rx="17" fill="#E1F0FF"/>
+</svg>

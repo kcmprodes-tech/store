@@ -1,0 +1,42 @@
+<!-- Login popup: repo default kgOneTap markup (hbs/*/partials/_v2/components/kgOneTap.handlebars, style: kgm-verify.css);
+     behaviour wired in store-v2.js (initLoginGate) instead of the partial's own dummy script -->
+<section class="kgmModal -hide" id="kgmModal-onetap" role="dialog" aria-modal="true" aria-labelledby="kgmModal-title">
+	<div class="kgmModal-block">
+		<div class="kgmModal-header">
+			<div class="kgmModal-header-inner">
+				<div class="kgmModal-header-logo">
+					<img src="https://asset.kompas.com/data/2024/pluskompas/images/logo-kompascom.svg" alt="Kompas.com">
+				</div>
+				<button type="button" class="kgmModal-close" data-login-close aria-label="Tutup"></button>
+			</div>
+		</div>
+		<div class="kgmModal-body">
+			<div class="kgmModal-title" id="kgmModal-title">Login untuk melanjutkan pembelian</div>
+			<div class="kgmModal-onetap">
+				<div class="form-google" id="kgOne1" data-login-continue>
+					<div id="g_id_onload"
+						data-client_id="776828813358-infk4sje3q07sa8mg8n6lq1mk2pdkkua.apps.googleusercontent.com"
+						data-context="signin" data-ux_mode="popup" data-login_uri="https://account.kompas.com/social/user"
+						data-itp_support="true">
+					</div>
+					<div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue"
+						data-text="continue_with" data-size="large" data-logo_alignment="left">
+					</div>
+				</div>
+			</div>
+			<div class="kgmModal-divider -clean"><span>atau</span></div>
+			<div class="kgmModal-method">
+				<a href="https://dummy.kompas.com/repo/kgmedia/html/index.html" data-login-continue>Gunakan metode lain</a>
+			</div>
+		</div>
+		<div class="kgmModal-footer">
+			<div class="kgmModal-info">Dengan login, kamu menyetujui <a href="https://www.kgmedia.id/legal-privacy-id"
+					target="_blank" rel="noopener">Kebijakan Data Pribadi</a></div>
+		</div>
+	</div>
+</section>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+	/* dummy flow (same as the repo partial): the Google button is display-only, the wrapper handles the click */
+	.form-google>* { pointer-events: none; }
+</style>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">NGOROK and OSA cover</title>
+  <desc id="desc">A sleep themed health book cover with moon and wave shapes.</desc>
+  <rect width="640" height="800" rx="36" fill="#E1F0FF"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="#FFFFFF"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="none" stroke="#00559A" stroke-width="14"/>
+  <circle cx="314" cy="316" r="112" fill="#00559A"/>
+  <circle cx="360" cy="282" r="104" fill="#FFFFFF"/>
+  <path d="M190 514c42-34 78-34 120 0s78 34 120 0" fill="none" stroke="#057DF4" stroke-width="22" stroke-linecap="round"/>
+  <path d="M202 574c34-26 66-26 100 0s66 26 100 0" fill="none" stroke="#FFCC00" stroke-width="16" stroke-linecap="round"/>
+  <text x="156" y="154" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="46" font-weight="700">NGOROK</text>
+  <text x="156" y="204" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="34" font-weight="700">&amp; OSA</text>
+  <text x="156" y="662" fill="#666666" font-family="PT Sans, Arial, sans-serif" font-size="22" font-weight="700">Kualitas tidur dan kesehatan</text>
+</svg>

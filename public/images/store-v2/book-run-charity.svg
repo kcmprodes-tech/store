@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Run For Charity cover</title>
+  <desc id="desc">A sports health book cover with running track inspired shapes.</desc>
+  <rect width="640" height="800" rx="36" fill="#E1F0FF"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="#FFFFFF"/>
+  <rect x="118" y="64" width="404" height="238" rx="24" fill="#00559A"/>
+  <path d="M184 548c70-104 150-158 272-164" fill="none" stroke="#FFCC00" stroke-width="28" stroke-linecap="round"/>
+  <path d="M200 608c80-98 166-148 270-150" fill="none" stroke="#057DF4" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="272" cy="376" r="32" fill="#DB5D00"/>
+  <path d="M274 414l54 58 68-42M326 472l-38 78M326 472l62 72" fill="none" stroke="#333333" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="156" y="154" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="42" font-weight="700">Run For</text>
+  <text x="156" y="204" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="42" font-weight="700">Charity</text>
+  <text x="156" y="670" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="22" font-weight="700">Gerak sehat dan kepedulian</text>
+</svg>

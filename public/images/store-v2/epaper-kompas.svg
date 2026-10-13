@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Kompas ePaper subscription product</title>
+  <desc id="desc">A tablet and newspaper style mockup for Kompas ePaper.</desc>
+  <rect width="640" height="800" rx="36" fill="#F4F4F4"/>
+  <rect x="104" y="104" width="432" height="592" rx="32" fill="#222222"/>
+  <rect x="132" y="144" width="376" height="512" rx="18" fill="#FFFFFF"/>
+  <text x="166" y="210" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="42" font-weight="700">Kompas</text>
+  <rect x="166" y="252" width="308" height="18" rx="9" fill="#222222"/>
+  <rect x="166" y="292" width="230" height="14" rx="7" fill="#666666"/>
+  <rect x="166" y="344" width="308" height="190" rx="18" fill="#E1F0FF"/>
+  <path d="M198 490c64-56 126-74 244-14" fill="none" stroke="#FFCC00" stroke-width="20" stroke-linecap="round"/>
+  <rect x="166" y="574" width="136" height="20" rx="10" fill="#DDDDDD"/>
+  <rect x="326" y="574" width="148" height="20" rx="10" fill="#DDDDDD"/>
+</svg>

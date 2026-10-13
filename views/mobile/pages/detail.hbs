@@ -1,0 +1,177 @@
+<div class="store-v2-content">
+    {{> store_header_mobile}}
+
+<main class="product-detail-page kompas-container py-6">
+      <nav class="pdp-breadcrumb" aria-label="Breadcrumb">
+        <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
+        {{#if product.category}}<span>/</span>
+        <a href="{{product.category.href}}">{{product.category.name}}</a>
+        {{/if}}<span>/</span>
+        <span title="{{product.title}}">{{product.shortTitle}}</span>
+      </nav>
+
+      <section class="pdp-hero" aria-label="Detail produk">
+        <div class="pdp-gallery">
+          <div class="pdp-main-media" data-pdp-gallery-swipe="" data-gallery-count="{{product.images.length}}" data-current-image="0">
+            <div class="pdp-main-track" data-pdp-main-track="" style="transform: translate3d(-0%, 0, 0);">
+              {{#each product.images}}
+              <img src="{{this}}" alt="{{../product.title}} {{inc @index}}" draggable="false">
+              {{/each}}
+            </div>
+            <span class="pdp-gallery-indicator" data-pdp-gallery-indicator="" aria-label="Gambar 1 dari {{product.images.length}}">1/{{product.images.length}}</span>
+          </div>
+          <div class="pdp-thumbs" data-pdp-thumbs>
+            <button class="pdp-thumbs-nav pdp-thumbs-prev" type="button" data-pdp-thumbs-prev aria-label="Gambar sebelumnya" hidden><svg width="16" height="16" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg></button>
+            <div class="pdp-gallery-strip" aria-label="Galeri produk" data-pdp-thumbs-strip>
+              {{#each product.images}}
+              <button class="pdp-gallery-thumb {{#if @first}}is-active{{/if}}" type="button" data-product-image="{{@index}}" aria-label="Lihat gambar {{inc @index}}" aria-pressed="{{#if @first}}true{{else}}false{{/if}}">
+                <img src="{{this}}" alt="">
+              </button>
+              {{/each}}
+            </div>
+            <button class="pdp-thumbs-nav pdp-thumbs-next" type="button" data-pdp-thumbs-next aria-label="Gambar berikutnya" hidden><svg width="16" height="16" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></button>
+          </div>
+        </div>
+
+        <div class="pdp-product-info">
+          <h1>{{product.title}}</h1>
+          {{#if product.sold}}<p class="pdp-rating">{{product.sold}}</p>{{/if}}
+          <div class="pdp-price-tools">
+            <div class="pdp-price-stack">
+              <strong data-pdp-price>{{product.price}}</strong>
+              <div class="pdp-price-original-row"><s data-pdp-price-original{{#unless product.priceOriginal}} hidden{{/unless}}>{{product.priceOriginal}}</s><span class="product-card-discount" data-pdp-discount{{#unless product.discount}} hidden{{/unless}}>{{product.discount}}%</span></div>
+            </div>
+            <div class="pdp-product-actions" aria-label="Aksi produk">
+              <button class="" type="button" data-wishlist="{{product.id}}" aria-label="Tambahkan {{product.title}} ke wishlist" aria-pressed="false">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7z"></path></svg>
+              </button>
+              <button type="button" data-share-product="" aria-label="Bagikan {{product.title}}">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4"></path><path d="m8.6 13.5 6.8 4"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="pdp-option-group">
+            
+            <p class="pdp-option-label"{{#unless product.hasVariants}} hidden{{/unless}}>Varian: <span data-pdp-variant-name>{{product.variantLabel}}</span></p>
+            <div class="pdp-options" role="group" aria-label="Pilih jenis produk"{{#unless product.hasVariants}} hidden{{/unless}}>
+              {{#each product.variants}}
+              <button class="{{#if selected}}is-selected{{/if}}" type="button" data-product-format="{{name}}" data-price="{{price}}" data-price-original="{{priceOriginal}}" data-discount="{{discount}}"{{#if tracked}} data-stock="{{stock}}"{{/if}} data-image="{{imageIndex}}" aria-pressed="{{#if selected}}true{{else}}false{{/if}}">{{name}}</button>
+              {{/each}}
+            </div>
+            
+    <p class="pdp-option-label pdp-selected-product-type">
+      <strong>Jenis Produk:</strong>
+      <span class="badge badge-soft-yellow checkout-format-badge">{{product.typeLabel}}</span>
+    </p>
+  
+          </div>
+          
+
+          <div class="pdp-detail-stack">
+            {{#if product.descriptionHtml}}<section class="pdp-description-block" aria-label="Deskripsi produk">
+              <h2 class="pdp-description-title">Deskripsi</h2>
+              <div class="pdp-description-content is-collapsed" data-pdp-description-content=""><div class="pdp-description-rich">
+{{{product.descriptionHtml}}}
+    </div></div>
+              <span class="pdp-description-fade" aria-hidden="true"></span>
+              <button class="pdp-description-toggle" type="button" data-description-toggle="" aria-expanded="false">
+                Selengkapnya <svg class="h-4 w-4 " aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </button>
+            </section>{{/if}}
+            <details class="pdp-disclosure">
+              <summary>Detail Produk</summary>
+              <ul class="pdp-specs">
+                {{#each product.specRows}}<li>{{#if label}}<span class="pdp-spec-label">{{label}}</span><span class="pdp-spec-sep">:</span><span class="pdp-spec-value">{{value}}</span>{{else}}<span class="pdp-spec-full">{{value}}</span>{{/if}}</li>{{/each}}
+              </ul>
+            </details>
+            <details class="pdp-disclosure">
+              <summary>Pengiriman &amp; Retur</summary>
+              <p>Produk fisik dikirim dari Kompas Palmerah setelah pembayaran terverifikasi. Jika paket memuat akses digital, instruksi aktivasi dikirim terpisah melalui email pembeli. Retur dapat diajukan jika produk fisik diterima dalam kondisi tidak sesuai.</p>
+            </details>
+          </div>
+        </div>
+
+        <aside class="pdp-buybox">
+          <div class="pdp-option-group">
+            <p>Jumlah</p>
+            <div class="pdp-quantity-row">
+              <div class="pdp-quantity" data-pdp-stepper>
+                      <button type="button" data-qty="minus" aria-label="Kurangi" disabled=""><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+                      <span data-pdp-qty>1</span>
+                      <button type="button" data-qty="plus" aria-label="Tambah"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button>
+                    </div>
+                    <span{{#if product.stockTracked}} data-pdp-stock{{/if}}>{{product.stockLabel}}</span>
+            </div>
+            
+          </div>
+
+          <div class="pdp-subtotal">
+            <span>Subtotal</span>
+            <strong data-pdp-subtotal>{{product.price}}</strong>
+          </div>
+
+          <div class="pdp-actions ">
+            <a class="btn btn-primary" href="{{product.buyHref}}" data-buy-now-trigger data-pdp-buy-link data-pdp-open-sheet="buy">Beli Sekarang</a>
+            <button class="btn btn-secondary pdp-cart-action" type="button" data-add-to-cart data-pdp-open-sheet="cart"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.4L22 8H7"></path><path d="M14.5 10v5"></path><path d="M12 12.5h5"></path></svg> <span>Tambah ke Keranjang</span></button>
+          </div>
+
+          <ul class="pdp-service-list">
+            <li><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg> Dikirim dari Kompas Palmerah</li>
+            <li><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"></path><path d="m9 12 2 2 4-5"></path></svg> Produk resmi Store Kompas.com</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="pdp-related py-8">
+        <div class="section-title">
+          <h2>Produk Terkait</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+          {{#each storev2.related}}{{> product_card_v2}}{{/each}}
+        </div>
+      </section>
+    
+      <!-- mobile "Atur Pembelian" bottom sheet: opened by the bottom bar (cart icon → Tambah ke Keranjang, Beli Sekarang → Beli Sekarang) -->
+      <div class="pdp-sheet" data-pdp-sheet hidden>
+        <div class="pdp-sheet-backdrop" data-pdp-sheet-close></div>
+        <div class="pdp-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="pdp-sheet-title">
+          <span class="pdp-sheet-handle" aria-hidden="true"></span>
+          <div class="pdp-sheet-head">
+            <h2 id="pdp-sheet-title">Atur Pembelian</h2>
+            <button class="pdp-sheet-close" type="button" data-pdp-sheet-close aria-label="Tutup"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
+          <div class="pdp-sheet-product">
+            <img src="{{product.firstImage}}" alt="" data-sheet-image>
+            <div class="pdp-sheet-product-info">
+              <p class="pdp-sheet-product-title" data-sheet-title>{{product.title}}</p>
+              <div class="pdp-sheet-price">
+                <strong data-pdp-price>{{product.price}}</strong>
+                <s data-pdp-price-original{{#unless product.priceOriginal}} hidden{{/unless}}>{{product.priceOriginal}}</s>
+                <span class="pdp-sheet-discount" data-pdp-discount{{#unless product.discount}} hidden{{/unless}}>{{product.discount}}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="pdp-sheet-variants"{{#unless product.hasVariants}} hidden{{/unless}}>
+            <p class="pdp-sheet-label">Varian: <strong data-pdp-variant-name>{{product.variantLabel}}</strong></p>
+            <div class="pdp-sheet-options" role="group" aria-label="Pilih varian" data-sheet-options></div>
+          </div>
+          <div class="pdp-sheet-qty">
+            <span class="pdp-sheet-qty-label">Jumlah</span>
+            <span class="pdp-sheet-stock"{{#if product.stockTracked}} data-pdp-stock{{/if}}>{{product.stockLabel}}</span>
+            <div class="pdp-sheet-stepper" data-pdp-stepper>
+              <button type="button" data-qty="minus" aria-label="Kurangi" disabled><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+              <span data-pdp-qty>1</span>
+              <button type="button" data-qty="plus" aria-label="Tambah"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg></button>
+            </div>
+          </div>
+          <div class="pdp-sheet-subtotal">
+            <span>Subtotal</span>
+            <strong data-pdp-subtotal>{{product.price}}</strong>
+          </div>
+          <a class="pdp-sheet-cta" href="{{product.buyHref}}" data-buy-now-trigger data-pdp-buy-link data-sheet-cta="buy">Beli Sekarang</a>
+          <button class="pdp-sheet-cta" type="button" data-sheet-cta="cart" hidden>Tambah ke Keranjang</button>
+        </div>
+      </div>
+    </main>            </div>
+
+{{> login_onetap}}

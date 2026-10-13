@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Bakteri Pembentuk Biofilm cover</title>
+  <desc id="desc">A microscopic health science book cover with cell-like circles.</desc>
+  <rect width="640" height="800" rx="36" fill="#EEFCD2"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="#FFFFFF"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="none" stroke="#3A8C11" stroke-width="14"/>
+  <g fill="#E1F0FF" stroke="#00559A" stroke-width="10">
+    <circle cx="260" cy="332" r="54"/>
+    <circle cx="374" cy="372" r="66"/>
+    <circle cx="284" cy="484" r="46"/>
+    <circle cx="414" cy="508" r="40"/>
+  </g>
+  <text x="152" y="154" fill="#3A8C11" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Bakteri</text>
+  <text x="152" y="196" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Pembentuk</text>
+  <text x="152" y="238" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Biofilm</text>
+  <text x="152" y="662" fill="#666666" font-family="PT Sans, Arial, sans-serif" font-size="22" font-weight="700">Sains kesehatan populer</text>
+</svg>

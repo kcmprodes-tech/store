@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Rute Indonesia Raya book cover</title>
+  <desc id="desc">A realistic blue road map inspired book cover for Rute Indonesia Raya.</desc>
+  <defs>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity=".14"/>
+    </filter>
+  </defs>
+  <rect width="640" height="800" rx="36" fill="#F4F4F4"/>
+  <g filter="url(#s)">
+    <rect x="120" y="64" width="400" height="672" rx="22" fill="#FFFFFF"/>
+    <rect x="120" y="64" width="400" height="256" rx="22" fill="#00559A"/>
+    <path d="M196 604c84-100 70-202 168-300 46-46 90-76 128-116" fill="none" stroke="#FFCC00" stroke-width="26" stroke-linecap="round"/>
+    <path d="M196 604c84-100 70-202 168-300 46-46 90-76 128-116" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-dasharray="24 22" stroke-linecap="round"/>
+    <circle cx="220" cy="588" r="24" fill="#057DF4"/>
+    <circle cx="474" cy="204" r="24" fill="#057DF4"/>
+    <text x="158" y="148" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="38" font-weight="700">Rute</text>
+    <text x="158" y="196" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="38" font-weight="700">Indonesia Raya</text>
+    <text x="158" y="686" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="22" font-weight="700">Geopolitik dan janji kemerdekaan</text>
+  </g>
+</svg>

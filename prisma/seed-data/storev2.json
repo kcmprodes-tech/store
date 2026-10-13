@@ -1,0 +1,1508 @@
+{
+  "channel_title": "Store",
+  "hero": [
+    {
+      "image": "../asset/images/store-v2/hero-tshirt-terbaru.jpg",
+      "image_mobile": "../asset/images/store-v2/banner-store-1-mobile-hor.jpg",
+      "title": "Koleksi T-Shirt Terbaru",
+      "href": "koleksi.html?tab=terbaru"
+    },
+    {
+      "image": "../asset/images/store-v2/banner-kompasiana-tumblers.jpg",
+      "image_mobile": "../asset/images/store-v2/banner-kompasiana-tumblers-mobile.jpg",
+      "title": "Kompasiana Tumblers",
+      "href": "semua-produk.html?category=merchandise&sub=drinkware"
+    }
+  ],
+  "terlaris": [
+    {
+      "id": "premium-kompascom-max",
+      "title": "Premium Kompas.com+ MAX",
+      "price": "59.000",
+      "price_disc": "29.000/bulan",
+      "disc": 51,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704e0a628ee.png",
+      "category": "Kompas.com+",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-max?source=top_navbar"
+    },
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-sandang-pangan-papan-kebenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Sandang Pangan Papan Kebenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "image": "https://asset.kompas.com/data/photo/2026/07/08/6a4e06ea0a89f.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "tumbler-eksklusif-kompascom",
+      "title": "Tumbler Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "96.000",
+      "disc": 40,
+      "image": "https://asset.kompas.com/data/photo/2026/01/16/6969fd5d9274b.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "payung-eksklusif-kompascom",
+      "title": "Payung Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "97.000",
+      "disc": 39,
+      "image": "https://asset.kompas.com/data/photo/2026/01/12/696499c502f8f.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    }
+  ],
+  "rekomendasi": [
+    {
+      "id": "buku-menafsir-gelap-menyulam-terang-catatan-kolumnis-kompascom-di-jalan-ketidakpastian",
+      "title": "Buku ‘Menafsir Gelap, Menyulam Terang: Catatan Kolumnis Kompas.com di Jalan Ketidakpastian’",
+      "price": "179.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/02/11/698c5c09d0ba5.webp",
+      "category": "Buku",
+      "link": "detail.html"
+    },
+    {
+      "id": "jason-ranti-mentalitas-di-dunia-yang-berisik-beginu-5-tahun",
+      "title": "Jason Ranti: Mentalitas di Dunia yang Berisik | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d183a7f.jpg",
+      "category": "Video Premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "premium-kompas-one",
+      "title": "Premium Kompas ONE",
+      "price": "199.000",
+      "price_disc": "99.000/bulan",
+      "disc": 50,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69705029bdffa.png",
+      "category": "Kompas.com+",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-one"
+    },
+    {
+      "id": "the-things-you-can-see-only-when-you-slow-down",
+      "title": "The Things You Can See Only When You Slow Down",
+      "price": "125.000",
+      "price_disc": "100.000",
+      "disc": 20,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/items/9786024813659_The_Things_You_Can_See_Only_When_You_Slow_Down-1.jpg",
+      "category": "Buku",
+      "link": "detail.html"
+    }
+  ],
+  "merchandise": [
+    {
+      "id": "kaos-eksklusif-fact-kompascom",
+      "title": "Kaos Eksklusif Fact. Kompas.com",
+      "price": "212.500",
+      "price_disc": "170.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b038acf2d1b.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "gelas-mug-eksklusif-kompascom-keramik-elegan",
+      "title": "Gelas Mug Eksklusif Kompas.com Keramik Elegan",
+      "price": "78.000",
+      "price_disc": "47.000",
+      "disc": 40,
+      "image": "https://asset.kompas.com/data/photo/2025/12/21/6947675184cf9.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "kaos-gaspol-jangan-ada-intel-di-antara-kita",
+      "title": "Kaos Gaspol Jangan Ada Intel Di Antara Kita",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b039120e4b7.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-gaspol-paguyuban-cap-orang-dalam",
+      "title": "Kaos Gaspol Paguyuban Cap Orang Dalam",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b03970a234b.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    }
+  ],
+  "baru": [
+    {
+      "id": "jaket-principles-kompasiana",
+      "title": "Jaket Principles Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98550a277de.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "jaket-storyteller-kompasiana",
+      "title": "Jaket Storyteller Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98549a0e634.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-principles-kompasiana",
+      "title": "Kaos Principles Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98525fa32ca.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-storyteller-kompasiana",
+      "title": "Kaos Storyteller Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a9851306fc8e.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "tumbler-principles-kompasiana",
+      "title": "Tumbler Principles Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a9853fc3a786.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "tumbler-storyteller-kompasiana",
+      "title": "Tumbler Storyteller Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98537e36ca2.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-mencari-kebenaran-bukan-pembenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Mencari Kebenaran, Bukan Pembenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "image": "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b826950.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "dr-m-faisal-bertumbuh-di-era-ngonten-beginu-5-tahun",
+      "title": "Dr. M. Faisal: Bertumbuh di Era Ngonten | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d156025.jpg",
+      "category": "Video Premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "jj-rizal-bisakah-membangun-masa-depan-tanpa-sejarah-beginu-5-tahun",
+      "title": "JJ Rizal: Bisakah Membangun Masa Depan Tanpa Sejarah? | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d1932e9.jpg",
+      "category": "Video Premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "ade-putri-makanan-cerita-dan-prinsip-cukup-beginu-5-tahun",
+      "title": "Ade Putri: Makanan, Cerita, dan Prinsip Cukup | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d133d02.jpg",
+      "category": "Video Premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "premium-kompascom-lite",
+      "title": "Premium Kompas.com+ LITE",
+      "price": "19.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704c8e179b9.png",
+      "category": "Kompas.com+",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-lite"
+    },
+    {
+      "id": "you-do-you-discovering-life-through-experiments-self-awareness",
+      "title": "You Do You: Discovering Life through Experiments & Self-Awareness",
+      "price": "128.000",
+      "price_disc": "102.400",
+      "disc": 20,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/picture_meta/2023/6/16/y3sd5cbky6xx4pdkipmeic.jpeg",
+      "category": "Buku",
+      "link": "detail.html"
+    }
+  ],
+  "related": [
+    {
+      "id": "kaos-principles-kompasiana",
+      "title": "Kaos Principles Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98525fa32ca.webp",
+      "category": "Merchandise",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "tumbler-storyteller-kompasiana",
+      "title": "Tumbler Storyteller Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98537e36ca2.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "payung-eksklusif-kompascom",
+      "title": "Payung Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "97.000",
+      "disc": 39,
+      "image": "https://asset.kompas.com/data/photo/2026/01/12/696499c502f8f.webp",
+      "category": "Merchandise",
+      "link": "detail.html"
+    },
+    {
+      "id": "premium-kompascom-max",
+      "title": "Premium Kompas.com+ MAX",
+      "price": "59.000",
+      "price_disc": "29.000/bulan",
+      "disc": 51,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704e0a628ee.png",
+      "category": "Kompas.com+",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-max?source=top_navbar"
+    },
+    {
+      "id": "unstoppable-woman",
+      "title": "Unstoppable Woman",
+      "price": "129.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/product-metas/l95t-ms-9w.jpeg",
+      "category": "Buku",
+      "link": "detail.html"
+    },
+    {
+      "id": "al-quran-qosbah-duo-latin-waqaf-ibtida-a5",
+      "title": "Al Qur'an Qosbah Duo Latin Waqaf Ibtida A5",
+      "price": "89.000",
+      "price_disc": "75.650",
+      "disc": 15,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/picture_meta/2024/4/8/5kkb2c6evbgktf6grfn8ru.jpg",
+      "category": "Al-Quran",
+      "link": "detail.html"
+    },
+    {
+      "id": "ade-putri-makanan-cerita-dan-prinsip-cukup-beginu-5-tahun",
+      "title": "Ade Putri: Makanan, Cerita, dan Prinsip Cukup | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d133d02.jpg",
+      "category": "Video Premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "kota-mikroba-dalam-mulut-kita-eps-1",
+      "title": "Kota Mikroba Dalam Mulut Kita Eps 1",
+      "price": "39.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2022/02/16/620c9fbfc3f0b.jpg",
+      "category": "VIK Premium",
+      "link": "detail.html"
+    }
+  ],
+  "semua": [
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-sandang-pangan-papan-kebenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Sandang Pangan Papan Kebenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "image": "https://asset.kompas.com/data/photo/2026/07/08/6a4e06ea0a89f.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-eksklusif-fact-kompascom",
+      "title": "Kaos Eksklusif Fact. Kompas.com",
+      "price": "212.500",
+      "price_disc": "170.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b038acf2d1b.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-gaspol-jangan-ada-intel-di-antara-kita",
+      "title": "Kaos Gaspol Jangan Ada Intel Di Antara Kita",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b039120e4b7.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-gaspol-paguyuban-cap-orang-dalam",
+      "title": "Kaos Gaspol Paguyuban Cap Orang Dalam",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "image": "https://asset.kompas.com/data/photo/2026/03/10/69b03970a234b.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "payung-eksklusif-kompascom",
+      "title": "Payung Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "97.000",
+      "disc": 39,
+      "image": "https://asset.kompas.com/data/photo/2026/01/12/696499c502f8f.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "accessories",
+      "link": "detail.html"
+    },
+    {
+      "id": "tumbler-eksklusif-kompascom",
+      "title": "Tumbler Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "96.000",
+      "disc": 40,
+      "image": "https://asset.kompas.com/data/photo/2026/01/16/6969fd5d9274b.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html"
+    },
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-mencari-kebenaran-bukan-pembenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Mencari Kebenaran, Bukan Pembenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "image": "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b826950.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "gelas-mug-eksklusif-kompascom-keramik-elegan",
+      "title": "Gelas Mug Eksklusif Kompas.com Keramik Elegan",
+      "price": "78.000",
+      "price_disc": "47.000",
+      "disc": 40,
+      "image": "https://asset.kompas.com/data/photo/2025/12/21/6947675184cf9.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html"
+    },
+    {
+      "id": "jaket-principles-kompasiana",
+      "title": "Jaket Principles Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98550a277de.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "jaket-storyteller-kompasiana",
+      "title": "Jaket Storyteller Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98549a0e634.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "tumbler-principles-kompasiana",
+      "title": "Tumbler Principles Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a9853fc3a786.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html"
+    },
+    {
+      "id": "tumbler-storyteller-kompasiana",
+      "title": "Tumbler Storyteller Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98537e36ca2.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html"
+    },
+    {
+      "id": "kaos-principles-kompasiana",
+      "title": "Kaos Principles Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98525fa32ca.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-storyteller-kompasiana",
+      "title": "Kaos Storyteller Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a9851306fc8e.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "jason-ranti-mentalitas-di-dunia-yang-berisik-beginu-5-tahun",
+      "title": "Jason Ranti: Mentalitas di Dunia yang Berisik | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d183a7f.jpg",
+      "category": "Video Premium",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "dr-m-faisal-bertumbuh-di-era-ngonten-beginu-5-tahun",
+      "title": "Dr. M. Faisal: Bertumbuh di Era Ngonten | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d156025.jpg",
+      "category": "Video Premium",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "jj-rizal-bisakah-membangun-masa-depan-tanpa-sejarah-beginu-5-tahun",
+      "title": "JJ Rizal: Bisakah Membangun Masa Depan Tanpa Sejarah? | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d1932e9.jpg",
+      "category": "Video Premium",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "ade-putri-makanan-cerita-dan-prinsip-cukup-beginu-5-tahun",
+      "title": "Ade Putri: Makanan, Cerita, dan Prinsip Cukup | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d133d02.jpg",
+      "category": "Video Premium",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "hamzah-muhammad-bangun-gangguanmu-dengan-membaca-beginu-5-tahun",
+      "title": "Hamzah Muhammad: Bangun Gangguanmu dengan Membaca | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d175249.jpg",
+      "category": "Digital",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "chitra-subyakto-bajumu-yang-itu-itu-saja-menyelamatkanmu-dan-bumi-beginu-5-tahun",
+      "title": "Chitra Subyakto: Bajumu yang Itu itu saja Menyelamatkanmu dan Bumi | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d14483a.jpg",
+      "category": "Digital",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html"
+    },
+    {
+      "id": "al-quran-cordoba-jariyah-wakaf-a5",
+      "title": "Al-Quran Cordoba Jariyah Wakaf A5",
+      "price": "119.000",
+      "price_disc": "101.150",
+      "disc": 15,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/product-metas/lc-a3w-nbr.png",
+      "category": "Al-Quran",
+      "kcat": "buku",
+      "ksub": "quran",
+      "link": "detail.html"
+    },
+    {
+      "id": "you-do-you-discovering-life-through-experiments-self-awareness",
+      "title": "You Do You: Discovering Life through Experiments & Self-Awareness",
+      "price": "128.000",
+      "price_disc": "102.400",
+      "disc": 20,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/picture_meta/2023/6/16/y3sd5cbky6xx4pdkipmeic.jpeg",
+      "category": "Buku",
+      "kcat": "buku",
+      "ksub": "",
+      "link": "detail.html"
+    },
+    {
+      "id": "buku-menafsir-gelap-menyulam-terang-catatan-kolumnis-kompascom-di-jalan-ketidakpastian",
+      "title": "Buku ‘Menafsir Gelap, Menyulam Terang: Catatan Kolumnis Kompas.com di Jalan Ketidakpastian’",
+      "price": "179.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/02/11/698c5c09d0ba5.webp",
+      "category": "Buku",
+      "kcat": "buku",
+      "ksub": "",
+      "link": "detail.html"
+    },
+    {
+      "id": "the-things-you-can-see-only-when-you-slow-down",
+      "title": "The Things You Can See Only When You Slow Down",
+      "price": "125.000",
+      "price_disc": "100.000",
+      "disc": 20,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/items/9786024813659_The_Things_You_Can_See_Only_When_You_Slow_Down-1.jpg",
+      "category": "Buku",
+      "kcat": "buku",
+      "ksub": "",
+      "link": "detail.html"
+    },
+    {
+      "id": "premium-kompascom-max",
+      "title": "Premium Kompas.com+ MAX",
+      "price": "59.000",
+      "price_disc": "29.000/bulan",
+      "disc": 51,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704e0a628ee.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-max?source=top_navbar"
+    },
+    {
+      "id": "premium-kompas-one",
+      "title": "Premium Kompas ONE",
+      "price": "199.000",
+      "price_disc": "99.000/bulan",
+      "disc": 50,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69705029bdffa.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-one"
+    },
+    {
+      "id": "premium-kompascom-lite",
+      "title": "Premium Kompas.com+ LITE",
+      "price": "19.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704c8e179b9.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-lite"
+    },
+    {
+      "id": "kota-mikroba-dalam-mulut-kita-eps-1",
+      "title": "Kota Mikroba Dalam Mulut Kita Eps 1",
+      "price": "39.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2022/02/16/620c9fbfc3f0b.jpg",
+      "category": "VIK Premium",
+      "kcat": "digital",
+      "ksub": "konten-premium",
+      "link": "detail.html"
+    },
+    {
+      "id": "kota-mikroba-dalam-mulut-kita-eps-2",
+      "title": "Kota Mikroba Dalam Mulut Kita Eps 2",
+      "price": "39.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2022/02/16/620ca1681dbae.jpg",
+      "category": "VIK Premium",
+      "kcat": "digital",
+      "ksub": "konten-premium",
+      "link": "detail.html"
+    },
+    {
+      "id": "kota-mikroba-dalam-mulut-kita-eps-3",
+      "title": "Kota Mikroba Dalam Mulut Kita Eps 3",
+      "price": "39.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2022/03/12/622c38b3a7d39.jpg",
+      "category": "VIK Premium",
+      "kcat": "digital",
+      "ksub": "konten-premium",
+      "link": "detail.html"
+    },
+    {
+      "id": "kota-mikroba-dalam-mulut-kita-eps-4",
+      "title": "Kota Mikroba Dalam Mulut Kita Eps 4",
+      "price": "39.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2022/03/31/62457ac2c992d.jpg",
+      "category": "VIK Premium",
+      "kcat": "digital",
+      "ksub": "konten-premium",
+      "link": "detail.html"
+    },
+    {
+      "id": "al-quran-qosbah-mubayyin-tematik-a5",
+      "title": "Al-Qur'An Qosbah Mubayyin Tematik A5",
+      "price": "59.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/items/WhatsApp_Image_2021-07-25_at_1.14.10_PM.jpeg",
+      "category": "Al-Quran",
+      "kcat": "buku",
+      "ksub": "quran",
+      "link": "detail.html"
+    },
+    {
+      "id": "al-quran-cordoba-mujazza-terjemah-non-tajwid-per-juz-b5",
+      "title": "Al-Qur'An Cordoba Mujazza Terjemah Non Tajwid Per-Juz B5",
+      "price": "299.000",
+      "price_disc": "254.150",
+      "disc": 15,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/product-metas/3hxdwr-30b.jpg",
+      "category": "Al-Quran",
+      "kcat": "buku",
+      "ksub": "quran",
+      "link": "detail.html"
+    },
+    {
+      "id": "al-quran-qosbah-duo-latin-waqaf-ibtida-a5",
+      "title": "Al Qur'an Qosbah Duo Latin Waqaf Ibtida A5",
+      "price": "89.000",
+      "price_disc": "75.650",
+      "disc": 15,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/picture_meta/2024/4/8/5kkb2c6evbgktf6grfn8ru.jpg",
+      "category": "Al-Quran",
+      "kcat": "buku",
+      "ksub": "quran",
+      "link": "detail.html"
+    },
+    {
+      "id": "unstoppable-woman",
+      "title": "Unstoppable Woman",
+      "price": "129.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/product-metas/l95t-ms-9w.jpeg",
+      "category": "Buku",
+      "kcat": "buku",
+      "ksub": "",
+      "link": "detail.html"
+    }
+  ],
+  "membership": [
+    {
+      "id": "premium-kompascom-max",
+      "title": "Premium Kompas.com+ MAX",
+      "price": "59.000",
+      "price_disc": "29.000/bulan",
+      "disc": 51,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704e0a628ee.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-max?source=top_navbar"
+    },
+    {
+      "id": "premium-kompascom-lite",
+      "title": "Premium Kompas.com+ LITE",
+      "price": "19.000/bulan",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69704c8e179b9.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-lite"
+    },
+    {
+      "id": "premium-kompas-one",
+      "title": "Premium Kompas ONE",
+      "price": "199.000",
+      "price_disc": "99.000/bulan",
+      "disc": 50,
+      "image": "https://asset.kompas.com/data/photo/2026/01/21/69705029bdffa.png",
+      "category": "Kompas.com+",
+      "kcat": "membership",
+      "ksub": "",
+      "link": "detail.html",
+      "url": "https://plus.kompas.com/group/kompas-one"
+    }
+  ],
+  "apparel": [
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-sandang-pangan-papan-kebenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Sandang Pangan Papan Kebenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "sku": "STORE-APP-1001",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e06ea0a89f.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e06e9f1104.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e06e9e4977.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e06e9d7fcc.webp"
+      ],
+      "desc": [
+        "Tunjukkan sikap dan prinsip lewat gaya! Kaos eksklusif dari Kompas.com ini hadir dengan desain minimalis penuh makna, menampilkan kutipan ikonik \"Sandang Pangan Papan Kebenaran\" di bagian depan, serta slogan \"Jernih Melihat Dunia\" di bagian belakang.",
+        "Cocok untuk: Aktivis muda, pencari kebenaran, & pecinta media berkualitas",
+        "Desain khas Kompas.com – orisinal & terbatas!"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 16,
+          "S": 5,
+          "M": 10,
+          "L": 15,
+          "XL": 5,
+          "XXL": 4,
+          "XXXL": 19
+        },
+        "Putih": {
+          "XS": 19,
+          "S": 5,
+          "M": 17,
+          "L": 16,
+          "XL": 12,
+          "XXL": 6,
+          "XXXL": 2
+        },
+        "Grey": {
+          "XS": 8,
+          "S": 16,
+          "M": 10,
+          "L": 9,
+          "XL": 19,
+          "XXL": 5,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-eksklusif-fact-kompascom",
+      "title": "Kaos Eksklusif Fact. Kompas.com",
+      "price": "212.500",
+      "price_disc": "170.000",
+      "disc": 20,
+      "sku": "STORE-APP-1002",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038acf2d1b.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038acd56fb.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038acc6172.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038ace3bb9.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038ac87dfb.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038acabcce.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038ac97114.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b038acb9519.webp",
+        "https://asset.kompas.com/data/photo/2026/02/25/699e96684666f.jpeg"
+      ],
+      "desc": [
+        "Kaos Eksklusif tulisan \"FACT.\" dengan titik logo kompas.com dibagian depan ini cocok banget buat kamu yang suka nongkrong, ngopi bareng, atau kumpul komunitas. Desainnya simpel tapi ngena, bikin suasana makin cair dan penuh candaan.",
+        "Bahan Oversize Wash Cotton combed 24s yang adem dan nyaman dipakai seharian, jadi tetap stylish tanpa ribet."
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 10,
+          "S": 0,
+          "M": 1,
+          "L": 6,
+          "XL": 0,
+          "XXL": 19,
+          "XXXL": 17
+        },
+        "Putih": {
+          "XS": 13,
+          "S": 7,
+          "M": 19,
+          "L": 18,
+          "XL": 6,
+          "XXL": 4,
+          "XXXL": 18
+        },
+        "Grey": {
+          "XS": 10,
+          "S": 4,
+          "M": 16,
+          "L": 15,
+          "XL": 3,
+          "XXL": 17,
+          "XXXL": 5
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-gaspol-jangan-ada-intel-di-antara-kita",
+      "title": "Kaos Gaspol Jangan Ada Intel Di Antara Kita",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "sku": "STORE-APP-1003",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039120e4b7.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039120114f.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03911dd064.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03911e8d9f.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03911cef1d.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03911c197d.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03911b4a01.webp",
+        "https://asset.kompas.com/data/photo/2026/02/24/699cfe41c4c30.jpeg"
+      ],
+      "desc": [
+        "Kaos Gaspol dengan design logo \"Gaspol\" di depan dan \"Jangan Ada Intel Di Antara Kita\" di bagian belakang ini cocok banget buat kamu yang suka nongkrong, ngopi bareng, atau kumpul komunitas. Desainnya simpel tapi ngena, bikin suasana makin cair dan penuh candaan.",
+        "Bahan cotton combed 24s yang adem dan nyaman dipakai seharian, jadi tetap stylish tanpa ribet."
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 11,
+          "S": 1,
+          "M": 1,
+          "L": 1,
+          "XL": 0,
+          "XXL": 0,
+          "XXXL": 4
+        },
+        "Putih": {
+          "XS": 14,
+          "S": 12,
+          "M": 6,
+          "L": 5,
+          "XL": 7,
+          "XXL": 17,
+          "XXXL": 9
+        },
+        "Grey": {
+          "XS": 15,
+          "S": 15,
+          "M": 9,
+          "L": 8,
+          "XL": 8,
+          "XXL": 18,
+          "XXXL": 18
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-gaspol-paguyuban-cap-orang-dalam",
+      "title": "Kaos Gaspol Paguyuban Cap Orang Dalam",
+      "price": "150.000",
+      "price_disc": "120.000",
+      "disc": 20,
+      "sku": "STORE-APP-1004",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03970a234b.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b03970ae085.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039704ec30.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039705ea31.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039707b02d.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039706d3df.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b0397094631.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039703d9e2.webp",
+        "https://asset.kompas.com/data/photo/2026/03/10/69b039708a3e0.webp",
+        "https://asset.kompas.com/data/photo/2026/02/24/699cfe41c4c30.jpeg"
+      ],
+      "desc": [
+        "Kaos Gaspol dengan design logo \"Gaspol\" di depan dan \"Paguyuban Cap Orang Dalam\" di bagian belakang ini cocok banget buat kamu yang suka nongkrong, ngopi bareng, atau kumpul komunitas. Desainnya simpel tapi ngena, bikin suasana makin cair dan penuh candaan.",
+        "Bahan cotton combed 24s yang adem dan nyaman dipakai seharian, jadi tetap stylish tanpa ribet."
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 7,
+          "S": 1,
+          "M": 2,
+          "L": 2,
+          "XL": 0,
+          "XXL": 0,
+          "XXXL": 4
+        },
+        "Putih": {
+          "XS": 10,
+          "S": 18,
+          "M": 12,
+          "L": 11,
+          "XL": 3,
+          "XXL": 13,
+          "XXXL": 5
+        },
+        "Grey": {
+          "XS": 3,
+          "S": 11,
+          "M": 5,
+          "L": 4,
+          "XL": 14,
+          "XXL": 14,
+          "XXXL": 14
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-mencari-kebenaran-bukan-pembenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Mencari Kebenaran, Bukan Pembenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "sku": "STORE-APP-1005",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b826950.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b800688.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b80e1ae.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b819c82.webp",
+        "https://asset.kompas.com/data/photo/2026/07/08/6a4e05b7e7543.webp",
+        "https://asset.kompas.com/data/photo/2025/12/21/694767eda9e1f.webp"
+      ],
+      "desc": [
+        "Tunjukkan sikap dan prinsip lewat gaya! Kaos eksklusif dari Kompas.com ini hadir dengan desain minimalis penuh makna, menampilkan kutipan ikonik \"Mencari kebenaran, bukan pembenaran\" di bagian depan, serta slogan \"Jernih Melihat Dunia\" di bagian belakang.",
+        "Bahan: Cotton Combed 24s – adem dan nyaman",
+        "Cocok untuk: Aktivis muda, pencari kebenaran, & pecinta media berkualitas",
+        "Desain khas Kompas.com – orisinal & terbatas!"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 10,
+          "S": 4,
+          "M": 12,
+          "L": 10,
+          "XL": 6,
+          "XXL": 2,
+          "XXXL": 15
+        },
+        "Putih": {
+          "XS": 13,
+          "S": 9,
+          "M": 3,
+          "L": 2,
+          "XL": 6,
+          "XXL": 2,
+          "XXXL": 2
+        },
+        "Grey": {
+          "XS": 12,
+          "S": 18,
+          "M": 12,
+          "L": 11,
+          "XL": 5,
+          "XXL": 17,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "jaket-principles-kompasiana",
+      "title": "Jaket Principles Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "sku": "STORE-APP-1006",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98550a277de.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499f2fd5.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499cc1ab.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499bce5b.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499e6b1d.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98552e0e215.png"
+      ],
+      "desc": [
+        "Tetap bertahan dan teguh melangkah di tengah terpaan angin dan cuaca ekstrem. Jaket Windbreaker The Principles hadir dengan desain bersih dan monokrom, menampilkan quote prinsip hidup di bagian belakang. Ringan dan serbaguna (versatile), jaket ini dirancang untuk kamu yang selalu setia pada tujuan dan nilai-nilai utama.",
+        "Material: Premium Dusky Crinkle (Tekstur estetik, ringan, & tahan angin)",
+        "Detail: Adjustable Hoodie, Elastic Cuffs, & Zipper Pockets",
+        "Graphics: Crisp Minimalist Typography Back-Print"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 6,
+          "S": 5,
+          "M": 13,
+          "L": 5,
+          "XL": 3,
+          "XXL": 2,
+          "XXXL": 17
+        },
+        "Putih": {
+          "XS": 9,
+          "S": 7,
+          "M": 19,
+          "L": 18,
+          "XL": 2,
+          "XXL": 18,
+          "XXXL": 18
+        },
+        "Grey": {
+          "XS": 10,
+          "S": 12,
+          "M": 6,
+          "L": 5,
+          "XL": 3,
+          "XXL": 13,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "jaket-storyteller-kompasiana",
+      "title": "Jaket Storyteller Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "sku": "STORE-APP-1007",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98549a0e634.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499f2fd5.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499e6b1d.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499cc1ab.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985499bce5b.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98552e0e215.png"
+      ],
+      "desc": [
+        "Langkahimu setiap cuaca dan perjalanan tanpa ragu. Jaket Windbreaker Storyteller menggabungkan ketahanan material water-repellent & windproof dengan estetika tipografi retro berkonsep warna kontras di bagian belakang. Ringan, praktis, dan siap melindungi perjalananmu sembari merayakan ragam kisah manusia di sepanjang jalan.",
+        "Material: Premium Dusky Crinkle (Tekstur estetik, ringan, & tahan angin)",
+        "Detail: Adjustable Hoodie, Elastic Cuffs, & Zipper Pockets",
+        "Graphics: Vibrant Storyteller Typography Back-Print"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 2,
+          "S": 5,
+          "M": 13,
+          "L": 5,
+          "XL": 3,
+          "XXL": 1,
+          "XXXL": 3
+        },
+        "Putih": {
+          "XS": 5,
+          "S": 17,
+          "M": 11,
+          "L": 10,
+          "XL": 16,
+          "XXL": 2,
+          "XXXL": 8
+        },
+        "Grey": {
+          "XS": 2,
+          "S": 2,
+          "M": 14,
+          "L": 13,
+          "XL": 13,
+          "XXL": 9,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-principles-kompasiana",
+      "title": "Kaos Principles Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "sku": "STORE-APP-1008",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98525fa32ca.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98525f966b0.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98525f89343.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98525f7b527.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985130502ea.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98513e4d7c3.png"
+      ],
+      "desc": [
+        "Sebuah komitmen pada nilai dan integritas yang tidak goyah oleh zaman. Kaos The Principles menampilkan kutipan ikonis dari P.K Ojong (Pendiri Kompas Gramedia) yang lugas dan berani. Dibuat dari Cotton Bamboo yang ringan, halus, dan nyaman dipakai sepanjang hari. Tampil minimalis namun memberikan pernyataan yang tegas tentang apa yang kamu pegang teguh.",
+        "Material: 100% Premium Cotton Bamboo (Adem & Lembut di kulit)",
+        "Graphics: Classic Typography Print (Presisi tinggi & tahan lama)",
+        "Fit: Regular / Comfortable Fit"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 5,
+          "S": 3,
+          "M": 10,
+          "L": 30,
+          "XL": 3,
+          "XXL": 5,
+          "XXXL": 18
+        },
+        "Putih": {
+          "XS": 8,
+          "S": 8,
+          "M": 2,
+          "L": 19,
+          "XL": 19,
+          "XXL": 11,
+          "XXXL": 19
+        },
+        "Grey": {
+          "XS": 11,
+          "S": 3,
+          "M": 15,
+          "L": 14,
+          "XL": 4,
+          "XXL": 12,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    },
+    {
+      "id": "kaos-storyteller-kompasiana",
+      "title": "Kaos Storyteller Kompasiana",
+      "price": "170.000",
+      "price_disc": "154.000",
+      "disc": 9,
+      "sku": "STORE-APP-1009",
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/09/02/6a9851306fc8e.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a9851305e38f.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98513042d9d.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a985130502ea.webp",
+        "https://asset.kompas.com/data/photo/2026/09/02/6a98513e4d7c3.png"
+      ],
+      "desc": [
+        "Setiap suara punya tempat, setiap cerita layak didengar. Kaos Storyteller hadir dengan grafis tipografi yang penuh warna dan berani, menyuarakan beragam kisah serta pengalaman manusia. Menggunakan bahan Cotton Bamboo berkualitas tinggi yang ekstra lembut, adem, dan dapat menyerap keringat dengan sempurna. Cocok untuk menemani langkahmu dalam membagikan cerita dan inspirasi setiap hari.",
+        "Material: 100% Premium Cotton Bamboo (Soft & Breathable)",
+        "Graphics: High-quality Screen Printing (Warna cerah, tahan lama, tidak mudah retak)",
+        "Fit: Regular / Comfortable Fit"
+      ],
+      "stock": {
+        "Hitam": {
+          "XS": 13,
+          "S": 3,
+          "M": 11,
+          "L": 29,
+          "XL": 6,
+          "XXL": 5,
+          "XXXL": 14
+        },
+        "Putih": {
+          "XS": 16,
+          "S": 16,
+          "M": 10,
+          "L": 9,
+          "XL": 9,
+          "XXL": 3,
+          "XXXL": 19
+        },
+        "Grey": {
+          "XS": 19,
+          "S": 3,
+          "M": 15,
+          "L": 14,
+          "XL": 12,
+          "XXL": 2,
+          "XXXL": 0
+        }
+      },
+      "link": "detail-apparel.html"
+    }
+  ],
+  "wishlist": [
+    {
+      "id": "kaos-hitam-ekslusif-kompascom-sandang-pangan-papan-kebenaran",
+      "title": "Kaos Hitam Ekslusif Kompas.com “Sandang Pangan Papan Kebenaran”",
+      "price": "162.000",
+      "price_disc": "120.000",
+      "disc": 26,
+      "image": "https://asset.kompas.com/data/photo/2026/07/08/6a4e06ea0a89f.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html",
+      "wishlisted": true
+    },
+    {
+      "id": "jaket-storyteller-kompasiana",
+      "title": "Jaket Storyteller Kompasiana",
+      "price": "350.000",
+      "price_disc": "310.000",
+      "disc": 11,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a98549a0e634.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "apparel",
+      "link": "detail-apparel.html",
+      "wishlisted": true
+    },
+    {
+      "id": "tumbler-principles-kompasiana",
+      "title": "Tumbler Principles Kompasiana",
+      "price": "166.000",
+      "price_disc": "144.000",
+      "disc": 13,
+      "image": "https://asset.kompas.com/data/photo/2026/09/02/6a9853fc3a786.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html",
+      "wishlisted": true
+    },
+    {
+      "id": "payung-eksklusif-kompascom",
+      "title": "Payung Eksklusif Kompas.com",
+      "price": "160.000",
+      "price_disc": "97.000",
+      "disc": 39,
+      "image": "https://asset.kompas.com/data/photo/2026/01/12/696499c502f8f.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "accessories",
+      "link": "detail.html",
+      "wishlisted": true
+    },
+    {
+      "id": "buku-menafsir-gelap-menyulam-terang-catatan-kolumnis-kompascom-di-jalan-ketidakpastian",
+      "title": "Buku ‘Menafsir Gelap, Menyulam Terang: Catatan Kolumnis Kompas.com di Jalan Ketidakpastian’",
+      "price": "179.000",
+      "price_disc": "",
+      "disc": "",
+      "image": "https://asset.kompas.com/data/photo/2026/02/11/698c5c09d0ba5.webp",
+      "category": "Buku",
+      "kcat": "buku",
+      "ksub": "",
+      "link": "detail.html",
+      "wishlisted": true
+    },
+    {
+      "id": "jason-ranti-mentalitas-di-dunia-yang-berisik-beginu-5-tahun",
+      "title": "Jason Ranti: Mentalitas di Dunia yang Berisik | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "image": "https://asset.kompas.com/data/photo/2026/05/06/69fb06d183a7f.jpg",
+      "category": "Video Premium",
+      "kcat": "digital",
+      "ksub": "video-premium",
+      "link": "detail-video.html",
+      "wishlisted": true
+    },
+    {
+      "id": "al-quran-cordoba-jariyah-wakaf-a5",
+      "title": "Al-Quran Cordoba Jariyah Wakaf A5",
+      "price": "119.000",
+      "price_disc": "101.150",
+      "disc": 15,
+      "image": "https://image.gramedia.net/plain/https://cdn.gramedia.com/uploads/product-metas/lc-a3w-nbr.png",
+      "category": "Al-Quran",
+      "kcat": "buku",
+      "ksub": "quran",
+      "link": "detail.html",
+      "wishlisted": true
+    },
+    {
+      "id": "gelas-mug-eksklusif-kompascom-keramik-elegan",
+      "title": "Gelas Mug Eksklusif Kompas.com Keramik Elegan",
+      "price": "78.000",
+      "price_disc": "47.000",
+      "disc": 40,
+      "image": "https://asset.kompas.com/data/photo/2025/12/21/6947675184cf9.webp",
+      "category": "Merchandise",
+      "kcat": "merchandise",
+      "ksub": "drinkware",
+      "link": "detail.html",
+      "wishlisted": true
+    }
+  ],
+  "video": [
+    {
+      "id": "hamzah-muhammad-bangun-gangguanmu-dengan-membaca-beginu-5-tahun",
+      "title": "Hamzah Muhammad: Bangun Gangguanmu dengan Membaca | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d175249.jpg"
+      ],
+      "desc": [
+        "Membaca bukan sekadar mencari tahu. Ia adalah perjalanan yang pelan, memberi ruang bagi pikiran untuk tumbuh, dan hati untuk ikut terlibat. Hamzah Muhammad mendefinisikan buku bukan sebagai sesuatu yang tertinggal, melainkan sebagai ruang untuk kembali utuh. Di antara arus informasi yang tak pernah berhenti, membaca memberi kita kesempatan untuk berhenti dan benar-benar mengerti. Meski era semakin maju dengan teknologi dan digital, membaca bukanlah aktivitas usang. Ia membuka ruang-ruang lain yang penuh gangguan yang menyalakan hidup.#beginu #wisnunugroho #hamzahmuhammad #kompascom #beginu5th #suarayangbertumbuh"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video Hamzah Muhammad: Bangun Gangguanmu dengan Membaca | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    },
+    {
+      "id": "dr-m-faisal-bertumbuh-di-era-ngonten-beginu-5-tahun",
+      "title": "Dr. M. Faisal: Bertumbuh di Era Ngonten | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d156025.jpg"
+      ],
+      "desc": [
+        "Hari ini, perhatian seperti pecah menjadi serpihan kecil. Satu notifikasi yang muncul, cukup untuk memindahkan pikiran dan menjauhkan kita dari yang benar-benar dekat. Kita hidup di ruang yang selalu ramai, Semua ingin terlihat, semua ingin diakui. Dr. Muhammad Faisal mengamati perubahan yang perlahan dan pasti tentang bagaimana cara kita berkomunikasi dan merasakan di era yang serba digital dan cepat. Hal yang sama tercermin pada anak-anak muda membangun hubungan. Banyak percakapan terjadi, tapi sedikit yang benar-benar terhubung. Dr. Faisal menyebutnya, \"jomblo sistemik\".#beginu #wisnunugroho #drfaisal #kompascom"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video Dr. M. Faisal: Bertumbuh di Era Ngonten | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    },
+    {
+      "id": "jason-ranti-mentalitas-di-dunia-yang-berisik-beginu-5-tahun",
+      "title": "Jason Ranti: Mentalitas di Dunia yang Berisik | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d183a7f.jpg"
+      ],
+      "desc": [
+        "Jason Ranti bilang, \"dunia ini ramai\". Ia merasa semua bergerak cepat, saling mendahului, saling memanggil perhatian. Mengajak kita menepi sejenak, Jeje seolah minta kita, \"Yuk kita lihat hidup tanpa harus selalu ikut berisik di dalamnya. Harus ya semua hal perlu segera ditanggapi?\" Di sekitar kita, ada hal-hal kecil yang diam-diam berarti, waktu bersama orang terdekat, percakapan sederhana, atau sekadar duduk tanpa merasa tertinggal. Kalau terus berlari seperti ini, sebenarnya kita mau ke mana?***#beginu #wisnunugroho #jasonranti #kompascom"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video Jason Ranti: Mentalitas di Dunia yang Berisik | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    },
+    {
+      "id": "jj-rizal-bisakah-membangun-masa-depan-tanpa-sejarah-beginu-5-tahun",
+      "title": "JJ Rizal: Bisakah Membangun Masa Depan Tanpa Sejarah? | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d1932e9.jpg"
+      ],
+      "desc": [
+        "\"Nothing new under the sun\", memberi kita pemahaman bahwa apa yang kita lakukan hari ini pada dasarnya menjadi pelajaran dari masa lalu untuk dihadapi di masa kini. Kita berdiri di persimpangan waktu, di antara cerita yang pernah terjadi dan kemungkinan yang belum terwujud. Tanpa menyadari. Kita kerap melangkah seolah tidak ada yang perlu diingat. Seolah masa lalu hanya deretan tanggal, alih-alih membentuk cara manusia bertahan dan bertumbuh. JJ Rizal membawa istilah \"historisida\", ketika sejarah perlahan kehilangan tempat dalam hidup kita. Bukan karena sejarah berhenti terjadi, tetapi karena kita berhenti mendengarkan. Tanpa sejarah, kita mungkin tetap berjalan tanpa benar-benar tahu ke mana peradaban akan mengarah.#beginu #wisnunugroho #jjrizal #kompascom"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video JJ Rizal: Bisakah Membangun Masa Depan Tanpa Sejarah? | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    },
+    {
+      "id": "ade-putri-makanan-cerita-dan-prinsip-cukup-beginu-5-tahun",
+      "title": "Ade Putri: Makanan, Cerita, dan Prinsip Cukup | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d133d02.jpg"
+      ],
+      "desc": [
+        "Saat piring adalah panggung konten kuliner di sosial mediamu, piring tidak hanya sekadar wadah untuk mencukupkan rasa kenyang. Seberapa jauh kini kita melihat bahwa makanan bukan sekadar konten? Ade Putri (@misshotrodqueen) menyelami dunia makanan hingga ke sisi lain yang membawa cerita panjang: tentang tanah yang memberi, tentang tangan yang menanam dan memasak, tentang tradisi yang diwariskan diam-diam. Dari dunia makanan, Ade mendapat nilai berharga tentang prinsip cukup, bukan tentang membatasi, tapi belajar menghargai. Cukup bukan berarti kekurangan, cukup adalah kesadaran bahwa yang kita miliki sudah membawa cerita yang sangat panjang.***#beginu #wisnunugroho #adeputri #kompascom"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video Ade Putri: Makanan, Cerita, dan Prinsip Cukup | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    },
+    {
+      "id": "chitra-subyakto-bajumu-yang-itu-itu-saja-menyelamatkanmu-dan-bumi-beginu-5-tahun",
+      "title": "Chitra Subyakto: Bajumu yang Itu itu saja Menyelamatkanmu dan Bumi | BEGINU 5 TAHUN",
+      "price": "35.000",
+      "price_disc": "20.000",
+      "disc": 43,
+      "images": [
+        "https://asset.kompas.com/data/photo/2026/05/06/69fb06d14483a.jpg"
+      ],
+      "desc": [
+        "Kita membeli pakaian seringkali sekadar ingin. Dipakai sebentar, lalu perlahan terlupakan di sudut lemari. Tapi seberapa sering kita menyadari, jejak apa yang akan kita tinggalkan dari pakaian kepada bumi? Chitra Subyakto, memberi sudut pandang bagaimana melihat pakaian bukan sekadar soal gaya. Di balik warna, potongan, dan tren yang terus berganti, ada cerita tentang sumber daya yang diambil, energi yang dihabiskan, dan limbah yang perlahan menumpuk tanpa kita sadari. Chitra mencoba membangun kesadaran bahwa setiap pakaian yang kita pilih adalah keputusan. Keputusan bukan hanya membentuk penampilan, tetapi juga membentuk dampak. Mungkin perubahan tidak harus selalu besar. Kadang cukup dengan memakai kembali, merawat lebih lama, atau mulai bertanya: apakah kita benar-benar membutuhkan ini?***#beginu #beginu5tahun #wisnunugroho #chitrasubyakto #kompascomsembunyikan"
+      ],
+      "playlist": "Beginu",
+      "date": "Rabu, 6 Mei 2026",
+      "access": [
+        "Akses video Chitra Subyakto: Bajumu yang Itu itu saja Menyelamatkanmu dan Bumi | BEGINU 5 TAHUN",
+        "Nikmati tayangan penuh video pilihan Anda tanpa batas waktu."
+      ]
+    }
+  ]
+}

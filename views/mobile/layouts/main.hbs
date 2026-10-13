@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="theme-color" content="#000">
+  <title>{{#if pageTitle}}{{pageTitle}} - {{/if}}Store Kompas.com</title>
+  {{#if product.metaDescription}}<meta name="description" content="{{product.metaDescription}}">{{/if}}
+  <link rel="apple-touch-icon" href="https://asset.kompas.com/data/2017/mobile/images/apple-touch-icon.png">
+  <link rel="icon" href="https://asset.kompas.com/data/2017/mobile/images/favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Condensed:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/vendor/kompas/legacy-mobile.css?v={{assetVersion}}">
+  <link rel="stylesheet" href="/css/store-v2.css?v={{assetVersion}}">
+</head>
+<body class="{{bodyClass}}" data-kanal="store-v2">
+  <div class="root">
+    <div id="page1">
+      <div class="content_article">
+        {{{body}}}
+        {{> footer}}
+      </div>
+    </div>
+  </div>
+  <script src="/js/store-v2.js?v={{assetVersion}}"></script>
+</body>
+</html>

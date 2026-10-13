@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "store",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "prototipe",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4300", "--directory", "../dummy-kompascom-product/build"],
+      "port": 4300
+    }
+  ]
+}

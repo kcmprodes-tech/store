@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Kompas health book cover</title>
+  <desc id="desc">A warm Kompas health book cover with simple medical shapes.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFEECC"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="#FFFFFF"/>
+  <circle cx="320" cy="318" r="128" fill="#FFF8D6"/>
+  <path d="M320 236v164M238 318h164" fill="none" stroke="#DB5D00" stroke-width="28" stroke-linecap="round"/>
+  <rect x="156" y="498" width="328" height="18" rx="9" fill="#333333"/>
+  <rect x="156" y="538" width="238" height="14" rx="7" fill="#999999"/>
+  <text x="156" y="638" fill="#DB5D00" font-family="PT Sans, Arial, sans-serif" font-size="34" font-weight="700">Diet &amp; Health</text>
+  <text x="156" y="682" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="28" font-weight="700">Seri Kesehatan</text>
+</svg>

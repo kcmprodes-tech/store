@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Transportasi Konektivitas book cover</title>
+  <desc id="desc">A blue infrastructure themed Kompas book cover.</desc>
+  <rect width="640" height="800" rx="36" fill="#F4F4F4"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="#FFFFFF"/>
+  <rect x="112" y="68" width="416" height="300" rx="24" fill="#00559A"/>
+  <path d="M184 316c72-90 200-134 272-216" fill="none" stroke="#FFCC00" stroke-width="22" stroke-linecap="round"/>
+  <path d="M184 316c100-34 204-34 272 0" fill="none" stroke="#E1F0FF" stroke-width="18" stroke-linecap="round"/>
+  <rect x="156" y="430" width="328" height="18" rx="9" fill="#333333"/>
+  <rect x="156" y="468" width="250" height="14" rx="7" fill="#666666"/>
+  <text x="156" y="590" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="31" font-weight="700">Transportasi,</text>
+  <text x="156" y="630" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="31" font-weight="700">Konektivitas,</text>
+  <text x="156" y="670" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="28" font-weight="700">Ketahanan Nasional</text>
+</svg>

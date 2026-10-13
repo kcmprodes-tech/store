@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Langsing dan Sehat cover</title>
+  <desc id="desc">A warm lifestyle health book cover with plate and leaf illustration.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFF8D6"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="#FFFFFF"/>
+  <rect x="118" y="64" width="404" height="210" rx="24" fill="#FFCC00"/>
+  <circle cx="320" cy="426" r="122" fill="#EEFCD2"/>
+  <circle cx="320" cy="426" r="78" fill="#FFFFFF"/>
+  <path d="M296 418c50-78 108-62 112-16-46 8-78 26-112 16z" fill="#3A8C11"/>
+  <path d="M242 502c48 34 108 34 156 0" fill="none" stroke="#DB5D00" stroke-width="18" stroke-linecap="round"/>
+  <text x="156" y="150" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="36" font-weight="700">Langsing</text>
+  <text x="156" y="196" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="36" font-weight="700">dan Sehat</text>
+  <text x="156" y="660" fill="#7A5700" font-family="PT Sans, Arial, sans-serif" font-size="22" font-weight="700">Pola hidup seimbang</text>
+</svg>

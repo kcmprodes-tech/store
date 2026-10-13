@@ -1,0 +1,620 @@
+// Skema database Store Kompas.com.
+// Prinsip: setiap produk punya >= 1 SKU (ProductVariant), dan stok selalu melekat pada SKU.
+// Harga disimpan sebagai Int rupiah.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+  runtime             = "nodejs"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ───────────────────────── Katalog ─────────────────────────
+
+enum ProductType {
+  PHYSICAL
+  DIGITAL_VIDEO
+  /// Konten digital berlangganan, mis. VIK Premium.
+  DIGITAL_CONTENT
+  MEMBERSHIP
+  EVENT
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  parentId  Int?       @map("parent_id")
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  slug      String     @unique @db.VarChar(80)
+  name      String     @db.VarChar(120)
+  icon      String?    @db.VarChar(255)
+  sortOrder Int        @default(0) @map("sort_order")
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          Int           @id @default(autoincrement())
+  slug        String        @unique @db.VarChar(191)
+  title       String        @db.VarChar(255)
+  /// Label kecil di kartu produk, mis. "Al-Quran", "VIK Premium", "Kompas.com+".
+  label       String?       @db.VarChar(80)
+  type        ProductType   @default(PHYSICAL)
+  status      ProductStatus @default(PUBLISHED)
+  categoryId  Int?          @map("category_id")
+  category    Category?     @relation(fields: [categoryId], references: [id])
+  /// Kode produk yang tampil di "Detail Produk" (SKU per varian ada di ProductVariant).
+  sku         String?       @unique @db.VarChar(80)
+  /// Deskripsi dalam HTML (dari editor CMS).
+  description String?       @db.Text
+  /// Array baris "Detail Produk", mis. ["Bahan: Cotton combed 30s"]. Baris SKU ditambahkan otomatis.
+  specs       Json?
+  /// Produk yang dibeli di luar store (mis. membership plus.kompas.com).
+  externalUrl String?       @map("external_url") @db.VarChar(500)
+  /// Akhiran harga, mis. "/bulan".
+  priceSuffix String?       @map("price_suffix") @db.VarChar(20)
+  weightGram  Int?          @map("weight_gram")
+  soldCount   Int           @default(0) @map("sold_count")
+  publishedAt DateTime?     @map("published_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  images          ProductImage[]
+  options         ProductOption[]
+  variants        ProductVariant[]
+  video           ProductVideo?
+  homeItems       HomeSectionItem[]
+  collectionItems CollectionItem[]
+  wishlists       Wishlist[]
+  videoAccess     VideoAccess[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@map("products")
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String  @db.VarChar(500)
+  alt       String? @db.VarChar(255)
+  sortOrder Int     @default(0) @map("sort_order")
+
+  @@index([productId, sortOrder])
+  @@map("product_images")
+}
+
+model ProductOption {
+  id        Int                  @id @default(autoincrement())
+  productId Int                  @map("product_id")
+  product   Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  /// Nama sumbu: Warna, Ukuran, Varian.
+  name      String               @db.VarChar(60)
+  sortOrder Int                  @default(0) @map("sort_order")
+  values    ProductOptionValue[]
+
+  @@unique([productId, name])
+  @@map("product_options")
+}
+
+model ProductOptionValue {
+  id        Int                  @id @default(autoincrement())
+  optionId  Int                  @map("option_id")
+  option    ProductOption        @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  value     String               @db.VarChar(80)
+  /// Warna swatch (hex) untuk opsi Warna.
+  swatch    String?              @db.VarChar(20)
+  sortOrder Int                  @default(0) @map("sort_order")
+  variants  VariantOptionValue[]
+
+  @@unique([optionId, value])
+  @@map("product_option_values")
+}
+
+model ProductVariant {
+  id            Int                  @id @default(autoincrement())
+  productId     Int                  @map("product_id")
+  product       Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku           String               @unique @db.VarChar(120)
+  /// Label varian untuk tampilan, mis. "Bundling Plus" atau "Hitam, XL".
+  name          String?              @db.VarChar(160)
+  price         Int
+  priceOriginal Int?                 @map("price_original")
+  /// Indeks gambar galeri yang dipakai saat varian dipilih.
+  imageIndex    Int?                 @map("image_index")
+  trackStock    Boolean              @default(true) @map("track_stock")
+  isActive      Boolean              @default(true) @map("is_active")
+  sortOrder     Int                  @default(0) @map("sort_order")
+  optionValues  VariantOptionValue[]
+  inventory     InventoryLevel[]
+  movements     StockMovement[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  @@index([productId, sortOrder])
+  @@map("product_variants")
+}
+
+model VariantOptionValue {
+  variantId     Int                @map("variant_id")
+  variant       ProductVariant     @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  optionValueId Int                @map("option_value_id")
+  optionValue   ProductOptionValue @relation(fields: [optionValueId], references: [id], onDelete: Cascade)
+
+  @@id([variantId, optionValueId])
+  @@map("variant_option_values")
+}
+
+model ProductVideo {
+  productId    Int       @id @map("product_id")
+  product      Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  playlist     String?   @db.VarChar(120)
+  videoDate    DateTime? @map("video_date") @db.Date
+  /// Array poin "Akses Video Eksklusif".
+  accessPoints Json?     @map("access_points")
+  mediaUrl     String?   @map("media_url") @db.VarChar(500)
+
+  @@map("product_videos")
+}
+
+// ───────────────────────── Kurasi ─────────────────────────
+
+model Banner {
+  id             Int       @id @default(autoincrement())
+  title          String    @db.VarChar(255)
+  imageUrl       String    @map("image_url") @db.VarChar(500)
+  imageMobileUrl String?   @map("image_mobile_url") @db.VarChar(500)
+  href           String?   @db.VarChar(500)
+  sortOrder      Int       @default(0) @map("sort_order")
+  isActive       Boolean   @default(true) @map("is_active")
+  startsAt       DateTime? @map("starts_at")
+  endsAt         DateTime? @map("ends_at")
+
+  @@map("banners")
+}
+
+model HomeSection {
+  id        Int               @id @default(autoincrement())
+  key       String            @unique @db.VarChar(60)
+  title     String            @db.VarChar(120)
+  sortOrder Int               @default(0) @map("sort_order")
+  items     HomeSectionItem[]
+
+  @@map("home_sections")
+}
+
+model HomeSectionItem {
+  sectionId Int         @map("section_id")
+  section   HomeSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  productId Int         @map("product_id")
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sortOrder Int         @default(0) @map("sort_order")
+
+  @@id([sectionId, productId])
+  @@map("home_section_items")
+}
+
+/// Tab halaman koleksi (terlaris, rekomendasi, diskon, ...).
+model Collection {
+  id        Int              @id @default(autoincrement())
+  key       String           @unique @db.VarChar(60)
+  title     String           @db.VarChar(120)
+  icon      String?          @db.VarChar(255)
+  /// Aturan filter: { only?: bool, discounted?: bool, kcat?: string, ksub?: string, sort?: string }
+  rules     Json?
+  sortOrder Int              @default(0) @map("sort_order")
+  items     CollectionItem[]
+
+  @@map("collections")
+}
+
+/// Produk kurasi yang tampil paling depan di sebuah koleksi.
+model CollectionItem {
+  collectionId Int        @map("collection_id")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  productId    Int        @map("product_id")
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sortOrder    Int        @default(0) @map("sort_order")
+
+  @@id([collectionId, productId])
+  @@map("collection_items")
+}
+
+// ───────────────────────── Stok ─────────────────────────
+
+enum StockLocationType {
+  WAREHOUSE
+  PICKUP_POINT
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUST
+  RESERVE
+  RELEASE
+  RETURN
+  TRANSFER
+}
+
+model StockLocation {
+  id              Int               @id @default(autoincrement())
+  code            String            @unique @db.VarChar(40)
+  name            String            @db.VarChar(120)
+  type            StockLocationType @default(WAREHOUSE)
+  address         String?           @db.Text
+  isActive        Boolean           @default(true) @map("is_active")
+  inventory       InventoryLevel[]
+  movements       StockMovement[]
+  pickupLocations PickupLocation[]
+
+  @@map("stock_locations")
+}
+
+/// Tersedia = onHand - reserved.
+model InventoryLevel {
+  variantId  Int            @map("variant_id")
+  variant    ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  locationId Int            @map("location_id")
+  location   StockLocation  @relation(fields: [locationId], references: [id])
+  onHand     Int            @default(0) @map("on_hand")
+  reserved   Int            @default(0)
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@id([variantId, locationId])
+  @@map("inventory_levels")
+}
+
+/// Buku besar stok: setiap perubahan on_hand/reserved dicatat di sini.
+model StockMovement {
+  id         Int               @id @default(autoincrement())
+  variantId  Int               @map("variant_id")
+  variant    ProductVariant    @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  locationId Int               @map("location_id")
+  location   StockLocation     @relation(fields: [locationId], references: [id])
+  type       StockMovementType
+  qtyDelta   Int               @map("qty_delta")
+  /// Sumber perubahan, mis. "order", "opname", "seed".
+  refType    String?           @map("ref_type") @db.VarChar(40)
+  refId      String?           @map("ref_id") @db.VarChar(80)
+  note       String?           @db.VarChar(500)
+  createdBy  String?           @map("created_by") @db.VarChar(120)
+  createdAt  DateTime          @default(now()) @map("created_at")
+
+  @@index([variantId, createdAt])
+  @@index([refType, refId])
+  @@map("stock_movements")
+}
+
+// ───────────────────────── Pengguna ─────────────────────────
+
+model User {
+  id          Int           @id @default(autoincrement())
+  ssoId       String?       @unique @map("sso_id") @db.VarChar(120)
+  name        String        @db.VarChar(160)
+  email       String        @unique @db.VarChar(191)
+  phone       String?       @db.VarChar(30)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  addresses   Address[]
+  wishlists   Wishlist[]
+  carts       Cart[]
+  orders      Order[]
+  videoAccess VideoAccess[]
+  promoUses   PromoRedemption[]
+
+  @@map("users")
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String   @db.VarChar(60)
+  recipient  String   @db.VarChar(160)
+  phone      String   @db.VarChar(30)
+  province   String   @db.VarChar(120)
+  city       String   @db.VarChar(120)
+  district   String   @db.VarChar(120)
+  address    String   @db.Text
+  postalCode String   @map("postal_code") @db.VarChar(10)
+  note       String?  @db.VarChar(255)
+  isDefault  Boolean  @default(false) @map("is_default")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+enum RegionLevel {
+  PROVINCE
+  CITY
+  DISTRICT
+}
+
+model Region {
+  id       Int         @id @default(autoincrement())
+  level    RegionLevel
+  name     String      @db.VarChar(120)
+  parentId Int?        @map("parent_id")
+  parent   Region?     @relation("RegionTree", fields: [parentId], references: [id])
+  children Region[]    @relation("RegionTree")
+
+  @@unique([level, parentId, name])
+  @@map("regions")
+}
+
+model Wishlist {
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, productId])
+  @@map("wishlists")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int?       @map("user_id")
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Untuk pengunjung yang belum login.
+  sessionId String?    @unique @map("session_id") @db.VarChar(120)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  items     CartItem[]
+
+  @@index([userId])
+  @@map("carts")
+}
+
+model CartItem {
+  id         Int            @id @default(autoincrement())
+  cartId     Int            @map("cart_id")
+  cart       Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId  Int            @map("variant_id")
+  variant    ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  qty        Int            @default(1)
+  isSelected Boolean        @default(true) @map("is_selected")
+  note       String?        @db.VarChar(255)
+  createdAt  DateTime       @default(now()) @map("created_at")
+
+  @@unique([cartId, variantId])
+  @@map("cart_items")
+}
+
+// ───────────────────────── Transaksi ─────────────────────────
+
+enum PromoType {
+  FIXED
+  PERCENT
+}
+
+model PromoCode {
+  id          Int               @id @default(autoincrement())
+  code        String            @unique @db.VarChar(40)
+  type        PromoType         @default(FIXED)
+  value       Int
+  minSpend    Int               @default(0) @map("min_spend")
+  maxDiscount Int?              @map("max_discount")
+  quota       Int?
+  usedCount   Int               @default(0) @map("used_count")
+  startsAt    DateTime?         @map("starts_at")
+  endsAt      DateTime?         @map("ends_at")
+  isActive    Boolean           @default(true) @map("is_active")
+  redemptions PromoRedemption[]
+
+  @@map("promo_codes")
+}
+
+model PromoRedemption {
+  id        Int       @id @default(autoincrement())
+  promoId   Int       @map("promo_id")
+  promo     PromoCode @relation(fields: [promoId], references: [id])
+  orderId   Int       @unique @map("order_id")
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    Int       @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  amount    Int
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("promo_redemptions")
+}
+
+enum PaymentFlow {
+  /// Langsung lunas (kartu kredit, e-wallet).
+  INSTANT
+  /// Menunggu pembayaran (VA, QRIS).
+  ASYNC
+}
+
+model PaymentMethod {
+  id        Int         @id @default(autoincrement())
+  code      String      @unique @db.VarChar(40)
+  name      String      @db.VarChar(120)
+  logoUrl   String?     @map("logo_url") @db.VarChar(500)
+  flow      PaymentFlow @default(INSTANT)
+  isActive  Boolean     @default(true) @map("is_active")
+  sortOrder Int         @default(0) @map("sort_order")
+
+  @@map("payment_methods")
+}
+
+model ShippingMethod {
+  id        Int     @id @default(autoincrement())
+  code      String  @unique @db.VarChar(40)
+  courier   String  @db.VarChar(60)
+  service   String  @db.VarChar(60)
+  name      String  @db.VarChar(120)
+  fee       Int
+  etaLabel  String? @map("eta_label") @db.VarChar(120)
+  isActive  Boolean @default(true) @map("is_active")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  @@map("shipping_methods")
+}
+
+model PickupLocation {
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(160)
+  address         String         @db.Text
+  openingHours    String         @map("opening_hours") @db.VarChar(160)
+  mapsUrl         String?        @map("maps_url") @db.VarChar(500)
+  stockLocationId Int?           @map("stock_location_id")
+  stockLocation   StockLocation? @relation(fields: [stockLocationId], references: [id])
+  isActive        Boolean        @default(true) @map("is_active")
+  orders          Order[]
+
+  @@map("pickup_locations")
+}
+
+enum OrderStatus {
+  UNPAID
+  PROCESSING
+  SHIPPED
+  READY_PICKUP
+  COMPLETED
+  CANCELED
+  EXPIRED
+}
+
+enum Fulfillment {
+  SHIPPING
+  PICKUP
+  DIGITAL
+}
+
+model Order {
+  id                Int                  @id @default(autoincrement())
+  invoiceNo         String               @unique @map("invoice_no") @db.VarChar(40)
+  userId            Int                  @map("user_id")
+  user              User                 @relation(fields: [userId], references: [id])
+  status            OrderStatus          @default(UNPAID)
+  fulfillment       Fulfillment          @default(SHIPPING)
+  subtotal          Int
+  shippingFee       Int                  @default(0) @map("shipping_fee")
+  protectionFee     Int                  @default(0) @map("protection_fee")
+  discount          Int                  @default(0)
+  total             Int
+  paymentMethodCode String?              @map("payment_method_code") @db.VarChar(40)
+  promoCode         String?              @map("promo_code") @db.VarChar(40)
+  addressSnapshot   Json?                @map("address_snapshot")
+  courier           String?              @db.VarChar(120)
+  trackingNo        String?              @map("tracking_no") @db.VarChar(80)
+  pickupLocationId  Int?                 @map("pickup_location_id")
+  pickupLocation    PickupLocation?      @relation(fields: [pickupLocationId], references: [id])
+  pickupToken       String?              @unique @map("pickup_token") @db.VarChar(80)
+  paymentDueAt      DateTime?            @map("payment_due_at")
+  paidAt            DateTime?            @map("paid_at")
+  completedAt       DateTime?            @map("completed_at")
+  canceledAt        DateTime?            @map("canceled_at")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+  items             OrderItem[]
+  history           OrderStatusHistory[]
+  payments          Payment[]
+  promoRedemption   PromoRedemption?
+  videoAccess       VideoAccess[]
+
+  @@index([userId, createdAt])
+  @@index([status, paymentDueAt])
+  @@map("orders")
+}
+
+/// Snapshot item saat pesanan dibuat, supaya perubahan katalog tidak mengubah riwayat.
+model OrderItem {
+  id            Int             @id @default(autoincrement())
+  orderId       Int             @map("order_id")
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId     Int?            @map("variant_id")
+  variant       ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productTitle  String          @map("product_title") @db.VarChar(255)
+  sku           String          @db.VarChar(120)
+  optionLabel   String?         @map("option_label") @db.VarChar(160)
+  imageUrl      String?         @map("image_url") @db.VarChar(500)
+  price         Int
+  priceOriginal Int?            @map("price_original")
+  qty           Int
+  note          String?         @db.VarChar(255)
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+/// Sumber timeline "Detail Transaksi".
+model OrderStatusHistory {
+  id        Int         @id @default(autoincrement())
+  orderId   Int         @map("order_id")
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  note      String?     @db.VarChar(255)
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  @@index([orderId, createdAt])
+  @@map("order_status_history")
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+  REFUNDED
+}
+
+model Payment {
+  id         Int           @id @default(autoincrement())
+  orderId    Int           @map("order_id")
+  order      Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider   String        @db.VarChar(40)
+  methodCode String        @map("method_code") @db.VarChar(40)
+  amount     Int
+  status     PaymentStatus @default(PENDING)
+  externalId String?       @map("external_id") @db.VarChar(120)
+  vaNumber   String?       @map("va_number") @db.VarChar(60)
+  qrString   String?       @map("qr_string") @db.Text
+  rawPayload Json?         @map("raw_payload")
+  paidAt     DateTime?     @map("paid_at")
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([provider, externalId])
+  @@map("payments")
+}
+
+model VideoAccess {
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderId   Int      @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  grantedAt DateTime @default(now()) @map("granted_at")
+
+  @@id([userId, productId])
+  @@map("video_access")
+}
+
+/// Pengaturan key/value: biaya proteksi paket, batas bayar (jam), dsb.
+model Setting {
+  key       String   @id @db.VarChar(80)
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Kompas event ticket product mockup</title>
+  <desc id="desc">A yellow event ticket mockup.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFF8D6"/>
+  <path d="M116 226h408a42 42 0 0 1 42 42v64a58 58 0 0 0 0 116v64a42 42 0 0 1-42 42H116a42 42 0 0 1-42-42v-64a58 58 0 0 0 0-116v-64a42 42 0 0 1 42-42z" fill="#FFCC00"/>
+  <path d="M424 232v316" stroke="#7A5700" stroke-width="6" stroke-dasharray="18 18"/>
+  <text x="132" y="332" fill="#7A5700" font-family="PT Sans, Arial, sans-serif" font-size="38" font-weight="700">Kelas</text>
+  <text x="132" y="380" fill="#24292F" font-family="PT Sans, Arial, sans-serif" font-size="28" font-weight="700">Menulis Feature</text>
+  <rect x="132" y="432" width="240" height="28" rx="14" fill="#FFFFFF" opacity=".78"/>
+  <rect x="132" y="480" width="180" height="22" rx="11" fill="#FFFFFF" opacity=".78"/>
+  <circle cx="494" cy="392" r="42" fill="#FFFFFF" opacity=".82"/>
+</svg>

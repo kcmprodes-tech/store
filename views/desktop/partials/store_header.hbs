@@ -1,0 +1,100 @@
+<header class="store-v2-header" data-store-header>
+  <div class="sv2h-topbar">
+    <div class="sv2h-container sv2h-topbar-inner">
+      <a class="sv2h-kg" href="https://www.kompas.com/" aria-label="Kompas.com"><img src="/images/store-v2/logoiconsegitiga.png" alt="KG Media" height="32"></a>
+      <div class="sv2h-account sso"><ul class="sso__wrap"><li class="sso__item"><a class="sso__link sso__link__icon js-sso-user" href="#" aria-label="Akun saya"><i class="sso__icon__login"></i></a><div class="sso__option -fixed -hide js-sso-user-board"><ul><li><a href="/akun"><span><i class="sso__icon__login"></i> Login</span></a></li><li></li><li><a href="https://plus.kompas.com/"><span><i class="sso__icon__subscription"></i> Gabung KOMPAS.com+ <i class="sso__badge__inline"></i></span></a></li><li></li><div class="dark-header-item"><div class="dark-wrapper js-darkWrapper"><button type="button" class="button-default js-darkSetter" id="menu-darkmode" aria-label="Atur mode" aria-expanded="false" aria-controls="darkmode"><span class="icon-svg icon-darkmode" aria-hidden="true"></span></button><div class="dark-setting"><ul><li><button type="button" role="button" class="button dark-link js-darkToggle" data-dark="system">Setelan Perangkat</button></li><li><button type="button" role="button" class="button dark-link js-darkToggle" data-dark="dark">Mode Gelap</button></li><li><button type="button" role="button" class="button dark-link js-darkToggle" data-dark="light">Mode Terang</button></li></ul></div></div></div><li></li><li><a href="#"><span><i class="sso__icon__notif"></i> Berikan Masukanmu <i class="sso__badge__inline"></i></span></a></li></ul></div></li></ul></div>
+    </div>
+  </div>
+
+  <div class="sv2h-main">
+    <div class="sv2h-container sv2h-main-inner">
+      <a class="sv2h-logo" href="/" aria-label="Store Kompas.com">
+        <span class="sv2h-logo-mark" aria-hidden="true"><img src="/images/store-v2/iconstore.png" alt="" width="40" height="40"></span>
+        <span class="sv2h-logo-text">Store</span>
+      </a>
+
+      <form class="sv2h-search" action="/cari" method="get" role="search" data-store-search>
+        <input class="sv2h-search-input" type="text" name="q" autocomplete="off" placeholder="Cari produk, merchandise, atau membership">
+        <button class="sv2h-search-btn" type="submit" aria-label="Cari">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        </button>
+      </form>
+
+      <div class="sv2h-actions">
+        <a class="sv2h-icon" href="/wishlist" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9A4.6 4.6 0 0 1 19.4 13L12 20.3Z"/></svg>
+        </a>
+        <a class="sv2h-icon" href="/keranjang" aria-label="Keranjang">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3.5H5l2.2 11.2a1.6 1.6 0 0 0 1.6 1.3h8.4a1.6 1.6 0 0 0 1.6-1.3L21.5 7H6"/></svg>
+        </a>
+        <a class="sv2h-icon" href="/akun" aria-label="Menu akun">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3.5" y1="7" x2="20.5" y2="7"/><line x1="3.5" y1="12" x2="20.5" y2="12"/><line x1="3.5" y1="17" x2="20.5" y2="17"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sv2h-nav">
+    <div class="sv2h-container sv2h-nav-inner">
+      <button class="sv2h-kategori" type="button" data-kategori-toggle aria-expanded="false" aria-controls="sv2h-kategori-panel">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
+        <span>Kategori</span>
+        <svg class="sv2h-kategori-caret" width="16" height="16" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </button>
+      <span class="sv2h-nav-divider" aria-hidden="true"></span>
+      <nav class="sv2h-nav-links" aria-label="Navigasi Store">
+        <a href="/koleksi/terlaris">Terlaris</a>
+        <a href="/koleksi/rekomendasi">Rekomendasi</a>
+        <a href="/koleksi/merchandise">Merchandise</a>
+        <a href="/koleksi/video-premium">Video premium</a>
+        <a href="/koleksi/event">Event</a>
+        <a href="/koleksi/membership">Membership</a>
+      </nav>
+
+      <div class="sv2h-kategori-panel sv2k" id="sv2h-kategori-panel" data-kategori-panel hidden>
+        <div class="sv2k-main">
+          <ul class="sv2k-cats">
+            <li><a class="sv2k-cat is-active" href="/produk?category=merchandise" data-kcat="merchandise">Merchandise</a></li>
+            <li><a class="sv2k-cat" href="/produk?category=buku" data-kcat="buku">Buku</a></li>
+            <li><a class="sv2k-cat" href="/koleksi/membership" data-kcat="membership">Membership</a></li>
+            <li><a class="sv2k-cat" href="/produk?category=digital" data-kcat="digital">Digital</a></li>
+            <li><a class="sv2k-cat" href="/produk?category=event" data-kcat="event">Event</a></li>
+          </ul>
+          <a class="sv2k-all" href="/produk">Lihat semua <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="sv2k-subs">
+          <div class="sv2k-sub" data-ksub="merchandise">
+            <p class="sv2k-sub-title">Merchandise</p>
+            <a href="/produk?category=merchandise&amp;sub=apparel">Apparel</a>
+            <a href="/produk?category=merchandise&amp;sub=accessories">Accessories</a>
+            <a href="/produk?category=merchandise&amp;sub=drinkware">Drinkware</a>
+          </div>
+          <div class="sv2k-sub" data-ksub="buku" hidden>
+            <p class="sv2k-sub-title">Buku</p>
+            <a href="/produk?category=buku&amp;sub=novel">Novel</a>
+            <a href="/produk?category=buku&amp;sub=quran">Quran</a>
+            <a href="/produk?category=buku&amp;sub=biografi">Biografi</a>
+            <a href="/produk?category=buku&amp;sub=ensiklopedia">Ensiklopedia</a>
+          </div>
+          <div class="sv2k-sub" data-ksub="membership" hidden>
+            <p class="sv2k-sub-title">Membership</p>
+            <p class="sv2k-empty">Tidak ada sub-kategori.</p>
+          </div>
+          <div class="sv2k-sub" data-ksub="digital" hidden>
+            <p class="sv2k-sub-title">Digital</p>
+            <a href="/produk?category=digital&amp;sub=video-premium">Video premium</a>
+            <a href="/produk?category=digital&amp;sub=konten-premium">Konten premium</a>
+            <a href="/produk?category=digital&amp;sub=sticker">Sticker</a>
+          </div>
+          <div class="sv2k-sub" data-ksub="event" hidden>
+            <p class="sv2k-sub-title">Event</p>
+            <a href="/produk?category=event&amp;sub=aktivitas">Aktivitas</a>
+            <a href="/produk?category=event&amp;sub=webinar">Webinar</a>
+            <a href="/produk?category=event&amp;sub=workshop">Workshop</a>
+            <a href="/produk?category=event&amp;sub=tour">Tour</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

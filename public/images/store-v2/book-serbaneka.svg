@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Serbaneka Penyakit di Sekitar Kita cover</title>
+  <desc id="desc">A realistic health book cover with soft medical visual elements.</desc>
+  <rect width="640" height="800" rx="36" fill="#FFEECC"/>
+  <rect x="118" y="64" width="404" height="672" rx="24" fill="#FFFFFF"/>
+  <rect x="118" y="64" width="404" height="178" rx="24" fill="#DB5D00"/>
+  <circle cx="320" cy="408" r="118" fill="#FFF8D6"/>
+  <path d="M320 324v168M236 408h168" stroke="#DB5D00" stroke-width="28" stroke-linecap="round"/>
+  <g fill="#E1F0FF">
+    <circle cx="220" cy="536" r="18"/>
+    <circle cx="444" cy="320" r="16"/>
+    <circle cx="422" cy="552" r="24"/>
+  </g>
+  <text x="154" y="134" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="29" font-weight="700">Serbaneka Penyakit</text>
+  <text x="154" y="174" fill="#FFFFFF" font-family="PT Sans, Arial, sans-serif" font-size="29" font-weight="700">di Sekitar Kita</text>
+  <text x="154" y="650" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="24" font-weight="700">Diet &amp; Health</text>
+</svg>

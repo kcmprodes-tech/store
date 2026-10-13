@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Global civilization book cover</title>
+  <desc id="desc">A modern Kompas book cover with globe inspired shapes.</desc>
+  <rect width="640" height="800" rx="36" fill="#E1F0FF"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="#FFFFFF"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="none" stroke="#057DF4" stroke-width="14"/>
+  <circle cx="320" cy="334" r="126" fill="#00559A"/>
+  <path d="M212 334h216M320 208c52 62 52 190 0 252M320 208c-52 62-52 190 0 252" fill="none" stroke="#FFCC00" stroke-width="16" stroke-linecap="round"/>
+  <text x="152" y="566" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Elevating</text>
+  <text x="152" y="608" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="32" font-weight="700">Civilization</text>
+  <text x="152" y="650" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="25" font-weight="700">To The Next Level</text>
+</svg>

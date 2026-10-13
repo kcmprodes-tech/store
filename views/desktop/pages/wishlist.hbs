@@ -1,0 +1,43 @@
+<div class="store-v2-content">
+<main class="category-page wishlist-page" data-wishlist-page>
+      <section class="kompas-container wishlist-hero">
+        <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
+          <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
+          <span>/</span>
+          <span>Wishlist</span>
+        </nav>
+        <div class="wishlist-heading">
+          <div>
+            <h1>Wishlist</h1>
+            <p>Produk Store Kompas.com yang kamu simpan untuk dibeli nanti.</p>
+          </div>
+          
+    <div class="wishlist-sort-control">
+      <span id="wishlist-sort-label">Urutkan</span>
+      <div class="wishlist-sort-select-wrap">
+      <select data-wishlist-sort="" aria-labelledby="wishlist-sort-label">
+        <option value="newest" selected="">Terbaru Disimpan</option><option value="oldest">Terlama Disimpan</option><option value="price-low">Harga Terendah</option><option value="price-high">Harga Tertinggi</option>
+      </select>
+      <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+      </div>
+    </div>
+  
+        </div>
+      </section>
+
+      <section class="kompas-container category-products-section">
+        <div class="wishlist-list-meta">
+          <span class="category-result-count" data-wishlist-count>{{storev2.wishlist.length}} produk</span>
+        </div>
+        <div class="category-product-grid" data-wishlist-grid>
+          {{#each storev2.wishlist}}{{> product_card_v2}}{{/each}}
+        </div>
+        <div class="sv2-empty" data-wishlist-empty hidden>
+          <img class="sv2-empty-img" src="/images/store-v2/empty-products.png" alt="" width="320" height="219">
+          <div class="sv2-empty-body">
+            <p class="sv2-empty-text">Belum ada produk di wishlist</p>
+            <a class="sv2-empty-btn" href="/produk">Lihat produk lainnya</a>
+          </div>
+        </div>
+      </section>
+    </main>        </div>

@@ -1,0 +1,93 @@
+<div class="store-v2-content">
+    {{> store_header_mobile}}
+
+<main class="order-detail-m order-detail-d payment-success-v2 payment-pending-v2 kompas-container" data-instruction>
+      <section class="ps-hero" aria-labelledby="ps-title">
+        <svg class="ps-illus ps-illus--pending" viewBox="0 0 320 220" role="img" aria-label="Ilustrasi menunggu pembayaran">
+          <defs><clipPath id="ps-clip-p"><rect x="0" y="0" width="320" height="203.4"/></clipPath></defs>
+          <path class="ps-blob" d="M60 175 C40 140 60 95 95 80 C120 68 130 40 165 20 C200 2 235 10 238 40 C240 55 250 60 262 75 C285 100 290 140 270 170 C255 195 230 203 200 203 H70 C62 195 63 185 60 175 Z" fill="#F2F5FA"/>
+          <g class="ps-float ps-d1"><path d="M69.4 37.4 L70.9 40.6 L74.4 41 L71.8 43.3 L72.5 46.8 L69.4 45 L66.3 46.8 L67 43.3 L64.4 41 L67.9 40.6 Z" fill="none" stroke="#1E1E1E" stroke-width="1.3" stroke-linejoin="round" class="ps-twinkle"/></g>
+          <g class="ps-float ps-d2"><path d="M295.3 114.5 L296.8 117.7 L300.3 118.1 L297.7 120.4 L298.4 123.9 L295.3 122.1 L292.2 123.9 L292.9 120.4 L290.3 118.1 L293.8 117.7 Z" fill="none" stroke="#1E1E1E" stroke-width="1.3" stroke-linejoin="round" class="ps-twinkle ps-d3"/></g>
+          <circle class="ps-dot ps-d1" cx="94.2" cy="91.4" r="3" fill="none" stroke="#1A73E8" stroke-width="1.4"/>
+          <circle class="ps-dot ps-d2" cx="38.3" cy="103.9" r="3" fill="none" stroke="#F26722" stroke-width="1.4"/>
+          <circle class="ps-dot ps-d3" cx="278.4" cy="75" r="3" fill="none" stroke="#F26722" stroke-width="1.4"/>
+          <circle class="ps-dot ps-d4" cx="254" cy="139.1" r="3" fill="none" stroke="#1A73E8" stroke-width="1.4"/>
+          <!-- plant (left) -->
+          <g class="ps-sway ps-sway-l">
+            <path d="M48.5 184 C48 178 47 174 46.5 168" fill="none" stroke="#1E1E1E" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M46.5 168 C33 166 23 155 24.5 143.5 C37 145 47 154 46.5 168 Z" fill="#1A5CF0" stroke="#1E1E1E" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M48.5 170 C50 156 60 146 72 145.5 C71.5 158 61 168 48.5 170 Z" fill="#F26722" stroke="#1E1E1E" stroke-width="1.3" stroke-linejoin="round"/>
+          </g>
+          <path d="M32.7 184.2 H63.8 L60 203.4 H37 Z" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.4" stroke-linejoin="round"/>
+          <!-- shopping bag -->
+          <g class="ps-pop ps-d1">
+            <path d="M74 202.9 L83.7 146.7 H91.4 L92.4 202.9 Z" fill="#1877E8" stroke="#1E1E1E" stroke-width="1.3" stroke-linejoin="round"/>
+            <rect x="91.4" y="145.5" width="39.3" height="57.9" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.4"/>
+            <path d="M103.4 153.9 V139 C103.4 124 120.5 124 120.5 139 V145.5" fill="none" stroke="#1E1E1E" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M125.8 153.9 V139 C125.8 124 108.7 124 108.7 139 V145.5" fill="none" stroke="#1E1E1E" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="103.4" cy="154" r="1.8" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.2"/>
+            <circle cx="125.8" cy="154" r="1.8" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.2"/>
+          </g>
+          <!-- coins -->
+          <g class="ps-coins">
+            <rect x="81" y="175" width="36" height="28.4" rx="6" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.3"/>
+            <path d="M81 184.4 H117 M81 193.8 H117" stroke="#1E1E1E" stroke-width="1.2"/>
+            <g class="ps-coin"><circle cx="116.1" cy="190.5" r="12.8" fill="#F5843F" stroke="#1E1E1E" stroke-width="1.3"/><circle cx="116.1" cy="190.5" r="8" fill="#F26722" stroke="#1E1E1E" stroke-width="1.2"/></g>
+          </g>
+          <!-- credit card -->
+          <g class="ps-slide">
+            <rect x="216.4" y="160" width="47.6" height="42.4" rx="3" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.4"/>
+            <rect x="246.3" y="167.8" width="12.7" height="10.7" rx="1.2" fill="#0F79C6"/>
+            <line x1="219" y1="184.1" x2="259" y2="184.1" stroke="#C3C9D3" stroke-width="3" stroke-linecap="round"/>
+            <line x1="219" y1="193.3" x2="244.5" y2="193.3" stroke="#C3C9D3" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <!-- receipt prints up from the ground line -->
+          <g clip-path="url(#ps-clip-p)">
+            <g class="ps-receipt">
+              <path d="M130.7 201 V80 Q130.7 66 145 66 H226 Q234 66 234 75 V89 H216.4 V201 L216.4 201 L207.8 197.6 L199.3 201 L190.7 197.6 L182.1 201 L173.6 197.6 L165.0 201 L156.4 197.6 L147.8 201 L139.3 197.6 L130.7 201 Z" fill="#FFFFFF" stroke="#1E1E1E" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M216.4 89 V72 Q216.4 66 222 66 H226 Q234 66 234 75 V89 Z" fill="#D0D5DD" stroke="#1E1E1E" stroke-width="1.4" stroke-linejoin="round"/>
+              <line class="ps-line ps-l1" x1="145.5" y1="148" x2="201.6" y2="148" stroke="#222" stroke-width="2.6" stroke-linecap="round"/>
+              <line class="ps-line ps-l2" x1="145.5" y1="158.2" x2="184" y2="158.2" stroke="#C3C9D3" stroke-width="2.6" stroke-linecap="round"/>
+              <line class="ps-line ps-l3" x1="145.5" y1="167.9" x2="197" y2="167.9" stroke="#C3C9D3" stroke-width="2.6" stroke-linecap="round"/>
+              <line class="ps-line ps-l4" x1="145.5" y1="177.9" x2="176.6" y2="177.9" stroke="#C3C9D3" stroke-width="2.6" stroke-linecap="round"/>
+            </g>
+          </g>
+          <!-- pending clock -->
+          <g class="ps-clock">
+            <circle cx="173" cy="106" r="24.8" fill="#FFFFFF" stroke="#D9DEE6" stroke-width="5.6"/>
+            <g class="ps-clock-arc"><circle cx="173" cy="106" r="24.8" fill="none" stroke="#0F79C6" stroke-width="5.6" stroke-linecap="round" pathLength="100" stroke-dasharray="52 100" transform="rotate(-90 173 106)"/></g>
+            <line class="ps-clock-min" x1="171" y1="109" x2="171" y2="99" stroke="#0F79C6" stroke-width="4.2" stroke-linecap="round"/>
+            <line x1="171" y1="109" x2="182.5" y2="109" stroke="#0F79C6" stroke-width="4.2" stroke-linecap="round"/>
+          </g>
+          <!-- sparkles -->
+          <g class="ps-spark" stroke="#1A73E8" stroke-width="1.6" stroke-linecap="round">
+            <line x1="135.3" y1="52.3" x2="141.6" y2="62.5"/><line x1="158.2" y1="45.9" x2="155.7" y2="59.2"/>
+            <line x1="238" y1="115.6" x2="229" y2="124.5"/>
+          </g>
+          <!-- plant (right) -->
+          <g class="ps-sway ps-sway-r">
+            <path d="M278 202 C282 188 286 176 293 158" fill="none" stroke="#1E1E1E" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M293 158 C289 151 290 160 288 166 M293 158 C286 152 289 161 290 163" fill="none"/>
+            <path d="M291 162 C285 160 281 152 283.5 144 C290 147 293 154 291 162 Z" fill="#E4E7EC" stroke="#1E1E1E" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M287 176 C292 168 299 165 305 166 C302 174 295 178 287 176 Z" fill="#E4E7EC" stroke="#1E1E1E" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M282.5 189 C288 182 295 181 300.5 183.5 C296 190 289 192 282.5 189 Z" fill="#E4E7EC" stroke="#1E1E1E" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M281 188 C275 186 270 180 270 173 C277 175 281 181 281 188 Z" fill="#E4E7EC" stroke="#1E1E1E" stroke-width="1.2" stroke-linejoin="round"/>
+          </g>
+          <line x1="23" y1="203.4" x2="297" y2="203.4" stroke="#1E1E1E" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <h1 class="ps-title" id="ps-title">Selesaikan pembayaran</h1>
+        <p class="ps-desc">Segera lakukan pembayaran sebelum batas waktu agar pesanan kamu segera diproses.</p>
+      </section>
+      <div class="od-card ps-card ps-pay-card">
+        <dl class="od-section ps-pay-list">
+          <div class="od-item"><dt>Batas pembayaran</dt><dd class="ps-deadline" data-pay-deadline>26 Agustus 2026, 14:32 WIB</dd></div>
+          <div class="od-item"><dt>Metode pembayaran</dt><dd data-pay-method>Virtual account BCA</dd></div>
+          <div class="od-item" data-instr="bca-va"><dt>No Virtual account</dt><dd data-pay-va>08777 1234 2345 4567</dd><button class="od-copy" type="button" data-copy="08777123423454567" data-pay-va-copy aria-label="Salin no virtual account" data-copy-toast="Nomor virtual account berhasil disalin"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"></rect><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"></path></svg></button></div>
+          <div class="od-item ps-qris" data-instr="qris" hidden><dt>Scan kode QRIS</dt><dd><img src="/images/store-v2/pay-qris.png" alt="Kode QRIS"></dd></div>
+          <div class="od-item"><dt>Total tagihan</dt><dd data-pay-total>Rp245.000</dd><button class="od-copy" type="button" data-copy="245000" data-pay-total-copy aria-label="Salin total tagihan" data-copy-toast="Total tagihan berhasil disalin"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"></rect><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"></path></svg></button></div>
+        </dl>
+      </div>
+      <div class="ps-actions ps-pay-actions">
+        <a class="btn btn-primary" href="/pembayaran/berhasil" data-pay-done>Saya sudah bayar</a>
+      </div>
+    </main>            </div>

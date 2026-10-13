@@ -1,0 +1,27 @@
+<div class="store-v2-content">
+<main class="category-page tab-page" data-tab-page data-tab-server="{{tab.key}}">
+      <section class="kompas-container tab-head">
+        <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
+          <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a> <span>/</span> <span data-tab-crumb>{{tab.title}}</span>
+        </nav>
+        <div class="tab-hero">
+          <img class="tab-hero-icon" src="{{tab.icon}}" alt="" data-tab-icon>
+          <h1 data-tab-title>{{tab.title}}</h1>
+        </div>
+      </section>
+
+      <section class="kompas-container category-products-section tab-products">
+        <div class="category-product-grid" data-tab-grid>
+          {{#each storev2.semua}}{{> product_card_v2}}{{/each}}
+        </div>
+        <div class="sv2-empty" data-tab-empty hidden>
+          <img class="sv2-empty-img" src="/images/store-v2/empty-products.png" alt="" width="320" height="219">
+          <div class="sv2-empty-body">
+            <p class="sv2-empty-text">Belum ada produk di kategori ini.</p>
+            <a class="sv2-empty-btn" href="/produk">Lihat produk lainnya</a>
+          </div>
+        </div>
+        <div class="tab-loader" data-tab-loader hidden><span class="tab-spinner" aria-hidden="true"></span>Memuat produk lainnya…</div>
+        <div class="tab-sentinel" data-tab-sentinel aria-hidden="true"></div>
+      </section>
+    </main>        </div>

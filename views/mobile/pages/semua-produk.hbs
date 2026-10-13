@@ -1,0 +1,25 @@
+<div class="store-v2-content">
+    {{> store_header_mobile}}
+
+<main class="category-page all-products-page" data-all-products>
+      <section class="kompas-container all-products-head">
+        <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
+          <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a> <span>/</span> <span data-all-products-crumb>Semua produk</span>
+        </nav>
+        <h1 class="all-products-title" data-all-products-title>Semua produk</h1>
+        <p class="all-products-count" data-all-products-count>{{storev2.semua.length}} produk</p>
+      </section>
+
+      <section class="kompas-container category-products-section">
+        <div class="category-product-grid" data-all-products-grid>
+          {{#each storev2.semua}}{{> product_card_v2}}{{/each}}
+        </div>
+        <div class="sv2-empty" data-all-products-empty hidden>
+          <img class="sv2-empty-img" src="/images/store-v2/empty-products.png" alt="" width="320" height="219">
+          <div class="sv2-empty-body">
+            <p class="sv2-empty-text">Belum ada produk di kategori ini.</p>
+            <a class="sv2-empty-btn" href="/produk">Lihat produk lainnya</a>
+          </div>
+        </div>
+      </section>
+    </main>            </div>

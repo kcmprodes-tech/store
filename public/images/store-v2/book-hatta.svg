@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Keteladanan Bung Hatta book cover</title>
+  <desc id="desc">A navy and cream Kompas biography book cover.</desc>
+  <rect width="640" height="800" rx="36" fill="#E1F0FF"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="#FFFFFF"/>
+  <rect x="112" y="68" width="416" height="664" rx="24" fill="none" stroke="#00559A" stroke-width="16"/>
+  <circle cx="320" cy="306" r="104" fill="#00559A"/>
+  <path d="M264 284c20-42 92-42 112 0M260 366c42 42 78 42 120 0" fill="none" stroke="#FFCC00" stroke-width="18" stroke-linecap="round"/>
+  <rect x="166" y="464" width="308" height="18" rx="9" fill="#333333"/>
+  <rect x="202" y="504" width="236" height="14" rx="7" fill="#999999"/>
+  <text x="152" y="610" fill="#00559A" font-family="PT Sans, Arial, sans-serif" font-size="34" font-weight="700">Keteladanan</text>
+  <text x="152" y="654" fill="#333333" font-family="PT Sans, Arial, sans-serif" font-size="36" font-weight="700">Bung Hatta</text>
+</svg>

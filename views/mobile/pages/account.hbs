@@ -1,0 +1,200 @@
+<div class="store-v2-content">
+    {{> store_header_mobile}}
+
+<main class="account-page kompas-container py-6">
+      <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
+        <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
+        <span>/</span>
+        <span data-account-crumb>Pesanan</span>
+      </nav>
+      <div class="account-layout grid items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside class="account-sidebar grid gap-4 lg:sticky lg:top-24">
+          
+    <a class="account-profile-card grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3.5 rounded-lg border border-[#e7e7e7] bg-white p-4" href="/akun">
+      <span class="header-account-summary-avatar">R</span>
+      <div>
+        <strong>Reza Pratama</strong><span class="account-profile-link">Lihat profil <svg width="16" height="16" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg></span>
+      </div>
+    </a>
+  
+          <nav class="account-sidebar-menu grid rounded-lg border border-[#e7e7e7] bg-white p-2" aria-label="Menu akun">
+            <a class="is-active" href="/akun" data-account-link="orders"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2L6 21z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg> <span>Daftar Pesanan</span></a>
+            <a class="" href="/akun?accountSection=addresses" data-account-link="addresses"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg> <span>Alamat Pengiriman</span></a>
+          </nav>
+        </aside>
+        <div class="account-content grid gap-4">
+          
+    <section class="account-content-card orders-panel" data-account-section="orders">
+      <div class="account-section-heading">
+        <div>
+          <h2>Daftar Pesanan</h2>
+          <p>Pantau status transaksi Store Kompas.com kamu dalam satu tempat.</p>
+        </div>
+      </div>
+      <div class="account-order-filters" role="tablist" aria-label="Filter pesanan">
+        <button class="is-active" type="button" data-account-order-filter="all" role="tab" aria-selected="true">Semua</button>
+        <button type="button" data-account-order-filter="unpaid" role="tab" aria-selected="false">Belum dibayar <span class="filter-count">1</span></button>
+        <button type="button" data-account-order-filter="ongoing" role="tab" aria-selected="false">Berlangsung</button>
+        <button type="button" data-account-order-filter="completed" role="tab" aria-selected="false">Selesai</button>
+        <button type="button" data-account-order-filter="canceled" role="tab" aria-selected="false">Dibatalkan</button>
+      </div>
+      <div class="account-order-list" data-order-list>
+        <article class="order-card" data-product-slug="source-18" data-order-status="unpaid">
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-deadline">Bayar sebelum <strong>29 Sept 2026, 13:45 WIB</strong></span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=unpaid">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=unpaid">Detail pesanan</a><a class="btn btn-primary" href="/pembayaran?method=bca-va">Cara Pembayaran</a><div class="order-more-wrap"><button class="order-more" type="button" data-order-more aria-label="Menu lainnya" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="order-more-menu" hidden><button type="button" data-order-cancel>Batalkan pesanan</button></div></div></div>
+        </article>
+        <article class="order-card" data-product-slug="source-18" data-order-status="processing">
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-status order-status--processing">Diproses</span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=processing">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing">Detail pesanan</a></div>
+        </article>
+        <!-- sample: Ambil di tempat, menunggu diambil -->
+        <article class="order-card" data-product-slug="source-18" data-order-status="processing" data-order-pickup>
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-status order-status--pickup">Ambil di tempat</span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=processing&amp;pickup=1">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing&amp;pickup=1">Detail pesanan</a><button class="btn btn-primary" type="button" data-pickup-qr-card data-order-id="SKC-260626-H7Q4MP">Buka QR code</button></div>
+        </article>
+        <article class="order-card" data-product-slug="source-18" data-order-status="shipped">
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-status order-status--shipped">Dikirim</span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=shipped">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=shipped">Detail pesanan</a><button class="btn btn-primary" type="button" data-order-complete>Pesanan selesai</button></div>
+        </article>
+        <article class="order-card" data-product-slug="source-18" data-order-status="completed">
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-status order-status--completed">Selesai</span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=completed">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=completed">Detail pesanan</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
+        </article>
+        <article class="order-card" data-product-slug="source-18" data-order-status="canceled">
+          <div class="order-card-head">
+            <div class="order-card-id"><strong>SKC-260626-H7Q4MP</strong><span class="order-card-sep">|</span><span class="order-card-time">26 Juni 2026, 13:12 WIB</span></div>
+            <div class="order-card-status"><span class="order-status order-status--canceled">Dibatalkan</span></div>
+          </div>
+          <div class="order-card-body">
+            <a class="order-card-product" href="/pesanan/SKC-260626-H7Q4MP?status=canceled">
+              <img src="/images/store-v2/product-pesta-bola-premium.png" alt="Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas">
+              <div class="order-card-info">
+                <h3>Bundling Pesta Bola: Tabloid Bola by Kompas Edisi Pesta Bola Amerika 2026 + Akses Kompas</h3>
+                <p class="order-card-variant">Varian: Bundling, Bundling Plus</p>
+                <p class="order-card-payment">Metode pembayaran <strong>Virtual account BCA</strong></p>
+              </div>
+            </a>
+            <div class="order-card-total">
+              <span>Total Belanja</span>
+              <strong>Rp450.000</strong>
+            </div>
+          </div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=canceled">Detail pesanan</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
+        </article>
+      </div>
+    </section>
+    <!-- Alamat Pengiriman (content from gerai: twntysix.github.io/gerai ?accountSection=addresses) -->
+    <section class="account-content-card addresses-panel" data-account-section="addresses" hidden>
+      <div class="account-section-heading">
+        <div>
+          <h2>Alamat Pengiriman</h2>
+          <p>Alamat utama yang digunakan untuk pengiriman produk fisik.</p>
+        </div>
+      </div>
+      <button class="checkout-address checkout-address-empty account-address-empty" type="button" data-address-manager-open data-address-empty>
+        <div>
+          <p>Belum ada Alamat pengiriman</p>
+          <span>Tambahkan alamat utama untuk pengiriman produk fisik</span>
+        </div>
+        <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+      </button>
+      <div class="account-address-card" data-address-card hidden>
+        <svg class="account-address-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <div class="account-address-info">
+          <strong><span data-address-name>Reza Pratama</span> <span class="account-address-label" data-address-label>Rumah</span></strong>
+          <p data-address-full>Jl. Palmerah Selatan No. 26, Tanah Abang, Jakarta Pusat, DKI Jakarta, 10270</p>
+          <small data-address-phone>0812-900-50800</small>
+        </div>
+        <button class="btn btn-secondary account-address-edit" type="button" data-address-manager-open>Ubah</button>
+      </div>
+    </section>
+
+  
+        </div>
+      </div>
+    </main>            </div>

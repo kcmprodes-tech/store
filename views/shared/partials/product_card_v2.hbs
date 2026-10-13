@@ -1,0 +1,32 @@
+{{!-- Kartu produk store-v2. Data dari toCardVM() (src/view/mappers.ts). --}}
+<article class="product-card"{{#if kcat}} data-kcat="{{kcat}}" data-ksub="{{ksub}}"{{/if}}>
+  <a href="{{url}}" class="product-card-hit-area" data-select-product="{{id}}" aria-label="Lihat detail {{title}}"></a>
+  <a href="{{url}}" class="product-card-media-link block" data-select-product="{{id}}">
+    <div class="relative bg-kompas-canvas">
+      <img class="product-image" src="{{image}}" alt="{{title}}">
+    </div>
+  </a>
+  <div class="product-card-content">
+    <a href="{{url}}" class="product-card-title-link" data-select-product="{{id}}">
+      <h3 class=" product-card-title">{{title}}</h3>
+    </a>
+    <div class="product-card-price-row">
+      <a href="{{url}}" class="product-card-price-link" data-select-product="{{id}}">
+      <div class="product-card-price-block">
+        {{#if price_disc}}
+        <div class="product-card-original-row">
+          <p class="product-card-original-price line-through">Rp{{price}}</p>
+          {{#if disc}}<span class="product-card-discount">{{disc}}%</span>{{/if}}
+        </div>
+        <p class="product-card-current-price font-semibold">Rp{{price_disc}}</p>
+        {{else}}
+        <p class="product-card-current-price font-semibold">Rp{{price}}</p>
+        {{/if}}
+      </div>
+      </a>
+    </div>
+  </div>
+  <button class="wishlist-card-button {{#if wishlisted}}is-active{{/if}}" type="button" data-wishlist="{{id}}" aria-label="{{#if wishlisted}}Hapus {{title}} dari wishlist{{else}}Tambahkan {{title}} ke wishlist{{/if}}" aria-pressed="{{#if wishlisted}}true{{else}}false{{/if}}">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7z"></path></svg>
+  </button>
+</article>
