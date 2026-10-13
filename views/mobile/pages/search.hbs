@@ -25,11 +25,9 @@
         </button>
         <div class="search-kategori-panel" id="search-kategori-panel" data-search-kategori-panel hidden>
           <a class="search-kategori-option" href="/cari" data-search-category="">Semua kategori</a>
-          <a class="search-kategori-option" href="/cari?category=merchandise" data-search-category="merchandise">Merchandise</a>
-          <a class="search-kategori-option" href="/cari?category=buku" data-search-category="buku">Buku</a>
-          <a class="search-kategori-option" href="/cari?category=membership" data-search-category="membership">Membership</a>
-          <a class="search-kategori-option" href="/cari?category=digital" data-search-category="digital">Digital</a>
-          <a class="search-kategori-option" href="/cari?category=event" data-search-category="event">Event</a>
+          {{#each storeChrome.categories}}
+          <a class="search-kategori-option" href="/cari?category={{slug}}" data-search-category="{{slug}}">{{name}}</a>
+          {{/each}}
         </div>
       </div>
     
@@ -72,4 +70,5 @@
           {{#each storev2.related}}{{> product_card_v2}}{{/each}}
         </div>
       </section>
+      <script type="application/json" data-store-categories>{{{json storeChrome.categoryLabels}}}</script>
     </main>            </div>

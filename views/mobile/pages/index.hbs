@@ -26,60 +26,35 @@
   
 
       
+    {{#if storeChrome.shortcuts.length}}
     <section id="home-categories" class="kompas-container py-8">
       <div class="section-title">
         <h2>Kategori Pilihan</h2>
       </div>
       <div class="sv2-cat-grid">
-        <a class="sv2-cat-card" href="/koleksi/diskon"><img class="sv2-cat-icon" src="/images/store-v2/cat-diskon-spesial.png" alt=""><span class="sv2-cat-label">Diskon Spesial</span></a>
-        <a class="sv2-cat-card" href="/koleksi/rekomendasi"><img class="sv2-cat-icon" src="/images/store-v2/cat-rekomendasi.png" alt=""><span class="sv2-cat-label">Rekomendasi</span></a>
-        <a class="sv2-cat-card" href="/koleksi/terbaru"><img class="sv2-cat-icon" src="/images/store-v2/cat-terbaru.png" alt=""><span class="sv2-cat-label">Terbaru</span></a>
-        <a class="sv2-cat-card" href="/koleksi/merchandise"><img class="sv2-cat-icon" src="/images/store-v2/cat-merchandise.png" alt=""><span class="sv2-cat-label">Merchandise</span></a>
-        <a class="sv2-cat-card" href="/koleksi/membership"><img class="sv2-cat-icon" src="/images/store-v2/cat-membership.png" alt=""><span class="sv2-cat-label">Membership</span></a>
-        <a class="sv2-cat-card" href="/koleksi/event"><img class="sv2-cat-icon" src="/images/store-v2/cat-event.png" alt=""><span class="sv2-cat-label">Event</span></a>
+        {{#each storeChrome.shortcuts}}
+        <a class="sv2-cat-card" href="{{attr href}}"><img class="sv2-cat-icon" src="{{attr image}}" alt=""><span class="sv2-cat-label">{{label}}</span></a>
+        {{/each}}
       </div>
     </section>
+    {{/if}}
 
+    {{#each homeSections}}
     <section class="kompas-container py-8">
       <div class="section-title">
-        <h2>Terlaris</h2>
-        <a class="font-semibold text-[#0f79c6]" href="/koleksi/terlaris">Lihat Semua</a>
+        <h2>{{title}}</h2>
+        {{#if seeAllHref}}
+        <a class="font-semibold text-[#0f79c6]" href="{{attr seeAllHref}}">Lihat Semua</a>
+        {{/if}}
       </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-        {{#each storev2.terlaris}}{{> product_card_v2}}{{/each}}
+        {{#each products}}{{> product_card_v2}}{{/each}}
       </div>
+      {{#if moreHref}}
+      <div class="sv2-section-more"><a class="btn btn-secondary sv2-more-btn" href="{{attr moreHref}}">Lihat semua</a></div>
+      {{/if}}
     </section>
 
-    <section class="kompas-container py-8">
-      <div class="section-title">
-        <h2>Rekomendasi untukmu</h2>
-        <a class="font-semibold text-[#0f79c6]" href="/koleksi/rekomendasi">Lihat Semua</a>
-      </div>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-        {{#each storev2.rekomendasi}}{{> product_card_v2}}{{/each}}
-      </div>
-    </section>
-
-    <section class="kompas-container py-8">
-      <div class="section-title">
-        <h2>Merchandise pilihan</h2>
-        <a class="font-semibold text-[#0f79c6]" href="/koleksi/merchandise">Lihat Semua</a>
-      </div>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-        {{#each storev2.merchandise}}{{> product_card_v2}}{{/each}}
-      </div>
-    </section>
-
-    <section class="kompas-container py-8">
-      <div class="section-title">
-        <h2>Baru di store</h2>
-        <a class="font-semibold text-[#0f79c6]" href="/koleksi/terbaru">Lihat Semua</a>
-      </div>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-        {{#each storev2.baru}}{{> product_card_v2}}{{/each}}
-      </div>
-      <div class="sv2-section-more"><a class="btn btn-secondary sv2-more-btn" href="/koleksi/terbaru">Lihat semua</a></div>
-    </section>
-
+    {{/each}}
     </main>
             </div>

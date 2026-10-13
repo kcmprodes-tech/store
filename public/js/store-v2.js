@@ -618,6 +618,18 @@
     });
   }
 
+  /* Label kategori dari database (<script data-store-categories>); konstanta prototipe jadi cadangan. */
+  function storeCategoryLabels(cat, sub) {
+    var el = document.querySelector('script[data-store-categories]');
+    if (el) {
+      try {
+        var data = JSON.parse(el.textContent);
+        if (data && data.cat && data.sub) return data;
+      } catch (e) { /* pakai cadangan */ }
+    }
+    return { cat: cat, sub: sub };
+  }
+
   /* ---------- Semua produk: filter the grid by ?category= & ?sub= ---------- */
   function initAllProducts() {
     var page = document.querySelector('[data-all-products]');
@@ -626,6 +638,9 @@
     var SUB = { apparel: 'Apparel', accessories: 'Accessories', drinkware: 'Drinkware', novel: 'Novel', quran: 'Quran',
       biografi: 'Biografi', ensiklopedia: 'Ensiklopedia', 'video-premium': 'Video premium', 'konten-premium': 'Konten premium',
       sticker: 'Sticker', aktivitas: 'Aktivitas', webinar: 'Webinar', workshop: 'Workshop', tour: 'Tour' };
+    var labels = storeCategoryLabels(CAT, SUB);
+    CAT = labels.cat;
+    SUB = labels.sub;
     var params = new URLSearchParams(location.search);
     var cat = CAT[params.get('category')] ? params.get('category') : '';
     var sub = cat && SUB[params.get('sub')] ? params.get('sub') : '';
@@ -665,6 +680,9 @@
     var SUB = { apparel: 'Apparel', accessories: 'Accessories', drinkware: 'Drinkware', novel: 'Novel', quran: 'Quran',
       biografi: 'Biografi', ensiklopedia: 'Ensiklopedia', 'video-premium': 'Video premium', 'konten-premium': 'Konten premium',
       sticker: 'Sticker', aktivitas: 'Aktivitas', webinar: 'Webinar', workshop: 'Workshop', tour: 'Tour' };
+    var labels = storeCategoryLabels(CAT, SUB);
+    CAT = labels.cat;
+    SUB = labels.sub;
     var params = new URLSearchParams(location.search);
     var q = (params.get('q') || '').trim();
     var cat = CAT[params.get('category')] ? params.get('category') : '';

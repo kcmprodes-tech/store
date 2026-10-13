@@ -155,6 +155,13 @@ export function toPdpVM(p: ProductWithRelations, wishlisted = false) {
     specRows: [...((p.specs as string[] | null) ?? [`Produk: ${p.title}`]), `SKU: ${p.sku ?? v?.sku ?? ''}`].map(specRow),
     sku: p.sku ?? v?.sku ?? '',
     category: p.category ? { name: p.label ?? p.category.parent?.name ?? p.category.name, href: `/produk?category=${kcat}${ksub ? `&sub=${ksub}` : ''}` } : null,
+    /** Breadcrumb kategori → sub kategori produk. */
+    crumbs: p.category
+      ? [
+          ...(p.category.parent ? [{ name: p.category.parent.name, href: `/produk?category=${kcat}` }] : []),
+          { name: p.category.name, href: `/produk?category=${kcat}${ksub ? `&sub=${ksub}` : ''}` },
+        ]
+      : [],
     typeLabel: p.type === 'PHYSICAL' ? 'Fisik' : 'Digital',
     buyHref: `/checkout?product=${encodeURIComponent(p.slug)}&type=${encodeURIComponent(variants[0]?.name ?? '')}&qty=1&checkoutFlow=buy-now`,
     wishlisted,
