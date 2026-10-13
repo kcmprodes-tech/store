@@ -76,5 +76,6 @@
   </dialog>
 
   <script src="/cms/admin.js?v={{assetVersion}}" defer></script>
+  {{#each scripts}}<script src="{{this}}?v={{@root.assetVersion}}" defer></script>{{/each}}
 </body>
 </html>

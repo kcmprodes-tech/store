@@ -19,6 +19,7 @@ import { bannerRouter } from './modules/kurasi/banner.routes.js';
 import { feedApiRouter } from './modules/kurasi/feed.js';
 import { koleksiRouter } from './modules/kurasi/koleksi.routes.js';
 import { seksiRouter } from './modules/kurasi/seksi.routes.js';
+import { produkRouter } from './modules/produk/produk.routes.js';
 import { uploadRouter } from './modules/upload/upload.routes.js';
 
 export const adminRouter = Router();
@@ -150,6 +151,7 @@ adminRouter.use(authRouter);
 adminRouter.use(requireLogin);
 adminRouter.use(dashboardRouter);
 adminRouter.use(uploadRouter);
+adminRouter.use(produkRouter);
 adminRouter.use(kategoriRouter);
 adminRouter.use(menuRouter);
 adminRouter.use(feedApiRouter);

@@ -2,6 +2,7 @@
  * Utilitas tes CMS: akun uji sementara (dihapus lagi setelah tes) dan agen supertest yang sudah login.
  * Semua request non-GET memakai Origin yang sama dengan Host, seperti browser sungguhan.
  */
+import qs from 'qs';
 import request from 'supertest';
 import type { Express } from 'express';
 import { hashPassword } from '../src/admin/auth/password.js';
@@ -70,9 +71,9 @@ export async function loggedIn(app: Express, roles: AdminRole[]) {
   return { user, agent: a, csrf: await csrfToken(a) };
 }
 
-/** POST form dengan token CSRF. */
+/** POST form dengan token CSRF; field bersarang dikirim seperti browser (variants[0][sku]=…). */
 export function postForm(a: Agent, url: string, csrf: string, data: Record<string, unknown> = {}) {
-  return post(a, url).type('form').send({ _csrf: csrf, ...data });
+  return post(a, url).type('form').send(qs.stringify({ _csrf: csrf, ...data }));
 }
 
 /** POST JSON dengan token CSRF di header. */

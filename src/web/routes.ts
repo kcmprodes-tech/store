@@ -11,6 +11,7 @@ import {
   getWishlistProducts,
   listPublished,
   listVideos,
+  type ProductWithRelations,
 } from '../modules/catalog/catalog.service.js';
 import { formatNumber, formatRupiah } from '../lib/format.js';
 import { getSettings } from '../lib/settings.js';
@@ -117,25 +118,29 @@ web.get(
     const product = await getProductBySlug(String(req.params.slug));
     if (!product) return next();
     if (product.externalUrl) return res.redirect(302, product.externalUrl);
-
-    const related = await relatedCards();
-    if (product.type === 'DIGITAL_VIDEO') {
-      return res.renderPage('detail-video', {
-        pageTitle: product.title,
-        product: toPdpVM(product),
-        storev2: { video: [toPdpJson(product)], related },
-      });
-    }
-    if (product.options.some((o) => o.name === 'Warna' || o.name === 'Ukuran')) {
-      return res.renderPage('detail-apparel', {
-        pageTitle: product.title,
-        product: toPdpVM(product),
-        storev2: { apparel: [toPdpJson(product)], related },
-      });
-    }
-    await res.renderPage('detail', { pageTitle: product.title, product: toPdpVM(product), storev2: { related } });
+    await renderProductPage(res, product);
   }),
 );
+
+/** Halaman detail produk (video / apparel / umum). Dipakai juga pratinjau produk draft di CMS. */
+export async function renderProductPage(res: Response, product: ProductWithRelations) {
+  const related = await relatedCards();
+  if (product.type === 'DIGITAL_VIDEO') {
+    return res.renderPage('detail-video', {
+      pageTitle: product.title,
+      product: toPdpVM(product),
+      storev2: { video: [toPdpJson(product)], related },
+    });
+  }
+  if (product.options.some((o) => o.name === 'Warna' || o.name === 'Ukuran')) {
+    return res.renderPage('detail-apparel', {
+      pageTitle: product.title,
+      product: toPdpVM(product),
+      storev2: { apparel: [toPdpJson(product)], related },
+    });
+  }
+  await res.renderPage('detail', { pageTitle: product.title, product: toPdpVM(product), storev2: { related } });
+}
 
 web.get(
   '/wishlist',
