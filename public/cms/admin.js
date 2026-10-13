@@ -378,6 +378,17 @@
     $$('[data-rules-preview]').forEach(function (box) { if (box.__refresh && !box.closest('[hidden]')) box.__refresh(); });
   });
 
+  /* ---------- Salin teks: <button data-copy="id-input"> ---------- */
+  $$('[data-copy]').forEach(function (btn) {
+    on(btn, 'click', function () {
+      var input = document.getElementById(btn.getAttribute('data-copy'));
+      if (!input) return;
+      var done = function () { toast('Disalin.', 'success'); };
+      if (navigator.clipboard) navigator.clipboard.writeText(input.value).then(done, function () { input.select(); });
+      else { input.select(); document.execCommand('copy'); done(); }
+    });
+  });
+
   /* ---------- Filter otomatis: <select data-autosubmit> ---------- */
   $$('[data-autosubmit]').forEach(function (el) {
     on(el, 'change', function () { if (el.form) el.form.submit(); });

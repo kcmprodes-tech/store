@@ -1,0 +1,66 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Log perubahan</h1>
+    <p class="page-subtitle">{{#if entityFilter}}{{entityFilter.label}}{{#if entityFilter.name}}: {{entityFilter.name}}{{/if}} · {{/if}}{{number total}} catatan{{#unless seeAll}} · hanya aktivitas Anda{{/unless}}</p>
+  </div>
+</div>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/log">
+    {{#if filters.id}}<input type="hidden" name="id" value="{{filters.id}}">{{/if}}
+    <select class="select" name="entitas" data-autosubmit aria-label="Modul">
+      <option value="">Semua modul</option>
+      {{#each entities}}<option value="{{value}}" {{selected value ../filters.entitas}}>{{label}}</option>{{/each}}
+    </select>
+    {{#if seeAll}}
+    <select class="select" name="pelaku" data-autosubmit aria-label="Pelaku">
+      <option value="">Semua pengguna</option>
+      {{#each actors}}<option value="{{id}}" {{selected id ../filters.pelaku}}>{{name}}</option>{{/each}}
+    </select>
+    {{/if}}
+    <input class="input input-date" type="date" name="dari" value="{{filters.dari}}" aria-label="Dari tanggal">
+    <input class="input input-date" type="date" name="sampai" value="{{filters.sampai}}" aria-label="Sampai tanggal">
+    <label class="check small"><input type="checkbox" name="login" value="1" {{checked filters.login}} data-autosubmit><span>Tampilkan login/logout</span></label>
+    <button class="btn btn-secondary" type="submit">Terapkan</button>
+    {{#if filters.id}}<a class="btn btn-plain" href="/admin/log">Hapus filter</a>{{/if}}
+  </form>
+
+  {{#if logs.length}}
+  <ol class="log-list">
+    {{#each logs}}
+    <li class="log-item">
+      <div class="log-head">
+        <span class="adm-avatar log-avatar" aria-hidden="true">{{initials actorEmail}}</span>
+        <div class="list-main">
+          <strong>{{actionLabel}} {{entityName}}{{#if entityLabel}}: {{entityLabel}}{{/if}}</strong>
+          <span class="small muted">{{actorEmail}} · {{datetime createdAt}}{{#if ip}} · IP {{ip}}{{/if}}</span>
+          {{#if summary}}<span class="small">{{summary}}</span>{{/if}}
+        </div>
+      </div>
+      {{#if changeRows.length}}
+      <details class="log-changes">
+        <summary>{{changeRows.length}} perubahan</summary>
+        <div class="table-wrap">
+          <table class="table table-compact">
+            <thead><tr><th>Field</th><th>Sebelum</th><th>Sesudah</th></tr></thead>
+            <tbody>
+              {{#each changeRows}}<tr><td class="mono small">{{field}}</td><td class="log-value">{{before}}</td><td class="log-value">{{after}}</td></tr>{{/each}}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ol>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "clock-counter-clockwise" size=40}}<strong>Belum ada catatan</strong></div>
+  {{/if}}
+</section>

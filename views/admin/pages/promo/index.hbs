@@ -1,0 +1,51 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Promo</h1>
+    <p class="page-subtitle">Kode promo yang bisa dipakai pembeli di checkout.</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/promo/baru">{{icon "plus" size=18}} Promo baru</a></div>
+  {{/if}}
+</div>
+
+<div class="alert form-errors">{{icon "info" weight="fill"}}<div class="alert-body">Checkout store mulai memakai daftar promo ini setelah transaksi pindah ke database (Tahap 3). Sampai saat itu checkout masih memakai kode bawaan prototipe (DJFXA54, PAYDAY25).</div></div>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/promo" role="search">
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input mono" type="search" name="q" value="{{search}}" placeholder="Cari kode" aria-label="Cari kode promo">
+    </div>
+    <button class="btn btn-secondary" type="submit">Cari</button>
+  </form>
+  {{#if promos.length}}
+  <div class="table-wrap">
+    <table class="table table-cards">
+      <thead><tr><th>Kode</th><th>Potongan</th><th>Min. belanja</th><th>Terpakai</th><th>Periode</th><th>Status</th><th class="col-actions"><span class="sr-only">Aksi</span></th></tr></thead>
+      <tbody>
+        {{#each promos}}
+        <tr>
+          <td class="cell-main"><a href="/admin/promo/{{id}}"><strong class="mono">{{code}}</strong></a></td>
+          <td data-label="Potongan">{{discountText}}</td>
+          <td data-label="Min. belanja">{{#if minSpend}}{{rupiah minSpend}}{{else}}<span class="muted">—</span>{{/if}}</td>
+          <td data-label="Terpakai" class="nowrap">{{number usedCount}}{{#if quota}} / {{number quota}}{{/if}}</td>
+          <td data-label="Periode" class="small">{{#if startsAt}}{{date startsAt}}{{else}}Sekarang{{/if}} – {{#if endsAt}}{{date endsAt}}{{else}}tanpa batas{{/if}}</td>
+          <td data-label="Status"><span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span></td>
+          <td class="col-actions">
+            {{#if ../canEdit}}
+            <div class="row-actions">
+              <form method="post" action="/admin/promo/{{id}}/tampil">{{> csrf}}<button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}} {{code}}" title="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}}">{{#if isActive}}{{icon "toggle-right" size=16}}{{else}}{{icon "toggle-left" size=16}}{{/if}}</button></form>
+              <a class="btn btn-secondary btn-sm btn-icon" href="/admin/promo/{{id}}" aria-label="Ubah {{code}}" title="Ubah">{{icon "pencil-simple" size=16}}</a>
+              <form method="post" action="/admin/promo/{{id}}/hapus" data-confirm="Hapus promo {{code}}?" data-danger data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{code}}" title="Hapus">{{icon "trash" size=16}}</button></form>
+            </div>
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "ticket" size=40}}<strong>Belum ada promo</strong></div>
+  {{/if}}
+</section>

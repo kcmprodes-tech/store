@@ -1,0 +1,70 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/promo">Promo</a>{{icon "caret-right" size=12}}<span>{{#if promo}}{{promo.code}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if promo}}<p class="page-subtitle"><span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span> · terpakai {{number promo.usedCount}} kali</p>{{/if}}
+  </div>
+  {{#if promo}}
+  <div class="page-actions"><a class="btn btn-secondary" href="/admin/log?entitas=promo&id={{promo.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a></div>
+  {{/if}}
+</div>
+
+<form class="box narrow" method="post" action="{{#if promo}}/admin/promo/{{promo.id}}{{else}}/admin/promo{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <fieldset class="form-grid plain-fieldset"{{#if readOnly}} disabled{{/if}}>
+    <div class="field">
+      <label class="label label-req" for="code">Kode</label>
+      <input class="input mono{{#if errors.code}} is-invalid{{/if}}" id="code" name="code" value="{{values.code}}" maxlength="40" autocapitalize="characters" required{{#if promo.usedCount}} readonly{{/if}}>
+      {{#if errors.code}}<p class="field-error">{{errors.code}}</p>{{else if promo.usedCount}}<p class="help">Kode tidak bisa diubah karena sudah pernah dipakai.</p>{{else}}<p class="help">Otomatis huruf besar, mis. PAYDAY25.</p>{{/if}}
+    </div>
+    <div class="field">
+      <span class="label">Jenis potongan</span>
+      <div class="choice-group">
+        <label class="choice"><input type="radio" name="type" value="FIXED" {{checked (eq values.type "FIXED")}}><span>Nominal (Rp)</span></label>
+        <label class="choice"><input type="radio" name="type" value="PERCENT" {{checked (eq values.type "PERCENT")}}><span>Persen (%)</span></label>
+      </div>
+    </div>
+    <div class="form-grid form-grid-2">
+      <div class="field">
+        <label class="label label-req" for="value">Potongan</label>
+        <input class="input{{#if errors.value}} is-invalid{{/if}}" id="value" name="value" type="number" min="1" inputmode="numeric" value="{{values.value}}" required>
+        {{#if errors.value}}<p class="field-error">{{errors.value}}</p>{{else}}<p class="help"><span data-show-when="type=FIXED">Rupiah, tanpa titik.</span><span data-show-when="type=PERCENT">1–100.</span></p>{{/if}}
+      </div>
+      <div class="field" data-show-when="type=PERCENT">
+        <label class="label" for="maxDiscount">Maksimal potongan (Rp)</label>
+        <input class="input{{#if errors.maxDiscount}} is-invalid{{/if}}" id="maxDiscount" name="maxDiscount" type="number" min="1" inputmode="numeric" value="{{values.maxDiscount}}" placeholder="Tanpa batas">
+        {{#if errors.maxDiscount}}<p class="field-error">{{errors.maxDiscount}}</p>{{/if}}
+      </div>
+      <div class="field">
+        <label class="label" for="minSpend">Minimal belanja (Rp)</label>
+        <input class="input{{#if errors.minSpend}} is-invalid{{/if}}" id="minSpend" name="minSpend" type="number" min="0" inputmode="numeric" value="{{values.minSpend}}">
+        {{#if errors.minSpend}}<p class="field-error">{{errors.minSpend}}</p>{{else}}<p class="help">0 = tanpa minimal.</p>{{/if}}
+      </div>
+      <div class="field">
+        <label class="label" for="quota">Kuota pemakaian</label>
+        <input class="input{{#if errors.quota}} is-invalid{{/if}}" id="quota" name="quota" type="number" min="1" inputmode="numeric" value="{{values.quota}}" placeholder="Tanpa batas">
+        {{#if errors.quota}}<p class="field-error">{{errors.quota}}</p>{{/if}}
+      </div>
+      <div class="field">
+        <label class="label" for="startsAt">Mulai (WIB)</label>
+        <input class="input" id="startsAt" name="startsAt" type="datetime-local" value="{{dtlocal values.startsAt}}">
+        <p class="help">Kosong = berlaku sekarang.</p>
+      </div>
+      <div class="field">
+        <label class="label" for="endsAt">Berakhir (WIB)</label>
+        <input class="input{{#if errors.endsAt}} is-invalid{{/if}}" id="endsAt" name="endsAt" type="datetime-local" value="{{dtlocal values.endsAt}}">
+        {{#if errors.endsAt}}<p class="field-error">{{errors.endsAt}}</p>{{else}}<p class="help">Kosong = tanpa batas waktu.</p>{{/if}}
+      </div>
+    </div>
+    <label class="switch">
+      <input type="checkbox" name="isActive" {{checked values.isActive}}>
+      <span class="check-text"><span class="label">Aktif</span></span>
+    </label>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/promo">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>
