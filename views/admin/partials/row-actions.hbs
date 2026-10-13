@@ -1,0 +1,9 @@
+{{!-- Tombol urutan, tampil/sembunyi, ubah, hapus untuk satu baris.
+     Parameter: base (URL item), label, isActive, first, last, deleteMessage --}}
+<div class="row-actions">
+  <form method="post" action="{{base}}/urutan">{{> csrf}}<input type="hidden" name="arah" value="naik"><button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="Naikkan {{label}}" title="Naikkan"{{#if first}} disabled{{/if}}>{{icon "arrow-up" size=16}}</button></form>
+  <form method="post" action="{{base}}/urutan">{{> csrf}}<input type="hidden" name="arah" value="turun"><button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="Turunkan {{label}}" title="Turunkan"{{#if last}} disabled{{/if}}>{{icon "arrow-down" size=16}}</button></form>
+  <form method="post" action="{{base}}/tampil">{{> csrf}}<button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="{{#if isActive}}Sembunyikan{{else}}Tampilkan{{/if}} {{label}}" title="{{#if isActive}}Sembunyikan{{else}}Tampilkan{{/if}}">{{#if isActive}}{{icon "eye" size=16}}{{else}}{{icon "eye-slash" size=16}}{{/if}}</button></form>
+  <a class="btn btn-secondary btn-sm btn-icon" href="{{base}}" aria-label="Ubah {{label}}" title="Ubah">{{icon "pencil-simple" size=16}}</a>
+  <form method="post" action="{{base}}/hapus" data-confirm="{{deleteMessage}}" data-danger data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{label}}" title="Hapus">{{icon "trash" size=16}}</button></form>
+</div>

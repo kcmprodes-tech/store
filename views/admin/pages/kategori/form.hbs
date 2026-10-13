@@ -1,0 +1,55 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/kategori">Kategori</a>{{icon "caret-right" size=12}}<span>{{#if category}}{{category.name}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if category}}<p class="page-subtitle">{{category._count.products}} produk · {{category._count.children}} subkategori</p>{{/if}}
+  </div>
+  {{#if category}}
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="{{storeHref}}" target="_blank" rel="noopener">{{icon "arrow-square-out" size=18}} Lihat di store</a>
+    <a class="btn btn-secondary" href="/admin/log?entitas=category&id={{category.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+  {{/if}}
+</div>
+
+<form class="box narrow" method="post" action="{{#if category}}/admin/kategori/{{category.id}}{{else}}/admin/kategori{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <fieldset class="form-grid plain-fieldset"{{#if readOnly}} disabled{{/if}}>
+    <div class="field">
+      <label class="label label-req" for="name">Nama</label>
+      <input class="input{{#if errors.name}} is-invalid{{/if}}" id="name" name="name" value="{{values.name}}" maxlength="120" required data-slug-source="slug">
+      {{#if errors.name}}<p class="field-error">{{errors.name}}</p>{{/if}}
+    </div>
+    <div class="field">
+      <label class="label label-req" for="slug">Slug URL</label>
+      <div class="input-group"><span class="input-addon">category=</span><input class="input mono{{#if errors.slug}} is-invalid{{/if}}" id="slug" name="slug" value="{{values.slug}}" maxlength="80" required></div>
+      {{#if errors.slug}}<p class="field-error">{{errors.slug}}</p>{{else}}<p class="help">Huruf kecil, angka, dan tanda hubung. Mengubah slug ikut memperbarui aturan koleksi & seksi yang memakainya.</p>{{/if}}
+    </div>
+    <div class="field">
+      <label class="label" for="parentId">Induk</label>
+      <select class="select{{#if errors.parentId}} is-invalid{{/if}}" id="parentId" name="parentId">
+        <option value="">— Kategori utama —</option>
+        {{#each parents}}<option value="{{id}}" {{selected id ../values.parentId}}>{{name}}</option>{{/each}}
+      </select>
+      {{#if errors.parentId}}<p class="field-error">{{errors.parentId}}</p>{{else}}<p class="help">Kosongkan untuk kategori utama; pilih induk untuk subkategori.</p>{{/if}}
+    </div>
+    <div class="field">
+      <label class="label" for="landingCollectionId">Tujuan di menu Kategori</label>
+      <select class="select" id="landingCollectionId" name="landingCollectionId">
+        <option value="">Halaman Semua produk terfilter kategori ini</option>
+        {{#each collections}}<option value="{{id}}" {{selected id ../values.landingCollectionId}}>Koleksi: {{title}} (/koleksi/{{key}})</option>{{/each}}
+      </select>
+      <p class="help">Mis. Membership diarahkan ke halaman koleksi Membership.</p>
+    </div>
+    <label class="switch">
+      <input type="checkbox" name="isActive" {{checked values.isActive}}>
+      <span class="check-text"><span class="label">Tampil di store</span><span class="help">Kalau dimatikan, kategori hilang dari menu & filter (produknya tetap tayang).</span></span>
+    </label>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/kategori">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>

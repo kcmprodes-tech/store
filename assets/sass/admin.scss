@@ -1441,14 +1441,99 @@ img {
   }
 }
 
-// ───────────────────────── Urutan (naik/turun) ─────────────────────────
+// ───────────────────────── Baris daftar + aksi (urutan, tampil, ubah, hapus) ─────────────────────────
 
-.order-btns {
+.row-actions {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 4px;
   form {
-    display: inline;
+    display: inline-flex;
   }
+}
+
+.tree-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--kds-stroke-soft);
+  &:first-child {
+    border-top: 0;
+  }
+  .row-actions {
+    margin-left: auto;
+  }
+}
+
+.tree-parent {
+  background: var(--kds-background-paper-elevation-0);
+  .tree-main strong {
+    font-size: var(--kds-font-size-b2);
+  }
+}
+
+.tree-child {
+  padding-left: 32px;
+  background: var(--kds-background-paper-elevation-0);
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 0;
+    bottom: 50%;
+    width: 8px;
+    border-left: 1px solid var(--kds-stroke-medium);
+    border-bottom: 1px solid var(--kds-stroke-medium);
+    border-bottom-left-radius: 4px;
+  }
+}
+
+.tree-main {
+  flex: 1 1 200px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  strong {
+    color: var(--kds-text-primary);
+    font-weight: var(--kds-font-weight-semibold);
+  }
+  a:hover strong {
+    color: var(--kds-primary-dark-brand);
+  }
+}
+
+.tree-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px 12px 32px;
+  border-top: 1px dashed var(--kds-stroke-soft);
+  font-weight: var(--kds-font-weight-semibold);
+}
+
+@media (min-width: $bp-tablet) {
+  .tree-row {
+    padding: 14px 24px;
+  }
+  .tree-child {
+    padding-left: 48px;
+    &::before {
+      left: 28px;
+    }
+  }
+  .tree-add {
+    padding-left: 48px;
+  }
+}
+
+.plain-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 // ───────────────────────── Login ─────────────────────────

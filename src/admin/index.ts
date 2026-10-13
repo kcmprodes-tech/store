@@ -13,6 +13,7 @@ import { loadSession } from './auth/session.js';
 import { HttpError, handle } from './http.js';
 import { adminRenderMiddleware } from './render.js';
 import { dashboardRouter } from './modules/dashboard/routes.js';
+import { kategoriRouter } from './modules/kategori/kategori.routes.js';
 
 export const adminRouter = Router();
 
@@ -142,6 +143,7 @@ adminRouter.use(authRouter);
 
 adminRouter.use(requireLogin);
 adminRouter.use(dashboardRouter);
+adminRouter.use(kategoriRouter);
 
 adminRouter.use(
   handle(async (_req, _res) => {

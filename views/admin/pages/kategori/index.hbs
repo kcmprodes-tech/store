@@ -1,0 +1,43 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Kategori</h1>
+    <p class="page-subtitle">Tampil di menu Kategori, dropdown pencarian, dan filter produk store.</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions">
+    <a class="btn btn-primary" href="/admin/kategori/baru">{{icon "plus" size=18}} Kategori baru</a>
+  </div>
+  {{/if}}
+</div>
+
+<div class="stack">
+  {{#each parents}}
+  <section class="box box-flush" id="kategori-{{id}}">
+    <div class="tree-row tree-parent">
+      <div class="tree-main">
+        <a href="/admin/kategori/{{id}}"><strong>{{name}}</strong></a>
+        <span class="small muted">/{{slug}} · {{total}} produk{{#if landingCollection}} · menaut ke koleksi {{landingCollection.title}}{{/if}}</span>
+      </div>
+      {{#unless isActive}}<span class="badge badge-warning">Disembunyikan</span>{{/unless}}
+      {{#if ../canEdit}}{{> row-actions base=(concat "/admin/kategori/" id) label=name isActive=isActive first=first last=last deleteMessage=(concat "Hapus kategori \"" name "\"? Hanya bisa kalau sudah tidak punya subkategori dan produk.")}}{{/if}}
+    </div>
+    {{#each children}}
+    <div class="tree-row tree-child" id="kategori-{{id}}">
+      <div class="tree-main">
+        <a href="/admin/kategori/{{id}}"><strong>{{name}}</strong></a>
+        <span class="small muted">/{{slug}} · {{_count.products}} produk{{#if landingCollection}} · menaut ke koleksi {{landingCollection.title}}{{/if}}</span>
+      </div>
+      {{#unless isActive}}<span class="badge badge-warning">Disembunyikan</span>{{/unless}}
+      {{#if ../../canEdit}}{{> row-actions base=(concat "/admin/kategori/" id) label=name isActive=isActive first=first last=last deleteMessage=(concat "Hapus subkategori \"" name "\"? Hanya bisa kalau sudah tidak berisi produk.")}}{{/if}}
+    </div>
+    {{/each}}
+    {{#if ../canEdit}}
+    <a class="tree-add" href="/admin/kategori/baru?induk={{id}}">{{icon "plus" size=16}} Tambah subkategori {{name}}</a>
+    {{/if}}
+  </section>
+  {{else}}
+  <div class="box"><div class="empty">{{icon "tree-structure" size=40}}<strong>Belum ada kategori</strong></div></div>
+  {{/each}}
+</div>
+
+<p class="help mt-16">{{icon "info" size=16}} Kategori yang disembunyikan hilang dari menu & filter, tetapi produknya tetap tayang di seksi, koleksi, dan pencarian.</p>
