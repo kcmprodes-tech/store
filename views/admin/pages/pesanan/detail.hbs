@@ -52,7 +52,7 @@
 
   {{else if actions.handoverCourier}}
     <div class="next-step-head">{{icon "truck" size=28}}<div><h2 id="next-title" class="box-title">Serahkan ke kurir</h2><p class="box-desc">{{o.courier}} · resi <span class="mono">{{o.trackingNo}}</span>. Stok baru berkurang saat paket diserahkan.</p></div></div>
-    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-kurir" data-busy-form data-confirm="Paket {{o.invoiceNo}} sudah diterima kurir {{o.courier}}?" data-confirm-ok="Ya, sudah diserahkan">
+    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-kurir" data-busy-form data-confirm="Paket {{o.invoiceNo}} sudah diterima kurir {{o.courier}}? Status jadi Dikirim dan stok berkurang. Langkah ini tidak bisa dibatalkan." data-confirm-icon="check" data-confirm-ok="Ya, sudah diserahkan">
       {{> csrf}}
       <button class="btn btn-primary btn-block" type="submit">{{icon "hand-arrow-up" size=18}} Sudah diserahkan ke kurir</button>
     </form>
@@ -95,7 +95,7 @@
   {{else if (eq o.status "SHIPPED")}}
     <div class="next-step-head">{{icon "truck" size=28}}<div><h2 id="next-title" class="box-title">Dalam pengiriman</h2><p class="box-desc">{{o.courier}} · resi <span class="mono">{{o.trackingNo}}</span> · diserahkan {{datetime o.shippedAt}}. Otomatis selesai {{datetime autoCompleteAt}}.</p></div></div>
     {{#if actions.complete}}
-    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/selesai" data-busy-form data-confirm="Pembeli sudah menerima pesanan {{o.invoiceNo}}?" data-confirm-ok="Ya, tandai selesai">
+    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/selesai" data-busy-form data-confirm="Pembeli sudah menerima pesanan {{o.invoiceNo}}? Status jadi Selesai. Retur dan refund tetap bisa dicatat sesudahnya." data-confirm-icon="check" data-confirm-ok="Ya, tandai selesai">
       {{> csrf}}
       <button class="btn btn-secondary btn-block" type="submit">{{icon "check-circle" size=18}} Tandai selesai (sudah diterima)</button>
     </form>

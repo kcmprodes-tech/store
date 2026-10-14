@@ -18,7 +18,7 @@
       {{#if (or startsAt endsAt)}}<span class="small muted">{{#if startsAt}}Mulai {{datetime startsAt}}{{/if}}{{#if (and startsAt endsAt)}} · {{/if}}{{#if endsAt}}Selesai {{datetime endsAt}}{{/if}}</span>{{/if}}
     </div>
     <span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span>
-    {{#if ../canEdit}}{{> row-actions base=(concat "/admin/banner/" id) label=title isActive=isActive first=first last=last deleteMessage=(concat "Hapus banner \"" title "\"?")}}{{/if}}
+    {{#if ../canEdit}}{{> row-actions base=(concat "/admin/banner/" id) label=title isActive=isActive first=first last=last deleteMessage=(concat "Hapus banner \"" title "\"? Banner langsung hilang dari beranda store.")}}{{/if}}
   </div>
   {{else}}
   <div class="empty">{{icon "image" size=40}}<strong>Belum ada banner</strong><span>Bagian banner tidak tampil di beranda.</span></div>

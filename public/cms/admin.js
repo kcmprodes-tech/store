@@ -92,16 +92,32 @@
     $$('[data-sheet]').forEach(function (sheet) { if (!sheet.hidden) closeSheet(sheet); });
   });
 
-  /* ---------- Dialog konfirmasi: <form data-confirm="Pesan"> atau <button data-confirm="…"> ---------- */
+  /* ---------- Dialog konfirmasi (pola AlertDialog shadcn/ui) ----------
+     <form data-confirm="Hapus X? Tindakan ini tidak bisa dibatalkan." data-confirm-ok="Hapus" data-danger data-confirm-icon="trash">
+     Teks sampai tanda tanya pertama jadi judul, sisanya deskripsi (atau pakai data-confirm-title).
+     Ikon: question (default), warning (default bila data-danger), trash, check. */
   var dialog = $('[data-confirm-dialog]');
+  function splitMessage(message) {
+    var m = /^([^?]*\?)\s+([\s\S]+)$/.exec(message || '');
+    return m ? { title: m[1], description: m[2] } : { title: message || 'Yakin?', description: '' };
+  }
   function confirmAction(message, options) {
     options = options || {};
-    if (!dialog || typeof dialog.showModal !== 'function') return Promise.resolve(window.confirm(message));
-    $('[data-confirm-title]', dialog).textContent = options.title || 'Yakin?';
-    $('[data-confirm-text]', dialog).textContent = message;
+    var parts = options.title ? { title: options.title, description: message || '' } : splitMessage(message);
+    if (!dialog || typeof dialog.showModal !== 'function') {
+      return Promise.resolve(window.confirm([parts.title, parts.description].filter(Boolean).join('\n\n')));
+    }
+    $('[data-confirm-title]', dialog).textContent = parts.title;
+    var text = $('[data-confirm-text]', dialog);
+    text.textContent = parts.description;
+    text.hidden = !parts.description;
+    dialog.setAttribute('data-tone', options.danger ? 'danger' : 'default');
+    dialog.setAttribute('data-media', options.icon || (options.danger ? 'warning' : 'question'));
     var ok = $('[data-confirm-ok]', dialog);
     ok.textContent = options.okLabel || 'Ya, lanjutkan';
-    ok.className = 'btn ' + (options.danger ? 'btn-danger' : 'btn-primary');
+    ok.className = 'btn ' + (options.danger ? 'btn-destructive' : 'btn-primary');
+    $('[data-confirm-cancel]', dialog).textContent = options.cancelLabel || 'Batal';
+    dialog.returnValue = '';
     dialog.showModal();
     return new Promise(function (resolve) {
       dialog.addEventListener('close', function handler() {
@@ -115,11 +131,18 @@
   on(document, 'submit', function (e) {
     var form = e.target;
     var submitter = e.submitter;
-    var message = (submitter && submitter.getAttribute('data-confirm')) || form.getAttribute('data-confirm');
+    var attr = function (name) { return (submitter && submitter.getAttribute(name)) || form.getAttribute(name); };
+    var message = attr('data-confirm');
     if (!message || form.__confirmed) return;
     e.preventDefault();
     var danger = (submitter && submitter.hasAttribute('data-danger')) || form.hasAttribute('data-danger');
-    confirmAction(message, { danger: danger, okLabel: (submitter && submitter.getAttribute('data-confirm-ok')) || form.getAttribute('data-confirm-ok') }).then(function (yes) {
+    confirmAction(message, {
+      danger: danger,
+      title: attr('data-confirm-title'),
+      icon: attr('data-confirm-icon'),
+      okLabel: attr('data-confirm-ok'),
+      cancelLabel: attr('data-confirm-cancel'),
+    }).then(function (yes) {
       if (!yes) return;
       form.__confirmed = true;
       if (submitter && submitter.name) {

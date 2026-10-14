@@ -23,7 +23,7 @@
       {{#if ../canEdit}}
       <form method="post" action="/admin/koleksi/{{id}}/tampil"{{#if isActive}} data-confirm="Nonaktifkan koleksi &quot;{{title}}&quot;? Halamannya jadi 404 dan menu/link yang menautnya ikut disembunyikan."{{/if}}>{{> csrf}}<button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}} {{title}}" title="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}}">{{#if isActive}}{{icon "eye" size=16}}{{else}}{{icon "eye-slash" size=16}}{{/if}}</button></form>
       <a class="btn btn-secondary btn-sm btn-icon" href="/admin/koleksi/{{id}}" aria-label="Ubah {{title}}" title="Ubah">{{icon "pencil-simple" size=16}}</a>
-      <form method="post" action="/admin/koleksi/{{id}}/hapus" data-confirm="Hapus koleksi &quot;{{title}}&quot;?" data-danger data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{title}}" title="Hapus">{{icon "trash" size=16}}</button></form>
+      <form method="post" action="/admin/koleksi/{{id}}/hapus" data-confirm="Hapus koleksi &quot;{{title}}&quot;? Halamannya jadi 404 dan koleksi tidak bisa dikembalikan." data-danger data-confirm-icon="trash" data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{title}}" title="Hapus">{{icon "trash" size=16}}</button></form>
       {{/if}}
     </div>
   </div>

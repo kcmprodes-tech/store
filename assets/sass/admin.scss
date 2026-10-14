@@ -1358,40 +1358,169 @@ img {
 
 // ───────────────────────── Dialog konfirmasi ─────────────────────────
 
-.dialog {
-  width: min(440px, calc(100vw - 32px));
-  padding: 24px;
+// ───────────────────────── Dialog konfirmasi (pola AlertDialog shadcn/ui, token KDS) ─────────────────────────
+// HP: ikon di atas, teks rata tengah, tombol bertumpuk (aksi di atas). ≥640px: ikon di kiri, teks rata kiri,
+// tombol sejajar di kanan. Overlay tipis + blur; buka/tutup fade + zoom 95% (dimatikan bila reduced motion).
+
+$bp-dialog: 640px;
+$dialog-icons: question, warning, trash, check;
+
+.alert-dialog {
+  width: calc(100% - 32px);
+  max-width: 320px;
+  padding: 0;
   border: 0;
   border-radius: var(--adm-radius-box);
   background: var(--kds-background-paper-elevation-0);
   color: var(--kds-text-primary);
-  box-shadow: var(--kds-shadow-xl);
+  box-shadow:
+    0 0 0 1px rgba(18, 18, 18, 0.1),
+    var(--kds-shadow-xl);
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity 0.1s ease-out,
+    transform 0.1s ease-out,
+    overlay 0.1s allow-discrete,
+    display 0.1s allow-discrete;
+  &[open] {
+    opacity: 1;
+    transform: none;
+  }
   &::backdrop {
-    background: var(--kds-background-overlay);
+    background: rgba(0, 0, 0, 0);
+    transition:
+      background-color 0.1s ease-out,
+      backdrop-filter 0.1s ease-out,
+      overlay 0.1s allow-discrete,
+      display 0.1s allow-discrete;
   }
-  h2 {
-    font-size: var(--kds-font-size-h6);
-    font-weight: var(--kds-font-weight-bold);
-    margin-bottom: 8px;
-  }
-  p {
-    color: var(--kds-text-secondary);
+  &[open]::backdrop {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
   }
 }
 
-.dialog-actions {
+@starting-style {
+  .alert-dialog[open] {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  .alert-dialog[open]::backdrop {
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alert-dialog,
+  .alert-dialog::backdrop {
+    transition: none;
+  }
+}
+
+.alert-dialog-content {
+  display: grid;
+  gap: 16px;
+  padding: 16px 16px 0;
+}
+
+.alert-dialog-header {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.alert-dialog-media {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  border-radius: var(--kds-radius-md);
+  background: var(--kds-background-paper-elevation-2);
+  color: var(--kds-text-primary);
+  > [data-icon] {
+    display: none;
+  }
+}
+
+@each $name in $dialog-icons {
+  .alert-dialog[data-media='#{$name}'] [data-icon='#{$name}'] {
+    display: contents;
+  }
+}
+
+.alert-dialog[data-tone='danger'] .alert-dialog-media {
+  background: var(--kds-error-light);
+  color: var(--kds-error-base);
+}
+
+.alert-dialog-title {
+  font-size: var(--kds-font-size-b2);
+  font-weight: var(--kds-font-weight-semibold);
+  line-height: 1.4;
+}
+
+.alert-dialog-description {
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-b3);
+  text-wrap: balance;
+}
+
+.alert-dialog-footer {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column-reverse;
   gap: 8px;
-  margin-top: 24px;
-  .btn {
-    flex: 1;
+  margin: 0 -16px;
+  padding: 16px;
+  border-top: 1px solid var(--kds-stroke-soft);
+  background: var(--kds-background-paper-elevation-1);
+}
+
+@media (min-width: $bp-dialog) {
+  .alert-dialog {
+    max-width: 384px;
+  }
+  .alert-dialog-header {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    justify-items: start;
+    column-gap: 16px;
+    text-align: left;
+  }
+  .alert-dialog-media {
+    grid-row: span 2;
+    margin-bottom: 0;
+  }
+  .alert-dialog-title,
+  .alert-dialog-description {
+    grid-column: 2;
+  }
+  // Tanpa deskripsi: judul sejajar tengah dengan ikon.
+  .alert-dialog-header:has(.alert-dialog-description[hidden]) .alert-dialog-title {
+    grid-row: span 2;
+    align-self: center;
+  }
+  .alert-dialog-description {
+    text-wrap: pretty;
+  }
+  .alert-dialog-footer {
+    flex-direction: row;
+    justify-content: flex-end;
   }
 }
 
-@media (min-width: $bp-tablet) {
-  .dialog-actions .btn {
-    flex: none;
+// Aksi berbahaya di dialog: merah lembut (varian "destructive" shadcn).
+.btn-destructive {
+  background: var(--kds-error-light);
+  color: var(--kds-error-dark);
+  &:hover {
+    background: var(--kds-error-pale);
+    color: var(--kds-error-dark);
   }
 }
 

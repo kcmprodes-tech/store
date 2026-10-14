@@ -64,12 +64,21 @@
   </div>
   {{/if}}
 
-  <dialog class="dialog" data-confirm-dialog aria-labelledby="confirm-title">
-    <form method="dialog">
-      <h2 id="confirm-title" data-confirm-title>Yakin?</h2>
-      <p data-confirm-text></p>
-      <div class="dialog-actions">
-        <button class="btn btn-secondary" value="cancel">Batal</button>
+  {{!-- Dialog konfirmasi (pola AlertDialog shadcn/ui): ikon, judul, deskripsi, lalu Batal · Aksi. Diisi oleh admin.js. --}}
+  <dialog class="alert-dialog" role="alertdialog" data-confirm-dialog data-media="question" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form class="alert-dialog-content" method="dialog">
+      <div class="alert-dialog-header">
+        <span class="alert-dialog-media" aria-hidden="true">
+          <span data-icon="question">{{icon "question" size=24}}</span>
+          <span data-icon="warning">{{icon "warning" size=24}}</span>
+          <span data-icon="trash">{{icon "trash" size=24}}</span>
+          <span data-icon="check">{{icon "check-circle" size=24}}</span>
+        </span>
+        <h2 class="alert-dialog-title" id="confirm-title" data-confirm-title>Yakin?</h2>
+        <p class="alert-dialog-description" id="confirm-text" data-confirm-text></p>
+      </div>
+      <div class="alert-dialog-footer">
+        <button class="btn btn-secondary" value="cancel" data-confirm-cancel autofocus>Batal</button>
         <button class="btn btn-primary" value="ok" data-confirm-ok>Ya, lanjutkan</button>
       </div>
     </form>

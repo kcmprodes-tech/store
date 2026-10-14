@@ -24,7 +24,7 @@
         {{#if target.warning}}<span class="small warning-text">{{icon "warning" size=14}} {{target.warning}}</span>{{/if}}
       </div>
       {{#unless isActive}}<span class="badge badge-warning">Disembunyikan</span>{{/unless}}
-      {{#if ../../canEdit}}{{> row-actions base=(concat "/admin/menu/" id) label=label isActive=isActive first=first last=last deleteMessage=(concat "Hapus \"" label "\" dari " ../title "?")}}{{/if}}
+      {{#if ../../canEdit}}{{> row-actions base=(concat "/admin/menu/" id) label=label isActive=isActive first=first last=last deleteMessage=(concat "Hapus \"" label "\" dari " ../title "? Item langsung hilang dari menu store.")}}{{/if}}
     </div>
     {{else}}
     <div class="empty">{{icon "list-bullets" size=40}}<strong>Belum ada item</strong><span>{{#if (eq placement "HOME_SHORTCUT")}}Bagian Kategori Pilihan tidak tampil di beranda.{{else}}Baris menu tidak tampil di store.{{/if}}</span></div>

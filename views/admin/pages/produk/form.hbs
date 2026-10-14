@@ -207,5 +207,5 @@
 
 {{#if product}}
 <form id="form-archive" method="post" action="/admin/produk/{{product.id}}/arsip"{{#unless (eq product.status "ARCHIVED")}} data-confirm="Arsipkan &quot;{{product.title}}&quot;? Produk tidak tampil lagi di store." data-confirm-ok="Arsipkan"{{/unless}} hidden>{{> csrf}}</form>
-<form id="form-delete" method="post" action="/admin/produk/{{product.id}}/hapus" data-confirm="Hapus &quot;{{product.title}}&quot; permanen? Tindakan ini tidak bisa dibatalkan." data-danger data-confirm-ok="Hapus" hidden>{{> csrf}}</form>
+<form id="form-delete" method="post" action="/admin/produk/{{product.id}}/hapus" data-confirm="Hapus &quot;{{product.title}}&quot; permanen? Tindakan ini tidak bisa dibatalkan." data-danger data-confirm-icon="trash" data-confirm-ok="Hapus" hidden>{{> csrf}}</form>
 {{/if}}

@@ -36,7 +36,7 @@
             <div class="row-actions">
               <form method="post" action="/admin/promo/{{id}}/tampil">{{> csrf}}<button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}} {{code}}" title="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}}">{{#if isActive}}{{icon "toggle-right" size=16}}{{else}}{{icon "toggle-left" size=16}}{{/if}}</button></form>
               <a class="btn btn-secondary btn-sm btn-icon" href="/admin/promo/{{id}}" aria-label="Ubah {{code}}" title="Ubah">{{icon "pencil-simple" size=16}}</a>
-              <form method="post" action="/admin/promo/{{id}}/hapus" data-confirm="Hapus promo {{code}}?" data-danger data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{code}}" title="Hapus">{{icon "trash" size=16}}</button></form>
+              <form method="post" action="/admin/promo/{{id}}/hapus" data-confirm="Hapus promo {{code}}? Kode ini tidak bisa dipakai lagi dan tidak bisa dikembalikan." data-danger data-confirm-icon="trash" data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{code}}" title="Hapus">{{icon "trash" size=16}}</button></form>
             </div>
             {{/if}}
           </td>

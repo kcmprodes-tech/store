@@ -79,7 +79,7 @@
           <textarea class="textarea" id="decision-note" name="note" rows="3" maxlength="500" placeholder="Wajib diisi bila menolak"></textarea>
         </div>
         <div class="stack mt-16">
-          <button class="btn btn-primary btn-block" type="submit" name="keputusan" value="setujui" data-confirm="Setujui refund {{rupiah r.amount}}?" data-confirm-ok="Ya, setujui">{{icon "check" size=18}} Setujui</button>
+          <button class="btn btn-primary btn-block" type="submit" name="keputusan" value="setujui" data-confirm="Setujui refund {{rupiah r.amount}}? Setelah disetujui, kirim dananya ke pembeli lalu tandai &quot;Dana sudah dikembalikan&quot;." data-confirm-icon="check" data-confirm-ok="Ya, setujui">{{icon "check" size=18}} Setujui</button>
           <button class="btn btn-secondary btn-block" type="submit" name="keputusan" value="tolak" data-confirm="Tolak refund ini? Pastikan alasan sudah ditulis." data-confirm-ok="Ya, tolak" data-danger>{{icon "x" size=18}} Tolak</button>
         </div>
       </form>
@@ -92,7 +92,7 @@
     <section class="box">
       <h2 class="section-block-title">Kirim dana</h2>
       <p class="small">Kirim dana ke pembeli lewat dasbor pembayaran (manual sampai integrasi Xendit), lalu tandai di sini.</p>
-      <form class="mt-16" method="post" action="/admin/refund/{{r.id}}/selesai" data-busy-form data-confirm="Dana {{rupiah r.amount}} sudah dikirim ke pembeli?" data-confirm-ok="Ya, sudah dikirim">
+      <form class="mt-16" method="post" action="/admin/refund/{{r.id}}/selesai" data-busy-form data-confirm="Dana {{rupiah r.amount}} sudah dikirim ke pembeli? Refund ditandai selesai dan tidak bisa diubah lagi." data-confirm-icon="check" data-confirm-ok="Ya, sudah dikirim">
         {{> csrf}}
         <button class="btn btn-primary btn-block" type="submit">{{icon "money" size=18}} Dana sudah dikembalikan</button>
       </form>
