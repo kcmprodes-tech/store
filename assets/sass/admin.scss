@@ -32,6 +32,27 @@ $sidebar-w: 248px;
   display: none !important;
 }
 
+// Scrollbar tipis & netral di seluruh CMS. :where() supaya tidak mengalahkan aturan khusus
+// (mis. .tabs yang menyembunyikan scrollbar). Chrome/Firefox: properti standar; Safari: ::-webkit-scrollbar.
+:where(html, body.adm, body.adm *) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kds-stroke-medium) transparent;
+}
+
+:where(html, body.adm, body.adm *)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+:where(html, body.adm, body.adm *)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:where(html, body.adm, body.adm *)::-webkit-scrollbar-thumb {
+  border-radius: var(--kds-radius-rounded);
+  background: var(--kds-stroke-medium);
+}
+
 html {
   -webkit-text-size-adjust: 100%;
 }
@@ -433,6 +454,18 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     padding: var(--kds-spacing-20) var(--kds-spacing-16);
     background: var(--kds-background-paper-elevation-0);
     border-right: 1px solid var(--kds-stroke-soft);
+    // Scrollbar menu hanya muncul saat kursor/fokus ada di sidebar
+    scrollbar-color: transparent transparent;
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+    &:hover,
+    &:focus-within {
+      scrollbar-color: var(--kds-stroke-medium) transparent;
+      &::-webkit-scrollbar-thumb {
+        background: var(--kds-stroke-medium);
+      }
+    }
   }
   .adm-sidebar nav {
     flex: 1;
@@ -698,10 +731,10 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 }
 
 // Kartu ringkasan modul di dashboard: label, angka besar, ikon, rincian status bertitik, tombol.
-// Jumlah kolom mengikuti lebar area kartu (container query): 1 → 2 → 4, dan 4 kolom hanya bila
-// tiap kartu cukup lebar (±300px) untuk "Lihat semua" + "+ … baru" sebaris.
+// HP: 1 kolom. Mulai area 600px (KDS tablet): 4 kolom sejajar. Isi kartu menyesuaikan lebar kartunya
+// sendiri (container query "kartu"): sempit → tombol & rincian bertumpuk; sangat sempit → ikon disembunyikan.
 .summary-cards-wrap {
-  container-type: inline-size;
+  container: ringkasan / inline-size;
   margin-bottom: var(--kds-spacing-16);
 }
 
@@ -711,20 +744,21 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   gap: var(--kds-spacing-12);
 }
 
-@container (min-width: 600px) {
-  .summary-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--kds-spacing-16);
-  }
-}
-
-@container (min-width: 1280px) {
+@container ringkasan (min-width: 600px) {
   .summary-cards {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
+// Area kurang dari ±1000px → kartu < 240px: padding lebih rapat
+@container ringkasan (min-width: 600px) and (max-width: 999px) {
+  .summary-card {
+    padding: var(--kds-spacing-16);
+  }
+}
+
 .summary-card {
+  container: kartu / inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--kds-spacing-12);
@@ -833,6 +867,33 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   gap: var(--kds-spacing-8);
   margin-top: auto;
   padding-top: var(--kds-spacing-4);
+}
+
+// Kartu sempit (isi < 260px, "Lihat semua" + "+ … baru" tidak muat sebaris): rincian & tombol bertumpuk,
+// tombol penuh lebar (label boleh dua baris)
+@container kartu (max-width: 259px) {
+  .summary-card-dots {
+    flex-direction: column;
+    gap: var(--kds-spacing-4);
+  }
+  .summary-card-actions {
+    flex-direction: column;
+    .btn {
+      width: 100%;
+      height: auto;
+      min-height: var(--adm-btn-h-sm);
+      padding: var(--kds-spacing-8);
+      white-space: normal;
+      text-align: center;
+    }
+  }
+}
+
+// Kartu sangat sempit: ikon dekoratif disembunyikan supaya label & angka tetap lega
+@container kartu (max-width: 179px) {
+  .summary-card-icon {
+    display: none;
+  }
 }
 
 // ───────────────────────── Tombol / CTA ─────────────────────────
