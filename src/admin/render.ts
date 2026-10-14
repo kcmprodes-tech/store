@@ -97,7 +97,7 @@ type NavItem = { key: string; label: string; href: string; icon: string; module?
 type NavGroup = { key: string; label: string | null; items: NavItem[] };
 
 const NAV: NavGroup[] = [
-  { key: 'utama', label: null, items: [{ key: 'dasbor', label: 'Dasbor', href: '/admin', icon: 'squares-four' }] },
+  { key: 'utama', label: null, items: [{ key: 'dasbor', label: 'Dashboard', href: '/admin', icon: 'squares-four' }] },
   {
     key: 'pesanan',
     label: 'Pesanan',
@@ -143,7 +143,7 @@ const NAV: NavGroup[] = [
   },
 ];
 
-/** Menu bawah di HP: Dasbor + 3 modul yang paling sering dipakai peran utama akun. */
+/** Menu bawah di HP: Dashboard + 3 modul yang paling sering dipakai peran utama akun. */
 const MOBILE_PRIORITY: Record<AdminRole, string[]> = {
   ADMIN: ['pesanan', 'produk', 'stok'],
   EDITOR: ['produk', 'seksi', 'kategori'],

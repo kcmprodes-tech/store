@@ -3,35 +3,40 @@
     <h1 class="page-title">Halo, {{admin.name}}</h1>
     <p class="page-subtitle">{{roleNames}} · ringkasan Store Kompas.com hari ini</p>
   </div>
+  {{#if perms.stok.edit}}
   <div class="page-actions">
-    {{#if perms.produk.edit}}<a class="btn btn-primary" href="/admin/produk/baru">{{icon "plus" size=18}} Produk baru</a>{{/if}}
-    {{#if perms.stok.edit}}<a class="btn btn-ghost" href="/admin/stok/masuk">{{icon "arrow-square-in" size=18}} Barang masuk</a>{{/if}}
-    {{#if perms.promo.edit}}<a class="btn btn-ghost" href="/admin/promo/baru">{{icon "ticket" size=18}} Promo baru</a>{{/if}}
+    <a class="btn btn-ghost" href="/admin/stok/masuk">{{icon "arrow-square-in" size=18}} Barang masuk</a>
   </div>
+  {{/if}}
 </div>
 
-<div class="stats">
-  {{#if productStats}}
-  <a class="stat" href="/admin/produk?status=tayang">
-    <span class="stat-label">{{icon "storefront" size=16}} Produk tayang</span>
-    <span class="stat-value">{{number productStats.live}}</span>
-  </a>
-  <a class="stat" href="/admin/produk?status=draft">
-    <span class="stat-label">{{icon "pencil-simple-line" size=16}} Draft</span>
-    <span class="stat-value">{{number productStats.draft}}</span>
-  </a>
-  <a class="stat" href="/admin/produk?status=terjadwal">
-    <span class="stat-label">{{icon "calendar-dots" size=16}} Terjadwal</span>
-    <span class="stat-value">{{number productStats.upcoming}}</span>
-  </a>
-  {{/if}}
-  {{#if perms.stok.view}}
-  <a class="stat{{#if lowCount}} is-warning{{/if}}" href="/admin/stok?status=menipis">
-    <span class="stat-label">{{icon "warning" size=16}} Stok menipis</span>
-    <span class="stat-value">{{number lowCount}}</span>
-  </a>
-  {{/if}}
+{{#if cards.length}}
+<div class="summary-cards-wrap">
+<div class="summary-cards">
+  {{#each cards}}
+  <section class="summary-card" aria-labelledby="ringkasan-{{key}}">
+    <div class="summary-card-head">
+      <div>
+        <h2 class="summary-card-label" id="ringkasan-{{key}}">{{label}}</h2>
+        <p class="summary-card-value">{{number value}}</p>
+      </div>
+      <span class="summary-card-icon" aria-hidden="true">{{icon this.icon size=24}}</span>
+    </div>
+    {{#if sub}}<p class="summary-card-sub" title="{{subTitle}}">{{sub}}</p>{{/if}}
+    <ul class="summary-card-dots">
+      {{#each dots}}
+      <li{{#if title}} title="{{title}}"{{/if}}><a href="{{href}}"><span class="dot dot-{{tone}}" aria-hidden="true"></span>{{number count}} {{label}}</a></li>
+      {{/each}}
+    </ul>
+    <div class="summary-card-actions">
+      <a class="btn btn-secondary btn-sm" href="{{viewHref}}">{{viewLabel}}</a>
+      {{#if newHref}}<a class="btn btn-primary btn-sm" href="{{newHref}}">{{icon "plus" size=16}} {{newLabel}}</a>{{/if}}
+    </div>
+  </section>
+  {{/each}}
 </div>
+</div>
+{{/if}}
 
 <div class="grid grid-2">
   {{#if perms.stok.view}}
@@ -39,7 +44,7 @@
     <div class="box-head">
       <div>
         <h2 class="box-title">Stok menipis</h2>
-        <p class="box-desc">SKU dengan stok tersedia di bawah ambang</p>
+        <p class="box-desc">{{number lowCount}} SKU dengan stok tersedia di bawah ambang</p>
       </div>
       <a class="btn btn-plain btn-sm" href="/admin/stok?status=menipis">Lihat semua</a>
     </div>
@@ -61,7 +66,36 @@
   </section>
   {{/if}}
 
-  {{#if perms.produk.view}}
+  {{#if perms.pesanan.view}}
+  <section class="box">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">Pesanan terbaru</h2>
+        <p class="box-desc">5 pesanan yang paling baru masuk</p>
+      </div>
+      <a class="btn btn-plain btn-sm" href="/admin/pesanan?status=semua">Lihat semua</a>
+    </div>
+    {{#if recentOrders.length}}
+    <ul class="list recent-orders">
+      {{#each recentOrders}}
+      <li>
+        <span class="recent-order-icon" title="{{fulfillment.label}}">{{icon fulfillment.icon size=20}}</span>
+        <div class="list-main">
+          <a href="/admin/pesanan/{{invoiceNo}}"><strong class="mono">{{invoiceNo}}</strong></a>
+          <span class="small muted">{{buyerName}} · {{_count.items}} barang · <span class="nowrap">{{datetime createdAt}}</span></span>
+        </div>
+        <div class="recent-order-side">
+          <strong>{{rupiah total}}</strong>
+          <span class="badge badge-{{status.tone}}">{{status.label}}</span>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <div class="empty">{{icon "receipt" size=40}}<strong>Belum ada pesanan</strong><span>Pesanan baru akan muncul di sini.</span></div>
+    {{/if}}
+  </section>
+  {{else if perms.produk.view}}
   <section class="box">
     <div class="box-head">
       <div>

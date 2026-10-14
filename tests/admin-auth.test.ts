@@ -27,7 +27,7 @@ describe('login', () => {
     expect(page.text).toContain('Masuk ke CMS');
   });
 
-  it('password salah ditolak, password benar masuk ke Dasbor dan tercatat di log', async () => {
+  it('password salah ditolak, password benar masuk ke Dashboard dan tercatat di log', async () => {
     const user = track(await createAdmin(['EDITOR']));
     const a = agent(app);
     const wrong = await login(a, user.email, 'salah-sekali-123');

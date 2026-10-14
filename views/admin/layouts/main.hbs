@@ -17,7 +17,7 @@
       {{#if backHref}}
       <a class="icon-btn adm-appbar-back" href="{{backHref}}" aria-label="Kembali">{{icon "arrow-left" size=22}}</a>
       {{else}}
-      <a class="adm-brand-mark" href="/admin" aria-label="Dasbor CMS">{{icon "storefront" weight="fill" size=20}}</a>
+      <a class="adm-brand-mark" href="/admin" aria-label="Dashboard CMS">{{icon "storefront" weight="fill" size=20}}</a>
       {{/if}}
       <h1 class="adm-appbar-title">{{#if pageTitle}}{{pageTitle}}{{else}}CMS Store{{/if}}</h1>
       <button class="icon-btn" type="button" data-sheet-open="sheet-account" aria-label="Akun {{admin.name}}">
@@ -25,7 +25,7 @@
       </button>
     </header>
 
-    <main id="main" class="adm-main">
+    <main id="main" class="adm-main{{#if wideMain}} adm-main-wide{{/if}}">
       {{{body}}}
     </main>
   </div>

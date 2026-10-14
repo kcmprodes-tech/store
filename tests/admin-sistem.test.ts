@@ -193,3 +193,30 @@ describe('Menu samping', () => {
     expect(isOpen(onProduct.text, 'katalog')).toBe(true);
   });
 });
+
+describe('Dashboard', () => {
+  it('kartu ringkasan mengikuti hak akses: Admin 4 kartu, Editor hanya Produk & Kategori', async () => {
+    const admin = await loggedIn(app, ['ADMIN']);
+    admins.push(admin.user.id);
+    const a = await get(admin.agent, '/admin');
+    for (const key of ['produk', 'kategori', 'promo', 'pesanan']) expect(a.text).toContain(`id="ringkasan-${key}"`);
+    for (const text of ['tayang', 'unggulan', 'berlaku sekarang', 'nonaktif / berakhir', 'pendapatan', 'belum dibayar', 'Lihat semua pesanan']) {
+      expect(a.text).toContain(text);
+    }
+    const editor = await loggedIn(app, ['EDITOR']);
+    admins.push(editor.user.id);
+    const e = await get(editor.agent, '/admin');
+    expect(e.text).toContain('id="ringkasan-produk"');
+    expect(e.text).toContain('id="ringkasan-kategori"');
+    expect(e.text).toContain('Kategori baru');
+    expect(e.text).not.toContain('id="ringkasan-promo"');
+    expect(e.text).not.toContain('id="ringkasan-pesanan"');
+    // Pesanan terbaru (5, + Lihat semua) untuk peran yang bisa melihat pesanan; Editor tetap melihat Draft & terjadwal
+    expect(a.text).toContain('Pesanan terbaru');
+    expect(a.text).toContain('href="/admin/pesanan?status=semua"');
+    expect((a.text.match(/class="recent-order-icon"/g) ?? []).length).toBeLessThanOrEqual(5);
+    expect(e.text).not.toContain('Pesanan terbaru');
+    expect(e.text).toContain('Draft & terjadwal');
+  });
+});
+

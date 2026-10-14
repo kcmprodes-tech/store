@@ -108,7 +108,7 @@ CMS untuk tim Editor, Marketing, CS / Order, Gudang, Finance, dan Admin. Tampila
 Semua akun bisa melihat log perubahannya sendiri; Admin melihat semua.
 
 **Modul:**
-- Dasbor
+- Dashboard
 - Produk & varian: foto, deskripsi, spesifikasi, opsi Varian atau Warna × Ukuran + SKU, status & jadwal tayang, link luar, pratinjau draft
 - Kategori
 - Banner hero

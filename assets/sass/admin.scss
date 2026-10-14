@@ -1,6 +1,6 @@
 // CMS Store Kompas.com (/admin) — KOMPAS.com Design System 3.0 (mode terang).
 // Warna, spacing, radius, dan bayangan selalu lewat token --kds-*. Font Inter.
-// Keputusan proyek: CTA radius 12px, kotak/kartu radius 20px, ikon Phosphor.
+// Keputusan proyek: CTA radius 12px, kotak/kartu radius 16px, ikon Phosphor.
 @use 'kds-tokens';
 
 $bp-tablet: 768px;
@@ -9,7 +9,7 @@ $sidebar-w: 248px;
 
 :root {
   --adm-radius-cta: var(--kds-radius-lg); // 12px
-  --adm-radius-box: var(--kds-radius-2xl); // 20px
+  --adm-radius-box: var(--kds-radius-xl); // 16px
   --adm-radius-input: var(--kds-radius-md); // 8px (Form Input KDS)
   --adm-appbar-h: 56px;
   --adm-bottomnav-h: 64px;
@@ -134,6 +134,11 @@ img {
 .adm-main {
   padding: 16px 16px 32px;
   max-width: 1200px;
+}
+
+// Dashboard boleh lebih lebar supaya kartu ringkasan muat 4 kolom di monitor besar
+.adm-main-wide {
+  max-width: 1440px;
 }
 
 .adm-brand {
@@ -680,6 +685,145 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 
 .stat.is-error .stat-value {
   color: var(--kds-error-base);
+}
+
+// Kartu ringkasan modul di dashboard: label, angka besar, ikon, rincian status bertitik, tombol.
+// Jumlah kolom mengikuti lebar area kartu (container query): 1 → 2 → 4, dan 4 kolom hanya bila
+// tiap kartu cukup lebar (±300px) untuk "Lihat semua" + "+ … baru" sebaris.
+.summary-cards-wrap {
+  container-type: inline-size;
+  margin-bottom: 16px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+@container (min-width: 560px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@container (min-width: 1240px) {
+  .summary-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px;
+  border-radius: var(--adm-radius-box);
+  background: var(--kds-background-paper-elevation-0);
+  box-shadow: var(--kds-shadow-base), var(--kds-shadow-line);
+}
+
+.summary-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.summary-card-label {
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-c1);
+  font-weight: var(--kds-font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary-card-value {
+  margin-top: 4px;
+  font-size: var(--kds-font-size-h4);
+  font-weight: var(--kds-font-weight-bold);
+  line-height: 1.15;
+}
+
+.summary-card-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--adm-radius-cta);
+  background: var(--kds-primary-lightest);
+  color: var(--kds-primary-base-500);
+}
+
+.summary-card-sub {
+  margin-top: -4px;
+  color: var(--kds-text-secondary);
+}
+
+.summary-card-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--kds-text-secondary);
+    &:hover {
+      color: var(--kds-text-primary);
+    }
+  }
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--kds-stroke-medium);
+  &.dot-success {
+    background: var(--kds-success-base);
+  }
+  &.dot-warning {
+    background: var(--kds-warning-base);
+  }
+  &.dot-info {
+    background: var(--kds-primary-base-500);
+  }
+}
+
+// Pesanan terbaru di dashboard
+.recent-order-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--kds-radius-md);
+  background: var(--kds-primary-lightest);
+  color: var(--kds-primary-dark-brand);
+}
+
+.recent-order-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.summary-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 4px;
 }
 
 // ───────────────────────── Tombol (CTA radius 12px) ─────────────────────────
