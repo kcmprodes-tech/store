@@ -2023,12 +2023,19 @@ $dialog-icons: question, warning, trash, check;
   }
 }
 
+// Tab kapsul — mengikuti kapsul filter pesanan di store (.account-order-filters):
+// pil 40px, latar putih, border paper-elevation-3; hover border & teks text primary; aktif tanpa isi,
+// border & teks primary. Di layar sempit bisa digeser ke samping tanpa scrollbar.
 .tabs {
   display: flex;
-  gap: var(--kds-spacing-4);
+  gap: var(--kds-spacing-8);
   overflow-x: auto;
   margin-bottom: var(--kds-spacing-16);
+  padding-bottom: var(--kds-spacing-2);
   scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .tab {
@@ -2036,22 +2043,32 @@ $dialog-icons: question, warning, trash, check;
   display: inline-flex;
   align-items: center;
   gap: var(--kds-spacing-6);
-  min-height: 40px;
-  padding: var(--kds-spacing-8) var(--kds-spacing-16);
+  height: 40px;
+  padding: 0 var(--kds-spacing-16);
+  border: 1px solid var(--kds-background-paper-elevation-3);
   border-radius: var(--kds-radius-rounded);
-  color: var(--kds-text-secondary);
+  background: var(--kds-background-paper-elevation-0);
+  color: var(--kds-text-primary);
+  font-size: var(--kds-font-size-b3);
   font-weight: var(--kds-font-weight-semibold);
+  white-space: nowrap;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease;
   &:hover {
-    background: var(--kds-background-paper-elevation-2);
+    border-color: var(--kds-text-primary);
     color: var(--kds-text-primary);
   }
   &.is-active {
-    background: var(--kds-text-primary);
-    color: var(--kds-base-white);
+    border-color: var(--kds-primary-base-500);
+    color: var(--kds-primary-base-500);
   }
   .count {
+    color: var(--kds-text-tertiary);
     font-size: var(--kds-font-size-c1);
-    opacity: 0.7;
+  }
+  &.is-active .count {
+    color: inherit;
   }
 }
 
