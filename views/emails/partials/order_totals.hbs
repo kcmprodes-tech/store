@@ -1,0 +1,6 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
+  <tr><td class="e-row-label">Subtotal ({{order.itemCount}} produk)</td><td class="e-row-value">{{rupiah order.subtotal}}</td></tr>
+  {{#if (eq order.fulfillment "SHIPPING")}}<tr><td class="e-row-label">Ongkos kirim</td><td class="e-row-value">{{rupiah order.shippingFee}}</td></tr>{{/if}}
+  {{#if order.discount}}<tr><td class="e-row-label">Diskon{{#if order.promoCode}} ({{order.promoCode}}){{/if}}</td><td class="e-row-value e-row-discount">−{{rupiah order.discount}}</td></tr>{{/if}}
+  <tr><td class="e-total-label">Total</td><td class="e-total-value">{{rupiah order.total}}</td></tr>
+</table>

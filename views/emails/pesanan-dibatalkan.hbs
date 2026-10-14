@@ -1,0 +1,12 @@
+{{> badge tone="error" label="Dibatalkan"}}
+<h1 class="e-title">Pesananmu dibatalkan</h1>
+<p class="e-text">Pesanan <strong>{{order.invoiceNo}}</strong> dibatalkan {{cancel.by}}.</p>
+<table role="presentation" class="e-highlight" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="e-highlight-td">
+  <div class="{{#if refund}}e-hl-row{{else}}e-hl-row-last{{/if}}"><span class="e-label">Alasan pembatalan</span><span class="e-value">{{cancel.reason}}</span></div>
+  {{#if refund}}
+  <div class="e-hl-row"><span class="e-label">Dana dikembalikan</span><span class="e-value-price">{{rupiah refund.amount}}</span></div>
+  <div class="e-hl-row-last"><span class="e-label">Ke</span><span class="e-value">{{refund.destination}}</span><span class="e-value-text">Paling lambat {{refund.eta}}. Kami kirim email lagi saat dana sudah dikembalikan.</span></div>
+  {{/if}}
+</td></tr></table>
+{{> button href=order.url label="Lihat detail pesanan"}}
+{{> order_summary}}

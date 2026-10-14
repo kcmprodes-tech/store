@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex">
+  <title>Pratinjau email - Store Kompas.com</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, 'Helvetica Neue', Arial, sans-serif; letter-spacing: -0.2px; color: #2A2A2A; background: #F7F7F7; }
+    .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh; }
+    aside { background: #FFFFFF; border-right: 1px solid #E8E8E8; padding: 24px 16px; }
+    aside h1 { margin: 0 8px 4px; font-size: 18px; line-height: 24px; }
+    aside p.lead { margin: 0 8px 20px; font-size: 13px; line-height: 18px; color: #5A5A5A; }
+    .group { margin: 20px 8px 6px; font-size: 12px; line-height: 16px; font-weight: 600; color: #888888; text-transform: uppercase; letter-spacing: 0.4px; }
+    aside a { display: block; padding: 10px 12px; border-radius: 8px; color: #2A2A2A; text-decoration: none; }
+    aside a:hover { background: #F2F7FB; }
+    aside a.is-active { background: #F2F7FB; color: #0F79C6; }
+    aside a strong { display: block; font-size: 14px; line-height: 20px; font-weight: 600; }
+    aside a span { display: block; margin-top: 2px; font-size: 12px; line-height: 16px; color: #888888; }
+    main { padding: 24px 32px 48px; min-width: 0; }
+    .meta { max-width: 760px; margin: 0 auto 16px; padding: 16px 20px; background: #FFFFFF; border: 1px solid #E8E8E8; border-radius: 16px; }
+    .meta dl { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 6px 12px; margin: 0; font-size: 14px; line-height: 20px; }
+    .meta dt { color: #888888; }
+    .meta dd { margin: 0; }
+    .meta dd.subject { font-weight: 700; }
+    .toolbar { display: flex; gap: 8px; justify-content: center; margin: 0 auto 16px; }
+    .toolbar button { height: 36px; padding: 0 16px; border: 1px solid #E8E8E8; border-radius: 8px; background: #FFFFFF; font: inherit; font-size: 14px; font-weight: 600; color: #5A5A5A; cursor: pointer; }
+    .toolbar button.is-active { border-color: #0F79C6; color: #0F79C6; background: #F2F7FB; }
+    .toolbar a { display: inline-flex; align-items: center; padding: 0 12px; font-size: 14px; font-weight: 600; color: #0F79C6; text-decoration: none; }
+    .frame { display: block; width: 100%; max-width: 760px; height: 900px; margin: 0 auto; border: 0; border-radius: 16px; background: #F0F0F0; box-shadow: 0 2px 8px rgba(0, 0, 0, .08); transition: max-width .2s ease; }
+    .frame.is-mobile { max-width: 375px; }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid #E8E8E8; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <h1>Email ke pembeli</h1>
+      <p class="lead">Pratinjau template dengan data contoh. Hanya ada di mode development.</p>
+      {{#each groups}}
+      <div class="group">{{name}}</div>
+      {{#each emails}}
+      <a href="/__email?email={{name}}" class="{{#if active}}is-active{{/if}}"{{#if active}} aria-current="page"{{/if}}><strong>{{title}}</strong><span>{{trigger}}</span></a>
+      {{/each}}
+      {{/each}}
+    </aside>
+    <main>
+      <div class="meta">
+        <dl>
+          <dt>Subjek</dt><dd class="subject">{{current.subject}}</dd>
+          <dt>Preheader</dt><dd>{{current.preheader}}</dd>
+          <dt>Dikirim saat</dt><dd>{{current.trigger}}</dd>
+        </dl>
+      </div>
+      <div class="toolbar" role="group" aria-label="Lebar pratinjau">
+        <button type="button" class="is-active" data-width="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-width="mobile" aria-pressed="false">Mobile 375px</button>
+        <a href="/__email/{{current.name}}" target="_blank" rel="noopener">Buka email saja ↗</a>
+      </div>
+      <iframe class="frame" src="/__email/{{current.name}}" title="Pratinjau {{current.title}}"></iframe>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var frame = document.querySelector('.frame');
+      var buttons = document.querySelectorAll('[data-width]');
+      function fit() {
+        try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {}
+      }
+      frame.addEventListener('load', fit);
+      Array.prototype.forEach.call(buttons, function (btn) {
+        btn.addEventListener('click', function () {
+          Array.prototype.forEach.call(buttons, function (b) {
+            b.classList.toggle('is-active', b === btn);
+            b.setAttribute('aria-pressed', String(b === btn));
+          });
+          frame.classList.toggle('is-mobile', btn.getAttribute('data-width') === 'mobile');
+          setTimeout(fit, 250);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

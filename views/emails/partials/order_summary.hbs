@@ -1,0 +1,10 @@
+<div class="e-section">
+  <div class="e-section-title">Rincian pesanan</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 8px;">
+    <tr><td class="e-meta-label">No. pesanan</td><td class="e-meta-value">{{order.invoiceNo}}</td></tr>
+    <tr><td class="e-meta-label">Tanggal pesan</td><td class="e-meta-value">{{order.createdAt}}</td></tr>
+    <tr><td class="e-meta-label">Metode pembayaran</td><td class="e-meta-value">{{order.paymentMethod}}</td></tr>
+  </table>
+  {{> order_items}}
+  {{#unless hideTotals}}{{> order_totals}}{{/unless}}
+</div>

@@ -253,6 +253,29 @@ Tabel admin/role/audit dibuat di Tahap 4.
   - Admin CMS pertama: **ardi.suhanda@kompas.com** (dibuat lewat seed saat CMS dipasang).
 - **Masih menunggu:** penyedia ongkir (mis. Biteship/RajaOngkir) dan kurir aktif — sementara tetap tarif tetap JNE Premium/Regular; link tujuan VIK dan Event — sementara produknya tetap tampil seperti sekarang.
 
+## Email ke pembeli (14 Oktober 2026)
+
+Template sudah dibuat di `views/emails/` (desain KDS, CSS di-inline dengan juice, layout tabel 600px yang menyusut di HP) dan bisa dilihat di `/__email` saat development. Pengirimannya dipasang di Tahap 3, dipicu perubahan status pesanan (`order_status_history`).
+
+| Kelompok | Email | Dikirim saat |
+|---|---|---|
+| Transaksi | Menunggu pembayaran | Pesanan dibuat dengan VA BCA / QRIS: nomor VA atau QRIS, total, batas bayar 24 jam |
+| Transaksi | Pembayaran berhasil (bukti pembelian) | Pembayaran diterima, atau langsung setelah bayar instan |
+| Transaksi | Pesanan dikirim | Admin mengisi no resi: kurir, no resi, info selesai otomatis 7 hari |
+| Transaksi | Pesanan siap diambil | Gudang menandai siap diambil: lokasi Palmerah, jam, tombol kode QR & petunjuk arah |
+| Transaksi | Akses video aktif | Pesanan video premium dibayar (sekaligus bukti pembelian, tombol ke halaman video) |
+| Transaksi | Pesanan kedaluwarsa | 24 jam tidak dibayar, batal otomatis, tombol Beli lagi |
+| Transaksi | Pesanan dibatalkan | Dibatalkan pembeli / CS: alasan + info refund bila sudah bayar |
+| Refund | Refund diproses | CS mengajukan refund: jumlah, tujuan, paling lambat 14 hari |
+| Refund | Refund selesai | Finance menyetujui & dana dikirim: jumlah, tujuan, tanggal, no referensi |
+| Setelah rilis | Pengingat bayar | ±3 jam sebelum batas bayar VA/QRIS |
+| Setelah rilis | Pesanan selesai | Sudah diambil / otomatis selesai 7 hari setelah dikirim |
+
+- Email pemasaran (keranjang tertinggal, stok wishlist kembali, promo) belum dibuat: hanya untuk pembeli yang setuju, wajib ada tombol berhenti berlangganan (UU PDP).
+- Email akun (login, lupa password) tidak dibuat store karena ditangani SSO Kompas.
+- **Masih perlu diputuskan:** alamat pengirim (mis. `no-reply@store.kompas.com`, domain disetel SPF/DKIM/DMARC), layanan pengirim (infrastruktur email KG Media atau Amazon SES / SendGrid / Mailgun), dan mematikan email tagihan bawaan Xendit supaya tidak dobel.
+- **Tahap 3:** tabel `email_logs` (pesanan, jenis email, status kirim) supaya email tidak terkirim dua kali dan CS bisa mengecek; gambar produk untuk email sebaiknya JPG/PNG (Outlook desktop belum mendukung WebP).
+
 ## Verifikasi (Tahap 0–2)
 1. **Database:**
    - `npm run db:migrate && npm run db:seed` sukses, dan seed dua kali tidak menggandakan data.

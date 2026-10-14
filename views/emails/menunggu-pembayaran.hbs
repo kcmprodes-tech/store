@@ -1,0 +1,15 @@
+{{> badge tone="warning" label="Menunggu pembayaran"}}
+<h1 class="e-title">Selesaikan pembayaranmu</h1>
+<p class="e-text">Hai {{customer.name}}, pesanan <strong>{{order.invoiceNo}}</strong> sudah kami buat. Bayar sebelum <strong>{{payment.deadline}}</strong> supaya pesananmu tidak dibatalkan otomatis.</p>
+<table role="presentation" class="e-highlight" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="e-highlight-td">
+  {{#if (eq payment.method "VA")}}
+  <div class="e-hl-row"><span class="e-label">Nomor {{order.paymentMethod}}</span><span class="e-value-lg">{{payment.vaNumber}}</span></div>
+  {{else}}
+  <div class="e-hl-row"><span class="e-label">Metode pembayaran</span><span class="e-value">QRIS</span><span class="e-value-text">Scan kode QR di halaman pembayaran dengan aplikasi bank atau e-wallet apa pun.</span></div>
+  {{/if}}
+  <div class="e-hl-row"><span class="e-label">Total pembayaran</span><span class="e-value-price">{{rupiah order.total}}</span></div>
+  <div class="e-hl-row-last"><span class="e-label">Bayar sebelum</span><span class="e-value">{{payment.deadline}}</span></div>
+</td></tr></table>
+{{> button href=order.payUrl label="Lihat cara bayar"}}
+{{> order_summary}}
+{{> order_delivery}}

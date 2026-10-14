@@ -1,0 +1,9 @@
+{{> badge tone="success" label="Siap diambil"}}
+<h1 class="e-title">Pesananmu siap diambil</h1>
+<p class="e-text">Hai {{customer.name}}, pesanan <strong>{{order.invoiceNo}}</strong> sudah bisa diambil. Tunjukkan kode QR pengambilan ke petugas saat datang.</p>
+<table role="presentation" class="e-highlight" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td class="e-highlight-td">
+  <div class="e-hl-row"><span class="e-label">Lokasi</span><span class="e-value">{{order.pickup.name}}</span><span class="e-value-text">{{order.pickup.address}}</span></div>
+  <div class="e-hl-row-last"><span class="e-label">Jam pengambilan</span><span class="e-value">{{order.pickup.hours}}</span></div>
+</td></tr></table>
+{{> button href=order.url label="Buka kode QR" secondaryHref=order.pickup.mapsUrl secondaryLabel="Petunjuk arah"}}
+{{> order_summary hideTotals=true}}

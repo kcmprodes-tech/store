@@ -1,0 +1,5 @@
+{{> badge tone="success" label="Selesai"}}
+<h1 class="e-title">Pesanan selesai. Terima kasih!</h1>
+<p class="e-text">Hai {{customer.name}}, pesanan <strong>{{order.invoiceNo}}</strong> sudah selesai. Semoga kamu suka dengan produknya.</p>
+{{> button href=order.buyAgainUrl label="Beli lagi" secondaryHref=homeUrl secondaryLabel="Belanja lagi"}}
+{{> order_summary hideTotals=true}}

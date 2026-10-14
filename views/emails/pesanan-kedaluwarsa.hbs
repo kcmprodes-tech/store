@@ -1,0 +1,5 @@
+{{> badge tone="neutral" label="Dibatalkan otomatis"}}
+<h1 class="e-title">Pesananmu dibatalkan otomatis</h1>
+<p class="e-text">Kami belum menerima pembayaran untuk pesanan <strong>{{order.invoiceNo}}</strong> sampai batas waktu {{payment.deadline}}, jadi pesanan dibatalkan otomatis. Kamu tidak dikenai biaya apa pun.</p>
+{{> button href=order.buyAgainUrl label="Beli lagi"}}
+{{> order_summary hideTotals=true}}

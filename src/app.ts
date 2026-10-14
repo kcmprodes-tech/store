@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { isProd } from './config/env.js';
 import { deviceMiddleware } from './lib/device.js';
+import { emailPreview } from './modules/email/email.preview.js';
 import { renderMiddleware } from './view/engine.js';
 import { web } from './web/routes.js';
 
@@ -28,6 +29,9 @@ export function createApp() {
   app.get('/healthz', (_req, res) => {
     res.json({ ok: true });
   });
+
+  // Pratinjau template email pembeli (development).
+  if (!isProd) app.use('/__email', emailPreview);
 
   app.use(web);
 

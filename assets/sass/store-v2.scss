@@ -9081,12 +9081,18 @@ footer h3 {
 .store-v2-header .sv2h-topbar-inner { height: 50px; }
 .store-v2-header .sv2h-main-inner { height: auto; padding: 12px 0 16px; }
 .store-v2-header .sv2h-search { height: 44px; padding: 0 6px 0 20px; }
+/* kolom cari maks 705px (60px lebih pendek) dan tepat di tengah header: logo kiri, ikon kanan */
+.store-v2-header .sv2h-main-inner { display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(0, 705px) minmax(max-content, 1fr); }
+.store-v2-header .sv2h-logo { justify-self: start; }
+.store-v2-header .sv2h-actions { justify-self: end; }
 .store-v2-header .sv2h-search-btn { width: 36px; height: 36px; }
 .store-v2-header .sv2h-nav-inner { height: auto; padding-bottom: 16px; }
 
 /* Store logo mark uses iconstore.png (already the blue rounded tile) */
 .store-v2-header .sv2h-logo-mark { background: transparent; overflow: hidden; }
 .store-v2-header .sv2h-logo-mark img { width: 40px; height: 40px; display: block; object-fit: cover; }
+/* logo Store KOMPAS.com (gambar utuh: ikon + tulisan), tinggi sama dengan ikon lama */
+.store-v2-header .sv2h-logo-img { display: block; width: auto; height: 40px; }
 
 /* KG logo (top black bar) fixed to 36x36 so it stays within the 50px bar */
 .store-v2-header .sv2h-kg { display: inline-flex; align-items: center; }
@@ -9250,6 +9256,10 @@ footer h3 {
 /* Sticky sidebar (promo + summary): 24px from top edge when stuck */
 .store-v2-content .checkout-sidebar {
   top: 24px;
+}
+/* promo sejajar dengan kartu pesanan pertama (di bawah judul "Pesananmu" 26px + jarak 16px), 2 kolom saja */
+@media (min-width: 901px) {
+  .store-v2-content .checkout-sidebar { margin-top: 42px; }
 }
 
 /* ---- Address form popup (matches gerai "Atur alamat pengiriman") ---- */
@@ -9519,6 +9529,7 @@ select.storev2-addr__control.is-filled { color: var(--kds-text-primary); }
 .sv2m-logo { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
 .sv2m-logo-mark img { display: block; width: 30px; height: 30px; }
 .sv2m-logo-text { font-size: 22px; font-weight: 700; color: var(--kds-text-primary); }
+.sv2m-header .sv2m-logo-img { display: block; width: auto; height: 30px; }
 .sv2m-actions { display: flex; align-items: center; gap: 2px; }
 .sv2m-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--kds-text-primary); text-decoration: none; }
 .sv2m-catbar { display: flex; align-items: center; height: 44px; padding-left: 16px; border-top: 1px solid var(--kds-background-paper-elevation-3); background: #fff; overflow: hidden; transition: height .2s ease, opacity .2s ease; }
@@ -10077,7 +10088,7 @@ select.storev2-addr__control.is-filled { color: var(--kds-text-primary); }
 /* Product card: discount % is a capsule right of the strikethrough price (was a badge on the image) */
 .store-v2-content .product-card-original-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
 .store-v2-content .product-card-original-row .product-card-original-price { margin-bottom: 0; }
-.store-v2-content .product-card-discount { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: #FEE4E2; color: #912018; font-size: 12px; line-height: 16px; font-weight: 600; white-space: nowrap; }
+.store-v2-content .product-card-discount { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 999px; background: #FEE4E2; color: #912018; font-size: 12px; line-height: 16px; font-weight: 600; white-space: nowrap; }
 
 /* Product card title: 14px (was 16px), desktop + mobile */
 .store-v2-content .product-card h3.product-card-title { font-size: 14px !important; }
@@ -10107,6 +10118,9 @@ select.storev2-addr__control.is-filled { color: var(--kds-text-primary); }
 .store-v2-content .pdp-price-original-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
 .store-v2-content .pdp-price-original-row s { font-size: 14px; line-height: 20px; color: var(--kds-text-secondary); }
 .store-v2-content .pdp-price-original-row [hidden] { display: none; }
+/* produk tanpa pilihan varian: chip "Standar" tetap ada untuk JS harga/stok, tapi seluruh grupnya disembunyikan */
+.store-v2-content .pdp-option-group[hidden],
+.store-v2-content .pdp-options[hidden] { display: none; }
 
 /* ===== Mobile "Atur Pembelian" bottom sheet (ref: 360px, 1×) ===== */
 html.pdp-sheet-lock, html.pdp-sheet-lock body { overflow: hidden; }
@@ -10266,9 +10280,6 @@ html.pdp-sheet-lock, html.pdp-sheet-lock body { overflow: hidden; }
 .sv2m-account .sso__option a { text-decoration: none; }
 .sv2m-account .sso__avatar { width: 24px; height: 24px; }
 /* mobile hamburger dropdown (same SSO dropdown look) */
-.sv2m-menu .sso__option.-fixed { top: calc(100% + 10px); right: 4px; width: 220px; }
-.sv2m-menu .sso__option li span { display: flex; align-items: center; gap: 12px; }
-.sv2m-menu .sv2m-menu-ico { flex: 0 0 24px; color: var(--kds-text-primary); }
 
 /* ===== Account › Alamat Pengiriman (content from gerai, styled with the store-v2 conventions) ===== */
 .store-v2-content .addresses-panel[hidden], .store-v2-content .orders-panel[hidden] { display: none !important; }
@@ -10424,7 +10435,6 @@ html.pdp-sheet-lock, html.pdp-sheet-lock body { overflow: hidden; }
 .store-v2-content .payment-pending-v2 .ps-desc { max-width: 720px; }
 .store-v2-content .payment-success-v2 .od-item[hidden] { display: none; }
 /* desktop header ☰: same dropdown as mobile, hung under the 28px icon like the desktop account menu */
-.sv2h-menu .sso__option.-fixed { top: calc(100% + 14px); right: -8px; }
 
 /* ===== Tab pages (koleksi.html?tab=…; ref: tab "Rekomendasi" mock, 1440px @1.39×) =====
    breadcrumb → 80px grey title panel (48px icon + 32px title) → 40px → product grid */
@@ -10495,10 +10505,15 @@ body.is-infinite-scroll .footer.column { display: none !important; }
   .storev2-modal--qr .storev2-addr__close { top: 28px; right: 16px; width: 40px; height: 40px; border: 1px solid var(--kds-background-paper-elevation-3); border-radius: 50%; }
   .storev2-modal--qr .pickup-qr-title { padding: 6px 56px 0; }
 }
-/* mobile order card: "Detail pesanan" is longer than the old "Detail" — let it size to its text */
+/* kartu pesanan: CTA kiri (Detail) & kanan sama lebar.
+   Desktop: min 144px (= label terpanjang "Pesanan selesai"); mobile: dibagi rata, tombol ⋯ tetap kecil */
+.store-v2-content .order-card-actions .btn { min-width: 144px; justify-content: center; }
+/* layar HP: kartu profil + menu akun disembunyikan di Daftar Pesanan (sudah ada di menu avatar header) */
 @media (max-width: 640px) {
-  .store-v2-content .order-card-actions .btn-secondary { flex: 0 0 auto; width: auto; padding: 0 14px; }
-  .store-v2-content .order-card-actions .btn-primary { flex: 1 1 0; width: auto; min-width: 0; }
+  .store-v2-content .account-page--orders .account-sidebar { display: none; }
+}
+@media (max-width: 640px) {
+  .store-v2-content .order-card-actions .btn { flex: 1 1 0; width: auto; min-width: 0; padding: 0 10px; }
   .store-v2-content .order-card-actions .btn-secondary:only-child { flex: 1 1 auto; width: 100%; }
 }
 @media (max-width: 640px) {
@@ -10628,6 +10643,28 @@ body.sv2-no-footer .store-v2-content > main.checkout-page { padding-bottom: 120p
 .store-v2-header .sv2h-search:focus-within { background: #FFFFFF; box-shadow: inset 0 0 0 2px #5A5A5A; }
 .sv2m-header .sv2m-search-input:focus { background: #FFFFFF; box-shadow: inset 0 0 0 2px #5A5A5A; }
 
+/* ---------- Riwayat pencarian ("Terakhir dicari") di bawah kolom cari, desktop & mobile ---------- */
+.store-v2-header .sv2h-search,
+.sv2m-main { position: relative; }
+.sv2-recent { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 70; padding: 8px; background: #FFFFFF; border: 1px solid var(--kds-background-paper-elevation-3); border-radius: var(--sv2-radius-box); box-shadow: 0 8px 16px rgba(18, 18, 18, .08); text-align: left; }
+.sv2-recent[hidden] { display: none; }
+.sv2-recent__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 12px 8px; }
+.sv2-recent__head span { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--kds-text-primary); }
+.sv2-recent__clear { padding: 0; border: 0; background: transparent; font: inherit; font-size: 14px; line-height: 20px; font-weight: 600; color: #0F79C6; cursor: pointer; }
+.sv2-recent__list { margin: 0; padding: 0; list-style: none; }
+.sv2-recent__list li { display: flex; align-items: center; border-radius: 8px; }
+.sv2-recent__list li:hover,
+.sv2-recent__list li:focus-within { background: #F2F7FB; }
+.sv2-recent__item { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px; line-height: 20px; color: var(--kds-text-primary) !important; text-decoration: none; outline: none; }
+.sv2-recent__item svg { flex: none; color: var(--kds-text-tertiary); }
+.sv2-recent__item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sv2-recent__remove { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin-right: 2px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--kds-text-tertiary); cursor: pointer; }
+.sv2-recent__remove:hover { color: var(--kds-text-primary); }
+.sv2-recent__remove:focus-visible,
+.sv2-recent__clear:focus-visible { outline: 2px solid #0F79C6; outline-offset: 2px; }
+/* mobile: kartu di bawah baris cari, gutter 16px kiri-kanan */
+.sv2m-main .sv2-recent { left: 16px; right: 16px; }
+
 /* Pencarian tidak ditemukan → "Mungkin kamu tertarik" (8 cards, 4x2), 120px under the "Ubah pencarian" CTA */
 .store-v2-content .search-reco[hidden] { display: none !important; }
 .store-v2-content main.is-empty > section.search-reco { padding-top: 120px !important; }
@@ -10732,6 +10769,9 @@ body:not(.sv2-no-footer) .store-v2-content > main > :last-child:not(.od-card) { 
 }
 .store-v2-content .pdp-specs li { display: contents; }
 .store-v2-content .pdp-specs .pdp-spec-full { grid-column: 1 / -1; }
+/* isi Detail Produk & Pengiriman & Retur 14px (KDS p3); Deskripsi tetap 16px */
+.store-v2-content .pdp-disclosure p,
+.store-v2-content .pdp-disclosure ul { font-size: var(--kds-font-size-p3); }
 
 /* ---------- PDP lightbox (popup foto produk) ----------
    480×480 (mengecil di layar sempit), latar hitam 50%, close kanan atas, panah di samping foto. */
@@ -10751,6 +10791,9 @@ body:not(.sv2-no-footer) .store-v2-content > main > :last-child:not(.od-card) { 
 .sv2-lightbox__close { top: 12px; right: 12px; }
 .sv2-lightbox__nav { top: 50%; transform: translateY(-50%); }
 .sv2-lightbox__nav[hidden] { display: none; }
+/* penanda halaman foto, mis. 1/4 */
+.sv2-lightbox__counter { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 4px 10px; border-radius: 999px; background: #FFFFFF; color: var(--kds-text-primary); box-shadow: 0 2px 8px rgba(0, 0, 0, .16); font-size: 12px; line-height: 16px; font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none; }
+.sv2-lightbox__counter[hidden] { display: none; }
 .sv2-lightbox__nav--prev { left: -64px; }
 .sv2-lightbox__nav--next { right: -64px; }
 html.sv2-lightbox-open { overflow: hidden; }
@@ -10837,3 +10880,33 @@ html.sv2-lightbox-open { overflow: hidden; }
    CSS kompas.com memasang `color-scheme: light dark` / `normal !important`; blok mode gelapnya
    sudah dibuang scripts/purge-legacy-css.mjs. Ini menjaga scrollbar & kontrol form tetap terang. */
 :root { color-scheme: light !important; }
+
+/* ---------- Menu akun (klik avatar) — Figma Store-kompascom 238:4323 ----------
+   Kartu profil + Daftar Pesanan / Alamat Pengiriman / Membership aktif / Logout, desktop & mobile. */
+.sv2-acct-menu { position: absolute; top: calc(100% + 9px); right: 0; z-index: 1000; display: flex; flex-direction: column; gap: 12px; width: 298px; max-width: calc(100vw - 32px); padding: 16px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 4px 6px rgba(0, 0, 0, .05); font-family: "Inter", "Helvetica Neue", Arial, sans-serif; text-align: left; }
+.sv2-acct-menu[hidden] { display: none; }
+.sv2m-account .sv2-acct-menu { top: calc(100% + 12px); }
+.sv2-acct-profile { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 8px; background: var(--kds-background-paper-elevation-1); color: var(--kds-text-primary) !important; text-decoration: none !important; }
+.sv2-acct-avatar { display: flex; flex: none; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 999px; background: var(--kds-primary-base-500); color: #FFFFFF; font-size: 24px; line-height: 36px; font-weight: 600; }
+.sv2-acct-who { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; min-width: 0; }
+.sv2-acct-who strong { overflow: hidden; font-size: 18px; line-height: 23.4px; font-weight: 600; color: var(--kds-text-primary); text-overflow: ellipsis; white-space: nowrap; }
+.sv2-acct-who span { font-size: 14px; line-height: 18.9px; font-weight: 400; color: var(--kds-text-primary); }
+.sv2-acct-caret { display: flex; flex: none; align-items: center; justify-content: center; width: 8px; height: 8px; }
+.sv2-acct-caret img { display: block; max-width: none; transform: rotate(-90deg); }
+.sv2-acct-list { display: flex; flex-direction: column; gap: 4px; padding: 8px; border: 1px solid var(--kds-background-paper-elevation-3); border-radius: 8px; background: #FFFFFF; }
+.sv2-acct-item { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; margin: 0; padding: 10px; border: 0; border-radius: 6px; background: transparent; color: var(--kds-text-primary) !important; font: inherit; font-size: 16px; line-height: 24px; font-weight: 400; text-align: left; text-decoration: none !important; cursor: pointer; }
+.sv2-acct-item:hover,
+.sv2-acct-profile:hover .sv2-acct-who strong { color: var(--kds-text-primary); }
+.sv2-acct-item:hover { background: var(--kds-background-paper-elevation-1); }
+.sv2-acct-item img,
+.sv2-acct-item svg { display: block; flex: none; width: 20px; height: 20px; }
+.sv2-acct-logout { color: var(--kds-error-base) !important; }
+.sv2-acct-divider { display: block; max-width: 100%; height: 1px; }
+.sv2-acct-profile:focus-visible,
+.sv2-acct-item:focus-visible { outline: 2px solid #0F79C6; outline-offset: -2px; }
+
+/* avatar header = avatar halaman akun: lingkaran biru KDS + 1 huruf inisial (semibold) */
+.sv2h-account .sso__avatar:not(.sso__avatar__inner),
+.sv2m-account .sso__avatar:not(.sso__avatar__inner) { background-color: var(--kds-primary-base-500) !important; }
+.sv2h-account .sso__avatar:not(.sso__avatar__inner)::before,
+.sv2m-account .sso__avatar:not(.sso__avatar__inner)::before { font-weight: 600 !important; color: #FFFFFF !important; }

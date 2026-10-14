@@ -1,0 +1,6 @@
+{{> badge tone="success" label="Pembayaran berhasil"}}
+<h1 class="e-title">Terima kasih, {{customer.name}}!</h1>
+<p class="e-text">Pembayaran untuk pesanan <strong>{{order.invoiceNo}}</strong> sudah kami terima. {{#if (eq order.fulfillment "PICKUP")}}Kami kabari lagi lewat email saat pesananmu siap diambil.{{else}}Pesananmu sedang kami siapkan, dan nomor resi kami kirim lewat email saat paket diserahkan ke kurir.{{/if}}</p>
+{{> button href=order.url label="Lihat detail pesanan"}}
+{{> order_summary}}
+{{> order_delivery}}

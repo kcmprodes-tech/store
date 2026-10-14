@@ -24,6 +24,8 @@
 
   var rupiah = new Intl.NumberFormat('id-ID');
   function digits(str) { return Number(String(str).replace(/[^0-9]/g, '')) || 0; }
+  /* judul di breadcrumb maks 50 karakter + elipsis (sama dengan crumbTitle di src/view/mappers.ts) */
+  function crumbTitle(str) { return str.length > 50 ? str.slice(0, 49).trimEnd() + '\u2026' : str; }
 
   /* Toast / snackbar (bottom-center, auto-dismiss) */
   var toastTimer = null;
@@ -200,7 +202,7 @@
       x: 'M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z'
     };
     function icon(d) { return '<svg viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="' + d + '"/></svg>'; }
-    var box = null, img, prev, next, closeBtn, images = [], index = 0, lastFocus = null, touchX = null;
+    var box = null, img, prev, next, closeBtn, counter, images = [], index = 0, lastFocus = null, touchX = null;
 
     function build() {
       box = document.createElement('div');
@@ -212,6 +214,7 @@
         '<div class="sv2-lightbox__backdrop" data-lightbox-close></div>' +
         '<div class="sv2-lightbox__stage">' +
           '<div class="sv2-lightbox__frame"><img class="sv2-lightbox__img" alt=""></div>' +
+          '<span class="sv2-lightbox__counter" aria-live="polite"></span>' +
           '<button type="button" class="sv2-lightbox__close" data-lightbox-close aria-label="Tutup">' + icon(PH.x) + '</button>' +
           '<button type="button" class="sv2-lightbox__nav sv2-lightbox__nav--prev" data-lightbox-prev aria-label="Foto sebelumnya">' + icon(PH.left) + '</button>' +
           '<button type="button" class="sv2-lightbox__nav sv2-lightbox__nav--next" data-lightbox-next aria-label="Foto berikutnya">' + icon(PH.right) + '</button>' +
@@ -221,6 +224,7 @@
       prev = box.querySelector('[data-lightbox-prev]');
       next = box.querySelector('[data-lightbox-next]');
       closeBtn = box.querySelector('.sv2-lightbox__close');
+      counter = box.querySelector('.sv2-lightbox__counter');
       box.addEventListener('click', function (e) {
         if (e.target.closest('[data-lightbox-close]')) close();
         else if (e.target.closest('[data-lightbox-prev]')) show(index - 1);
@@ -241,6 +245,8 @@
       img.alt = images[index].alt;
       prev.hidden = index === 0;
       next.hidden = index === images.length - 1;
+      counter.textContent = (index + 1) + '/' + images.length;
+      counter.hidden = images.length < 2;
     }
     function onKey(e) {
       if (e.key === 'Escape') close();
@@ -271,6 +277,100 @@
     media.addEventListener('click', open);
   }
 
+  /* ---------- Riwayat pencarian: daftar "Terakhir dicari" saat kolom cari diklik ----------
+     Disimpan per browser (localStorage), maks 5 kata kunci, terbaru di atas. */
+  var RECENT_KEY = 'store-v2-recent-searches';
+  var RECENT_MAX = 5;
+  function loadRecentSearches() {
+    try {
+      var list = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+      return Array.isArray(list) ? list.filter(function (s) { return typeof s === 'string' && s; }) : [];
+    } catch (e) { return []; }
+  }
+  function saveRecentSearches(list) {
+    try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, RECENT_MAX))); } catch (e) {}
+  }
+  function rememberSearch(q) {
+    q = String(q || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+    if (!q) return;
+    var key = q.toLowerCase();
+    saveRecentSearches([q].concat(loadRecentSearches().filter(function (s) { return s.toLowerCase() !== key; })));
+  }
+  function initRecentSearches() {
+    // setiap halaman hasil pencarian dibuka (dari form, riwayat, atau tautan), kata kuncinya dicatat
+    if (location.pathname === '/cari') rememberSearch(new URLSearchParams(location.search).get('q'));
+    var CLOCK = 'M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z';
+    var X = 'M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z';
+    function icon(d, size) { return '<svg viewBox="0 0 256 256" width="' + size + '" height="' + size + '" fill="currentColor" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+    function esc(v) { return String(v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-store-search], [data-mobile-search]'), function (form) {
+      var input = form.querySelector('input[name="q"]');
+      if (!input) return;
+      var panel = document.createElement('div');
+      panel.className = 'sv2-recent';
+      panel.setAttribute('role', 'group');
+      panel.setAttribute('aria-label', 'Terakhir dicari');
+      panel.hidden = true;
+      form.appendChild(panel);
+
+      var filtering = false; // saat baru diklik tampil semua; begitu mengetik, disaring sesuai ketikan
+      function hide() { panel.hidden = true; }
+      function render() {
+        var typed = filtering ? input.value.trim().toLowerCase() : '';
+        var items = loadRecentSearches().filter(function (s) { return !typed || s.toLowerCase().indexOf(typed) !== -1; });
+        if (!items.length) { hide(); return; }
+        panel.innerHTML =
+          '<div class="sv2-recent__head"><span>Terakhir dicari</span><button type="button" class="sv2-recent__clear" data-recent-clear>Hapus semua</button></div>' +
+          '<ul class="sv2-recent__list">' + items.map(function (s) {
+            return '<li><a class="sv2-recent__item" href="/cari?q=' + encodeURIComponent(s) + '">' + icon(CLOCK, 20) + '<span>' + esc(s) + '</span></a>' +
+              '<button type="button" class="sv2-recent__remove" data-recent-remove="' + esc(s) + '" aria-label="Hapus ' + esc(s) + ' dari riwayat">' + icon(X, 16) + '</button></li>';
+          }).join('') + '</ul>';
+        panel.hidden = false;
+      }
+      function links() { return Array.prototype.slice.call(panel.querySelectorAll('.sv2-recent__item')); }
+
+      function open() { filtering = false; render(); }
+      input.addEventListener('focus', open);
+      input.addEventListener('click', function () { if (panel.hidden) open(); });
+      input.addEventListener('input', function () { filtering = true; render(); });
+      // klik di dalam daftar tidak memindahkan fokus dari kolom cari
+      panel.addEventListener('mousedown', function (e) { if (!e.target.closest('a')) e.preventDefault(); });
+      panel.addEventListener('click', function (e) {
+        var remove = e.target.closest('[data-recent-remove]');
+        if (e.target.closest('[data-recent-clear]')) {
+          saveRecentSearches([]);
+          hide();
+          input.focus();
+        } else if (remove) {
+          var key = remove.getAttribute('data-recent-remove').toLowerCase();
+          saveRecentSearches(loadRecentSearches().filter(function (s) { return s.toLowerCase() !== key; }));
+          render();
+          input.focus();
+        }
+      });
+      // panah atas/bawah berpindah antar riwayat, Escape menutup daftar
+      form.addEventListener('keydown', function (e) {
+        if (panel.hidden) return;
+        var list = links();
+        var at = list.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown' && list.length) {
+          e.preventDefault();
+          list[Math.min(at + 1, list.length - 1)].focus();
+        } else if (e.key === 'ArrowUp' && at !== -1) {
+          e.preventDefault();
+          if (at === 0) input.focus(); else list[at - 1].focus();
+        } else if (e.key === 'Escape') {
+          e.stopPropagation();
+          hide();
+          input.focus();
+        }
+      });
+      form.addEventListener('focusout', function (e) { if (!form.contains(e.relatedTarget)) hide(); });
+      document.addEventListener('click', function (e) { if (!panel.hidden && !form.contains(e.target)) hide(); });
+    });
+  }
+
   /* ---------- Apparel PDP (detail-apparel.html?product=<id>) ----------
      The page is one template; the product (store.kompas.com apparel: photos, description, prices,
      stock per Warna × Ukuran) comes from the inline [data-apparel-data] JSON (db storev2.apparel).
@@ -290,7 +390,7 @@
     function each(sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
     document.title = p.title + ' - Store Kompas.com';
     each('[data-apparel-title], [data-sheet-title]', function (el) { el.textContent = p.title; });
-    each('[data-apparel-crumb]', function (el) { el.textContent = p.title; el.title = p.title; });
+    each('[data-apparel-crumb]', function (el) { el.textContent = crumbTitle(p.title); el.title = p.title; });
     each('[data-wishlist]', function (el) { if (!el.getAttribute('data-wishlist')) el.setAttribute('data-wishlist', p.id); });
     var track = document.querySelector('[data-pdp-main-track]');
     var strip = document.querySelector('[data-pdp-thumbs-strip]');
@@ -751,117 +851,100 @@
     }
   }
 
-  /* ---------- Logged-in avatar (repo SSO header pattern) ----------
-     When the prototype login flag is set, the account icon becomes a 2-letter initials avatar
-     (sso__avatar + data-init, colour from the repo's strToHSL) and its menu becomes the repo's
-     logged-in SSO menu (partials/components/sso_notification.handlebars). Desktop keeps main.js'
-     own .js-sso-user toggle; mobile gets the same dropdown, toggled here. */
+  /* ---------- Menu akun (Figma Store-kompascom 238:4323) ----------
+     Login: ikon akun di bar hitam jadi avatar inisial; diklik → kartu profil + Daftar Pesanan /
+     Alamat Pengiriman / Membership aktif / Logout. Belum login: ikon akun membuka popup login
+     ([data-login-required]) lalu lanjut ke /akun. Status login masih flag localStorage prototipe. */
   var STORE_USER = { name: 'Reza Pratama', email: 'reza.pratama@gmail.com' };
-  function initialsOf(name) {
-    return name.trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0); }).join('').toUpperCase();
-  }
-  function strToHSL(str) { // same formula as the repo's main.js
-    str = str.toUpperCase();
-    var range = 360 / 26, h = 0, sat = 30, l = 80;
-    for (var i = 0; i < str.length; i++) {
-      var code = str.charCodeAt(i), n = code - 64;
-      if (i > 0) { h = (h + ((code << 5) - code)) % 360; sat += n * Math.floor(65 / 26); l -= n * Math.floor(30 / 26); }
-      else { h = Math.floor(range * n); }
+  // "Lihat profil": sementara ke halaman akun store; setelah tersambung SSO kompas.com → halaman profil SSO
+  var PROFILE_URL = '/akun';
+  // ikon pin yang sama dengan menu Alamat Pengiriman di halaman akun
+  var ICON_PIN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  var ACCT_ICON = '/images/store-v2/account-menu/';
+  function accountMenuHtml() {
+    function item(href, icon, label) {
+      var ico = icon.charAt(0) === '<' ? icon : '<img src="' + ACCT_ICON + icon + '" width="20" height="20" alt="">';
+      return '<a class="sv2-acct-item" href="' + href + '">' + ico + '<span>' + label + '</span></a>';
     }
-    return 'hsl(' + h + ',' + sat + '%, ' + l + '%)';
+    return '<a class="sv2-acct-profile" href="' + PROFILE_URL + '">' +
+        '<span class="sv2-acct-avatar" aria-hidden="true">' + STORE_USER.name.trim().charAt(0).toUpperCase() + '</span>' +
+        '<span class="sv2-acct-who"><strong>' + STORE_USER.name + '</strong><span>Lihat profil</span></span>' +
+        '<span class="sv2-acct-caret"><img src="' + ACCT_ICON + 'caret-right.svg" width="9.33333" height="5.33333" alt=""></span>' +
+      '</a>' +
+      '<nav class="sv2-acct-list" aria-label="Menu akun">' +
+        item('/akun', 'receipt.svg', 'Daftar Pesanan') +
+        item('/akun?accountSection=addresses', ICON_PIN, 'Alamat Pengiriman') +
+        item('https://plus.kompas.com/', 'star.svg', 'Membership aktif') +
+        '<img class="sv2-acct-divider" src="' + ACCT_ICON + 'divider.svg" width="248" height="1" alt="">' +
+        '<button type="button" class="sv2-acct-item sv2-acct-logout" data-acct-logout><img src="' + ACCT_ICON + 'sign-out.svg" width="20" height="20" alt=""><span>Logout</span></button>' +
+      '</nav>';
   }
   function initAccountAvatar() {
     var authed = false;
     try { authed = localStorage.getItem('store-v2-authenticated') === 'true'; } catch (e) {}
-    if (!authed) return;
-    var init = initialsOf(STORE_USER.name);
-    var avatar = function (extra) {
-      return '<i class="sso__icon__login sso__avatar' + (extra || '') + '" data-avatar="bg" data-init="' + init + '" style="background-color:' + strToHSL(init) + '"></i>';
-    };
-    function menu(darkItem) {
-      return '<li><a href="/akun"><span>' + avatar(' sso__avatar__inner') +
-          '<div class="sso__login__detail"><div class="sso__login__name text-nowrap">' + STORE_USER.name + '</div>' +
-          '<div class="sso__login__email text-nowrap">' + STORE_USER.email + '</div></div></span></a></li><li></li>' +
-        '<li><a href="https://plus.kompas.com/"><span><i class="sso__icon__subsuser"></i> Informasi Membership</span></a></li><li></li>' +
-        '<li><a href="https://dummy.kompas.com/repo/kgmedia/html/setting-device-subscription.html"><span><i class="sso__icon__subssetting"></i> Pengaturan perangkat</span></a></li><li></li>' +
-        '<li><a href="https://www.kompas.com/"><span><i class="sso__icon__bookmark"></i> Konten yang disimpan</span></a></li><li></li>' +
-        '<li><a href="https://www.kompas.com/"><span><i class="sso__icon__liked"></i> Konten yang disukai</span></a></li><li></li>' +
-        '<li><a href="#"><span><i class="sso__icon__interest"></i> Atur Minat</span></a></li><li></li>' +
-        (darkItem ? '<li data-sso-dark></li><li></li>' : '') +
-        '<li><a href="#"><span><i class="sso__icon__notif"></i> Berikan Masukanmu <i class="sso__badge__inline"></i></span></a></li>';
-    }
-    function fill(board, trigger) {
-      var list = board.querySelector('ul');
-      // the repo's dark-mode item needs dark-mode.js + dark theme styles, which store-v2 doesn't have,
-      // so the logged-in menu leaves it out instead of showing an empty row
-      list.innerHTML = menu(false);
-      trigger.innerHTML = avatar('');
-      trigger.setAttribute('aria-label', 'Akun ' + STORE_USER.name);
-    }
-
-    // desktop header: swap contents in place so main.js' bindings on .js-sso-user stay intact
     var dWrap = document.querySelector('.sv2h-account');
-    if (dWrap) {
-      var dTrig = dWrap.querySelector('.js-sso-user'), dBoard = dWrap.querySelector('.js-sso-user-board');
-      if (dTrig && dBoard) fill(dBoard, dTrig);
+    var mLinks = document.querySelectorAll('.sv2m-topacct');
+
+    if (!authed) {
+      // belum login: ikon akun → popup login, setelah login lanjut ke halaman akun
+      var dTrigOut = dWrap && dWrap.querySelector('.js-sso-user');
+      if (dTrigOut) {
+        dTrigOut.setAttribute('href', '/akun');
+        var dBoardOut = dWrap.querySelector('.js-sso-user-board');
+        if (dBoardOut) dBoardOut.remove();
+      }
+      Array.prototype.forEach.call([dTrigOut].concat(Array.prototype.slice.call(mLinks)), function (a) {
+        if (!a) return;
+        a.setAttribute('data-login-required', '');
+        a.setAttribute('data-login-title', 'Login untuk masuk ke akunmu');
+      });
+      return;
     }
 
-    // mobile header: replace the account link with the same SSO dropdown
-    Array.prototype.forEach.call(document.querySelectorAll('.sv2m-topacct'), function (link) {
-      var box = document.createElement('div');
-      box.className = 'sv2m-account sso__header';
-      box.innerHTML = '<ul class="sso__wrap"><li class="sso__item">' +
-        '<a class="sso__link sso__link__icon js-sso-user" href="#" aria-expanded="false"></a>' +
-        '<div class="sso__option -fixed -hide js-sso-user-board"><ul></ul></div></li></ul>';
-      link.parentNode.replaceChild(box, link);
-      var trig = box.querySelector('.js-sso-user'), board = box.querySelector('.js-sso-user-board');
-      fill(board, trig);
-      function close() { board.classList.add('-hide'); trig.classList.remove('-active'); trig.setAttribute('aria-expanded', 'false'); }
+    var avatar = '<i class="sso__icon__login sso__avatar" data-avatar="bg" data-init="' + STORE_USER.name.trim().charAt(0).toUpperCase() + '"></i>';
+    function attach(box, trig) {
+      trig.innerHTML = avatar;
+      trig.setAttribute('href', '/akun');
+      trig.setAttribute('role', 'button');
+      trig.setAttribute('aria-label', 'Akun ' + STORE_USER.name);
+      trig.setAttribute('aria-haspopup', 'true');
+      trig.setAttribute('aria-expanded', 'false');
+      var menu = document.createElement('div');
+      menu.className = 'sv2-acct-menu';
+      menu.hidden = true;
+      menu.innerHTML = accountMenuHtml();
+      box.appendChild(menu);
+      function close() { menu.hidden = true; trig.setAttribute('aria-expanded', 'false'); }
       trig.addEventListener('click', function (e) {
         e.preventDefault();
-        var open = board.classList.toggle('-hide') === false;
-        trig.classList.toggle('-active', open);
-        trig.setAttribute('aria-expanded', String(open));
+        menu.hidden = !menu.hidden;
+        trig.setAttribute('aria-expanded', String(!menu.hidden));
       });
-      document.addEventListener('click', function (e) { if (!box.contains(e.target)) close(); });
+      menu.addEventListener('click', function (e) {
+        if (e.target.closest('[data-acct-logout]')) {
+          try { localStorage.removeItem('store-v2-authenticated'); } catch (err) {}
+          location.reload();
+        } else if (e.target.closest('a')) close();
+      });
+      document.addEventListener('click', function (e) { if (!menu.hidden && !box.contains(e.target)) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) { close(); trig.focus(); } });
       window.addEventListener('scroll', function () { if (window.scrollY > 20) close(); }, { passive: true });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-    });
-  }
+    }
 
-  /* ---------- Mobile hamburger: Daftar Pesanan / Alamat Pengiriman ----------
-     Opens a dropdown in the repo SSO dropdown style. Logged in → the items go straight to the page;
-     logged out → [data-login-required] makes the login gate show the SSO popup (with item-specific wording)
-     and continue to the page after login. */
-  function initMobileMenu() {
-    var ICON_ORDERS = '<svg class="sv2m-menu-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg>';
-    var ICON_ADDRESS = '<svg class="sv2m-menu-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
-    // mobile header ☰ and the desktop store header ☰ share the same dropdown
-    Array.prototype.forEach.call(document.querySelectorAll('.sv2m-actions a[aria-label="Menu"], .sv2h-actions a[aria-label="Menu akun"]'), function (btn) {
+    // desktop: avatar di bar hitam; menu SSO kompas.com lama diganti menu akun
+    if (dWrap) {
+      var dTrig = dWrap.querySelector('.js-sso-user');
+      var dBoard = dWrap.querySelector('.js-sso-user-board');
+      if (dBoard) dBoard.remove();
+      if (dTrig) attach(dWrap, dTrig);
+    }
+    // mobile: ikon akun di bar hitam diganti avatar + menu yang sama
+    Array.prototype.forEach.call(mLinks, function (link) {
       var box = document.createElement('div');
-      box.className = 'sv2m-account sv2m-menu' + (btn.closest('.sv2h-actions') ? ' sv2h-menu' : '');
-      btn.parentNode.insertBefore(box, btn);
-      box.appendChild(btn);
-      btn.setAttribute('role', 'button');
-      btn.setAttribute('aria-haspopup', 'true');
-      btn.setAttribute('aria-expanded', 'false');
-      var board = document.createElement('div');
-      board.className = 'sso__option -fixed -hide';
-      board.innerHTML = '<ul>' +
-        '<li><a href="/akun" data-login-required data-login-title="Login untuk melihat daftar pesanan"><span>' + ICON_ORDERS + ' Daftar Pesanan</span></a></li><li></li>' +
-        '<li><a href="/akun?accountSection=addresses" data-login-required data-login-title="Login untuk mengatur alamat pengiriman"><span>' + ICON_ADDRESS + ' Alamat Pengiriman</span></a></li>' +
-        '</ul>';
-      box.appendChild(board);
-      function close() { board.classList.add('-hide'); btn.setAttribute('aria-expanded', 'false'); }
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        var open = board.classList.toggle('-hide') === false;
-        btn.setAttribute('aria-expanded', String(open));
-      });
-      board.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
-      document.addEventListener('click', function (e) { if (!box.contains(e.target)) close(); });
-      window.addEventListener('scroll', function () { if (window.scrollY > 20) close(); }, { passive: true });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+      box.className = 'sv2m-account sso__header';
+      box.innerHTML = '<ul class="sso__wrap"><li class="sso__item"><a class="sso__link sso__link__icon js-sso-user" href="/akun"></a></li></ul>';
+      link.parentNode.replaceChild(box, link);
+      attach(box, box.querySelector('.js-sso-user'));
     });
   }
 
@@ -1739,7 +1822,7 @@
       filled.className = 'account-address-card checkout-address-card';
       filled.setAttribute('data-address-filled', '');
       filled.innerHTML =
-        '<svg class="account-address-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>' +
+        '<svg class="account-address-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>' +
         '<div class="account-address-info">' +
           '<strong><span data-address-name>' + esc(d.nama) + '</span> <span class="account-address-label">' + esc(d.label || 'Rumah') + '</span></strong>' +
           '<p>' + esc(addressLine(d)) + '</p>' +
@@ -2148,7 +2231,7 @@
           var st = card.querySelector('.order-card-status');
           if (st) st.innerHTML = '<span class="order-status order-status--canceled">Dibatalkan</span>';
           var act = card.querySelector('.order-card-actions');
-          if (act) act.innerHTML = '<a class="btn btn-secondary" href="/pesanan/' + encodeURIComponent(card.getAttribute('data-order-id') || 'SKC-260626-H7Q4MP') + '?status=canceled">Detail pesanan</a>' + buyAgainLink(card);
+          if (act) act.innerHTML = '<a class="btn btn-secondary" href="/pesanan/' + encodeURIComponent(card.getAttribute('data-order-id') || 'SKC-260626-H7Q4MP') + '?status=canceled">Detail</a>' + buyAgainLink(card);
           // decrement the "Belum dibayar" badge
           var badge = document.querySelector('[data-account-order-filter="unpaid"] .filter-count');
           if (badge) { var n = parseInt(badge.textContent, 10) - 1; if (n > 0) badge.textContent = String(n); else badge.remove(); }
@@ -2365,7 +2448,6 @@
     initCartTabs();
     initLoginGate();
     initAccountAvatar();
-    initMobileMenu();
     initAccountSections();
     initAddressManager();
     initPaymentSuccess();
@@ -2378,6 +2460,7 @@
     initPaymentInstruction();
     initAccountOrders();
     initMobileHeader();
+    initRecentSearches();
     initCopyButtons();
     initOrderTimeline();
     initKategoriMenu();

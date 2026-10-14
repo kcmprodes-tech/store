@@ -50,11 +50,13 @@ src/
   app.ts, server.ts  aplikasi Express
   web/routes.ts      route halaman + redirect URL prototipe (*.html)
   modules/catalog/   query katalog (produk, kurasi, koleksi, stok tersedia)
+  modules/email/     daftar email pembeli, renderer (Handlebars + juice), data contoh, pratinjau
   view/              engine Handlebars per platform + mapper data → bentuk `storev2.*`
   lib/               prisma, format rupiah, deteksi device
 views/
   desktop|mobile/    layouts/, partials/ (header store, footer), pages/ (15 halaman)
   shared/partials/   kartu produk, popup login
+  emails/            template email pembeli (layouts/, partials/, satu file per email)
 assets/sass/         store-v2.scss (sumber CSS store)
 public/              css/ (hasil build), js/store-v2.js, images/store-v2/, vendor/kompas/ (CSS chrome)
 scripts/             utilitas (penyaring CSS chrome)
@@ -75,6 +77,12 @@ tests/               vitest + supertest
 | `/pesanan/:invoice`, `/pesanan/:invoice/diambil` | order-detail, pickup-success |
 
 URL lama prototipe (`koleksi.html?tab=…`, `detail.html?product=…`, dst.) di-redirect 301 ke route baru.
+
+## Pratinjau email pembeli
+
+`http://localhost:3000/__email` (hanya di development) menampilkan semua template email dengan data contoh,
+lengkap dengan subjek, preheader, dan tombol lebar Desktop / Mobile 375px. Satu email saja:
+`/__email/<nama>`, mis. `/__email/pembayaran-berhasil`. Link & gambar di email memakai `PUBLIC_BASE_URL`.
 
 ## QA visual terhadap prototipe
 

@@ -58,6 +58,11 @@ function specRow(line: string) {
   return i > 0 ? { label: line.slice(0, i), value: line.slice(i + 2) } : { label: '', value: line };
 }
 
+/** Judul di breadcrumb: maks 50 karakter, sisanya elipsis (sama dengan crumbTitle di store-v2.js). */
+function crumbTitle(title: string) {
+  return title.length > 50 ? `${title.slice(0, 49).trimEnd()}\u2026` : title;
+}
+
 /** Paragraf deskripsi polos (untuk meta description). */
 function plainText(html: string | null) {
   return (html ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -137,7 +142,7 @@ export function toPdpVM(p: ProductWithRelations, wishlisted = false) {
   return {
     id: p.slug,
     title: p.title,
-    shortTitle: p.title.length > 30 ? `${p.title.slice(0, 30)}...` : p.title,
+    shortTitle: crumbTitle(p.title),
     images: p.images.map((i) => i.url),
     firstImage: p.images[v?.imageIndex ?? 0]?.url ?? p.images[0]?.url ?? '',
     sold: p.soldCount > 0 ? `${formatSold(p.soldCount)} terjual` : '',

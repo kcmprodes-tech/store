@@ -1,0 +1,7 @@
+{{> badge tone="success" label="Akses aktif"}}
+<h1 class="e-title">Video premium siap ditonton</h1>
+<p class="e-text">Terima kasih, {{customer.name}}! Pembayaran pesanan <strong>{{order.invoiceNo}}</strong> sudah kami terima. Kamu bisa menonton videonya kapan saja dengan akun yang sama.</p>
+<a href="{{video.url}}"><img class="e-video-img" src="{{video.image}}" width="536" alt="{{video.title}}"></a>
+<p class="e-video-title">{{video.title}}</p>
+{{> button href=video.url label="Tonton video"}}
+{{> order_summary}}

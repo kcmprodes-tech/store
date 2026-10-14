@@ -1,0 +1,18 @@
+<div class="e-section">
+  {{#if (eq order.fulfillment "SHIPPING")}}
+  <div class="e-section-title">Dikirim ke</div>
+  <span class="e-info-title">{{order.address.recipient}} · {{order.address.phone}}</span>
+  <span class="e-info-text">{{order.address.line}}</span>
+  {{#if order.courier}}<span class="e-info-text">Kurir: {{order.courier}}</span>{{/if}}
+  {{/if}}
+  {{#if (eq order.fulfillment "PICKUP")}}
+  <div class="e-section-title">Ambil di</div>
+  <span class="e-info-title">{{order.pickup.name}}</span>
+  <span class="e-info-text">{{order.pickup.address}}</span>
+  <span class="e-info-text">{{order.pickup.hours}} · <a class="e-link" href="{{order.pickup.mapsUrl}}">Petunjuk arah</a></span>
+  {{/if}}
+  {{#if (eq order.fulfillment "DIGITAL")}}
+  <div class="e-section-title">Produk digital</div>
+  <span class="e-info-text">Tidak ada pengiriman fisik. Akses produkmu selalu tersedia di halaman Pesanan.</span>
+  {{/if}}
+</div>

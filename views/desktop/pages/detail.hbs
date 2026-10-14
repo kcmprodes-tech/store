@@ -48,7 +48,7 @@
               </button>
             </div>
           </div>
-          <div class="pdp-option-group">
+          <div class="pdp-option-group"{{#unless product.hasVariants}} hidden{{/unless}}>
             
             <p class="pdp-option-label"{{#unless product.hasVariants}} hidden{{/unless}}>Varian: <span data-pdp-variant-name>{{product.variantLabel}}</span></p>
             <div class="pdp-options" role="group" aria-label="Pilih jenis produk"{{#unless product.hasVariants}} hidden{{/unless}}>

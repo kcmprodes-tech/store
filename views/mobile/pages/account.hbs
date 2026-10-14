@@ -1,7 +1,7 @@
 <div class="store-v2-content">
     {{> store_header_mobile}}
 
-<main class="account-page kompas-container py-6">
+<main class="account-page account-page--{{accountSection}} kompas-container py-6">
       <nav class="pdp-breadcrumb category-breadcrumb" aria-label="Breadcrumb">
         <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
         <span>/</span>
@@ -9,6 +9,8 @@
       </nav>
       <div class="account-layout grid items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside class="account-sidebar grid gap-4 lg:sticky lg:top-24">
+          
+    {{!-- "Lihat profil": nanti ke halaman profil SSO kompas.com setelah tersambung (lihat PROFILE_URL di store-v2.js) --}}
           
     <a class="account-profile-card grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3.5 rounded-lg border border-[#e7e7e7] bg-white p-4" href="/akun">
       <span class="header-account-summary-avatar">R</span>
@@ -20,6 +22,7 @@
           <nav class="account-sidebar-menu grid rounded-lg border border-[#e7e7e7] bg-white p-2" aria-label="Menu akun">
             <a class="is-active" href="/akun" data-account-link="orders"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2L6 21z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg> <span>Daftar Pesanan</span></a>
             <a class="" href="/akun?accountSection=addresses" data-account-link="addresses"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg> <span>Alamat Pengiriman</span></a>
+            <a href="https://plus.kompas.com/"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M18.6859 7.59844C18.6078 7.35822 18.4603 7.14651 18.2621 6.98996C18.0638 6.83342 17.8237 6.73905 17.5719 6.71875L12.9625 6.34687L11.1828 2.04297C11.0866 1.80845 10.9228 1.60785 10.7122 1.46667C10.5017 1.32549 10.2539 1.25011 10.0004 1.25011C9.74689 1.25011 9.49912 1.32549 9.28857 1.46667C9.07802 1.60785 8.91421 1.80845 8.81797 2.04297L7.03984 6.34609L2.42812 6.71875C2.17592 6.74008 1.93562 6.83536 1.73732 6.99266C1.53903 7.14996 1.39157 7.36228 1.31341 7.60301C1.23525 7.84375 1.22987 8.1022 1.29794 8.34598C1.36602 8.58976 1.50452 8.80802 1.69609 8.97344L5.21172 12.007L4.14063 16.543C4.08072 16.7894 4.09539 17.0481 4.18276 17.2861C4.27014 17.5242 4.42628 17.731 4.63137 17.8801C4.83647 18.0293 5.08125 18.1142 5.33467 18.124C5.58808 18.1338 5.83869 18.0681 6.05469 17.9352L10 15.507L13.9477 17.9352C14.1637 18.0665 14.4138 18.1309 14.6665 18.1204C14.9191 18.1099 15.1629 18.0248 15.3673 17.876C15.5717 17.7271 15.7275 17.5211 15.8151 17.2839C15.9026 17.0467 15.918 16.7889 15.8594 16.543L14.7844 12.0062L18.3 8.97266C18.4931 8.80752 18.6329 8.58878 18.7016 8.34414C18.7703 8.0995 18.7649 7.83998 18.6859 7.59844ZM17.4875 8.02578L13.6828 11.307C13.596 11.3818 13.5315 11.479 13.4962 11.588C13.461 11.697 13.4563 11.8136 13.4828 11.925L14.6453 16.8313C14.6483 16.838 14.6486 16.8457 14.6461 16.8526C14.6437 16.8596 14.6386 16.8654 14.632 16.8687C14.618 16.8797 14.6141 16.8773 14.6023 16.8687L10.3273 14.2398C10.2289 14.1793 10.1156 14.1473 10 14.1473C9.88442 14.1473 9.77111 14.1793 9.67266 14.2398L5.39766 16.8703C5.38594 16.8773 5.38281 16.8797 5.36797 16.8703C5.36137 16.867 5.35632 16.8612 5.35385 16.8542C5.35138 16.8472 5.35168 16.8396 5.35469 16.8328L6.51719 11.9266C6.54368 11.8151 6.53904 11.6985 6.50377 11.5896C6.4685 11.4806 6.40395 11.3834 6.31719 11.3086L2.5125 8.02734C2.50313 8.01953 2.49453 8.0125 2.50234 7.98828C2.51016 7.96406 2.51641 7.96719 2.52813 7.96563L7.52187 7.5625C7.63641 7.55268 7.74602 7.51145 7.83865 7.44336C7.93127 7.37527 8.00332 7.28295 8.04687 7.17656L9.97031 2.51953C9.97656 2.50625 9.97891 2.5 9.99766 2.5C10.0164 2.5 10.0188 2.50625 10.025 2.51953L11.9531 7.17656C11.9971 7.28299 12.0696 7.37521 12.1626 7.44304C12.2557 7.51087 12.3657 7.55167 12.4805 7.56094L17.4742 7.96406C17.4859 7.96406 17.493 7.96406 17.5 7.98672C17.507 8.00938 17.5 8.01797 17.4875 8.02578Z"></path></svg> <span>Membership aktif</span></a>
           </nav>
         </aside>
         <div class="account-content grid gap-4">
@@ -58,7 +61,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=unpaid">Detail pesanan</a><a class="btn btn-primary" href="/pembayaran?method=bca-va">Cara Pembayaran</a><div class="order-more-wrap"><button class="order-more" type="button" data-order-more aria-label="Menu lainnya" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="order-more-menu" hidden><button type="button" data-order-cancel>Batalkan pesanan</button></div></div></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=unpaid">Detail</a><a class="btn btn-primary" href="/pembayaran?method=bca-va">Cara bayar</a><div class="order-more-wrap"><button class="order-more" type="button" data-order-more aria-label="Menu lainnya" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="order-more-menu" hidden><button type="button" data-order-cancel>Batalkan pesanan</button></div></div></div>
         </article>
         <article class="order-card" data-product-slug="source-18" data-order-status="processing">
           <div class="order-card-head">
@@ -79,7 +82,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing">Detail pesanan</a></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing">Detail</a></div>
         </article>
         <!-- sample: Ambil di tempat, menunggu diambil -->
         <article class="order-card" data-product-slug="source-18" data-order-status="processing" data-order-pickup>
@@ -101,7 +104,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing&amp;pickup=1">Detail pesanan</a><button class="btn btn-primary" type="button" data-pickup-qr-card data-order-id="SKC-260626-H7Q4MP">Buka QR code</button></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=processing&amp;pickup=1">Detail</a><button class="btn btn-primary" type="button" data-pickup-qr-card data-order-id="SKC-260626-H7Q4MP">Buka QR code</button></div>
         </article>
         <article class="order-card" data-product-slug="source-18" data-order-status="shipped">
           <div class="order-card-head">
@@ -122,7 +125,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=shipped">Detail pesanan</a><button class="btn btn-primary" type="button" data-order-complete>Pesanan selesai</button></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=shipped">Detail</a><button class="btn btn-primary" type="button" data-order-complete>Pesanan selesai</button></div>
         </article>
         <article class="order-card" data-product-slug="source-18" data-order-status="completed">
           <div class="order-card-head">
@@ -143,7 +146,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=completed">Detail pesanan</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=completed">Detail</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
         </article>
         <article class="order-card" data-product-slug="source-18" data-order-status="canceled">
           <div class="order-card-head">
@@ -164,7 +167,7 @@
               <strong>Rp450.000</strong>
             </div>
           </div>
-          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=canceled">Detail pesanan</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
+          <div class="order-card-actions"><a class="btn btn-secondary" href="/pesanan/SKC-260626-H7Q4MP?status=canceled">Detail</a><a class="btn btn-primary" href="/produk/source-18" data-buy-again>Beli Lagi</a></div>
         </article>
       </div>
     </section>
@@ -184,7 +187,7 @@
         <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
       </button>
       <div class="account-address-card" data-address-card hidden>
-        <svg class="account-address-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <svg class="account-address-ico" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
         <div class="account-address-info">
           <strong><span data-address-name>Reza Pratama</span> <span class="account-address-label" data-address-label>Rumah</span></strong>
           <p data-address-full>Jl. Palmerah Selatan No. 26, Tanah Abang, Jakarta Pusat, DKI Jakarta, 10270</p>

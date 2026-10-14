@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no, address=no, email=no">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>{{subject}}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Email Store Kompas.com — warna & tipografi KOMPAS.com Design System (light only).
+       Di-inline otomatis oleh juice; media query tetap di <style>. */
+    body { margin: 0; padding: 0; width: 100%; background: #F0F0F0; -webkit-text-size-adjust: 100%; }
+    table { border-collapse: collapse; }
+    img { border: 0; outline: none; text-decoration: none; }
+    .e-font, .e-font td, .e-font div, .e-font p, .e-font a, .e-font span, .e-font h1 { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: -0.2px; }
+    .e-preheader { display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0; mso-hide: all; font-size: 1px; line-height: 1px; color: #F0F0F0; }
+    .e-outer { width: 100%; background: #F0F0F0; }
+    .e-outer-td { padding: 32px 16px 40px; }
+    .e-container { width: 100%; max-width: 600px; }
+    .e-brand { padding: 0 4px 16px; }
+    .e-logo-img { display: block; width: 115px; height: 36px; }
+    .e-card { background: #FFFFFF; border-radius: 16px; padding: 32px; }
+
+    .e-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; line-height: 16px; font-weight: 600; }
+    .e-badge--warning { background: #FEF0C7; color: #7A2E0E; }
+    .e-badge--success { background: #D1FADF; color: #05603A; }
+    .e-badge--info { background: #CFE4F4; color: #083D63; }
+    .e-badge--error { background: #FEE4E2; color: #912018; }
+    .e-badge--neutral { background: #F0F0F0; color: #5A5A5A; }
+    .e-title { margin: 16px 0 8px; font-size: 24px; line-height: 32px; font-weight: 700; color: #2A2A2A; }
+    .e-text { margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #5A5A5A; }
+    .e-text strong { color: #2A2A2A; font-weight: 600; white-space: nowrap; }
+    .e-note { margin: 16px 0 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
+
+    .e-highlight { width: 100%; margin: 0 0 24px; background: #F7F7F7; border-radius: 12px; }
+    .e-highlight-td { padding: 20px; }
+    .e-hl-row { padding: 0 0 16px; }
+    .e-hl-row-last { padding: 0; }
+    .e-label { display: block; font-size: 12px; line-height: 16px; color: #888888; }
+    .e-value { display: block; margin-top: 4px; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
+    .e-value-lg { display: block; margin-top: 4px; font-size: 24px; line-height: 32px; font-weight: 700; color: #2A2A2A; letter-spacing: 0.5px; }
+    .e-value-price { display: block; margin-top: 4px; font-size: 20px; line-height: 28px; font-weight: 700; color: #0F79C6; }
+    .e-value-text { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; color: #5A5A5A; }
+
+    .e-btn-table { margin: 0 0 8px; }
+    .e-btn-td { border-radius: 12px; background: #0F79C6; }
+    .e-btn { display: inline-block; padding: 14px 28px; border-radius: 12px; font-size: 16px; line-height: 20px; font-weight: 700; color: #FFFFFF; text-decoration: none; }
+    .e-btn-td--secondary { border-radius: 12px; background: #FFFFFF; }
+    .e-btn--secondary { padding: 13px 27px; border: 1px solid #0F79C6; color: #0F79C6; }
+    .e-btn-gap { width: 12px; font-size: 0; line-height: 0; }
+
+    .e-section { padding-top: 32px; }
+    .e-section-title { margin: 0 0 12px; font-size: 16px; line-height: 24px; font-weight: 700; color: #2A2A2A; }
+    .e-divider { border-top: 1px solid #E8E8E8; font-size: 0; line-height: 0; height: 1px; }
+    .e-meta-label { padding: 4px 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
+    .e-meta-value { padding: 4px 0; font-size: 14px; line-height: 20px; color: #2A2A2A; text-align: right; font-weight: 600; }
+
+    .e-items { width: 100%; }
+    .e-item-img-td { width: 64px; padding: 16px 0; vertical-align: top; }
+    .e-item-img { display: block; width: 64px; height: 64px; border-radius: 8px; background: #F0F0F0; object-fit: cover; }
+    .e-item-body { padding: 16px 12px; vertical-align: top; }
+    .e-item-title { display: block; font-size: 14px; line-height: 20px; font-weight: 600; color: #2A2A2A; text-decoration: none; }
+    .e-item-meta { display: block; margin-top: 2px; font-size: 12px; line-height: 16px; color: #888888; }
+    .e-item-total { padding: 16px 0; vertical-align: top; text-align: right; white-space: nowrap; font-size: 14px; line-height: 20px; font-weight: 600; color: #2A2A2A; }
+    .e-row-label { padding: 4px 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
+    .e-row-value { padding: 4px 0; font-size: 14px; line-height: 20px; color: #2A2A2A; text-align: right; white-space: nowrap; }
+    .e-row-discount { color: #039855; }
+    .e-total-label { padding: 12px 0 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #2A2A2A; }
+    .e-total-value { padding: 12px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: #0F79C6; text-align: right; white-space: nowrap; }
+
+    .e-info-title { display: block; font-size: 14px; line-height: 20px; font-weight: 600; color: #2A2A2A; }
+    .e-info-text { display: block; margin-top: 2px; font-size: 14px; line-height: 20px; color: #5A5A5A; }
+    .e-link { color: #0F79C6; font-weight: 600; text-decoration: none; }
+
+    .e-video-img { display: block; width: 100%; max-width: 536px; height: auto; border-radius: 12px; }
+    .e-video-title { margin: 12px 0 24px; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
+
+    .e-help { padding: 24px 4px 0; }
+    .e-help-title { font-size: 14px; line-height: 20px; font-weight: 700; color: #2A2A2A; }
+    .e-help-text { font-size: 14px; line-height: 20px; color: #5A5A5A; }
+    .e-footer { padding: 24px 4px 0; font-size: 12px; line-height: 18px; color: #888888; }
+    .e-footer a { color: #5A5A5A; text-decoration: underline; }
+
+    @media only screen and (max-width: 620px) {
+      .e-outer-td { padding: 16px 8px 32px !important; }
+      .e-card { padding: 24px 20px !important; }
+      .e-title { font-size: 20px !important; line-height: 28px !important; }
+      .e-value-lg { font-size: 20px !important; line-height: 28px !important; }
+      .e-btn-table, .e-btn-td, .e-btn-td--secondary { width: 100% !important; }
+      .e-btn { display: block !important; text-align: center !important; padding-left: 16px !important; padding-right: 16px !important; }
+      .e-btn-gap { display: block !important; width: 100% !important; height: 12px !important; }
+      .e-btn-cell { display: block !important; width: 100% !important; }
+      .e-item-img-td { width: 56px !important; }
+      .e-item-img { width: 56px !important; height: 56px !important; }
+    }
+  </style>
+</head>
+<body class="e-font">
+  <div class="e-preheader">{{preheader}}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" class="e-outer e-font" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td class="e-outer-td" align="center">
+        <table role="presentation" class="e-container" width="600" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td class="e-brand">
+              <a href="{{baseUrl}}/" style="text-decoration:none;">
+                <img class="e-logo-img" src="{{baseUrl}}/images/store-v2/logo-store.png" width="115" height="36" alt="Store KOMPAS.com">
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td class="e-card">
+              {{{body}}}
+            </td>
+          </tr>
+          {{#if whatsappUrl}}
+          <tr>
+            <td class="e-help">
+              <div class="e-help-title">Butuh bantuan?</div>
+              <div class="e-help-text">Chat tim Store Kompas.com lewat <a class="e-link" href="{{whatsappUrl}}">WhatsApp</a> dan sebutkan nomor pesanan <span style="white-space: nowrap;">{{order.invoiceNo}}</span>.</div>
+            </td>
+          </tr>
+          {{/if}}
+          <tr>
+            <td class="e-footer">
+              Email ini dikirim otomatis karena kamu bertransaksi di <a href="{{baseUrl}}/">Store Kompas.com</a>. Mohon tidak membalas email ini.<br>
+              Lihat semua pesananmu di <a href="{{baseUrl}}/pesanan">halaman Pesanan</a>.<br><br>
+              &copy; {{year}} KOMPAS.com
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

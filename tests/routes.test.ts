@@ -164,7 +164,7 @@ describe('data dari database', () => {
   it('kartu pesanan Dikirim punya tombol "Pesanan selesai"', async () => {
     for (const ua of [DESKTOP_UA, MOBILE_UA]) {
       const res = await request(app).get('/akun').set('User-Agent', ua);
-      expect(res.text).toMatch(/status=shipped">Detail pesanan<\/a><button class="btn btn-primary" type="button" data-order-complete>Pesanan selesai<\/button>/);
+      expect(res.text).toMatch(/status=shipped">Detail<\/a><button class="btn btn-primary" type="button" data-order-complete>Pesanan selesai<\/button>/);
     }
   });
 
