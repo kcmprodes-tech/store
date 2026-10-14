@@ -17,12 +17,13 @@ refundRouter.use('/refund', requirePermission('refund', 'view'));
 
 const PER_PAGE = 30;
 
+// Urutan tab: Semua paling kiri; tab default tetap "Menunggu keputusan".
 const TABS = {
+  semua: { label: 'Semua', status: null },
   menunggu: { label: 'Menunggu keputusan', status: ['REQUESTED'] },
   disetujui: { label: 'Perlu dibayar', status: ['APPROVED'] },
   selesai: { label: 'Selesai', status: ['COMPLETED'] },
   ditolak: { label: 'Ditolak', status: ['REJECTED'] },
-  semua: { label: 'Semua', status: null },
 } as const satisfies Record<string, { label: string; status: readonly RefundStatus[] | null }>;
 type TabKey = keyof typeof TABS;
 

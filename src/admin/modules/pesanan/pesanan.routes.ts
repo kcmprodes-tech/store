@@ -63,14 +63,15 @@ export const CANCEL_REASONS = ['Permintaan pembeli', 'Stok habis', 'Alamat tidak
 
 // ───────────── Daftar ─────────────
 
+// Urutan tab: Semua paling kiri; tab default saat halaman dibuka tetap "Perlu diproses".
 const TABS = {
+  semua: { label: 'Semua', status: null },
   proses: { label: 'Perlu diproses', status: ['PROCESSING'] },
   siap: { label: 'Siap diambil', status: ['READY_PICKUP'] },
   dikirim: { label: 'Dikirim', status: ['SHIPPED'] },
   'belum-bayar': { label: 'Belum dibayar', status: ['UNPAID'] },
   selesai: { label: 'Selesai', status: ['COMPLETED'] },
   batal: { label: 'Batal', status: ['CANCELED', 'EXPIRED'] },
-  semua: { label: 'Semua', status: null },
 } as const satisfies Record<string, { label: string; status: readonly OrderStatus[] | null }>;
 type TabKey = keyof typeof TABS;
 
