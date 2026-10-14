@@ -8,7 +8,10 @@ $bp-desktop: 1024px;
 $sidebar-w: 248px;
 
 :root {
-  --adm-radius-cta: var(--kds-radius-lg); // 12px
+  --adm-radius-cta: var(--kds-radius-lg); // 12px, semua CTA
+  --adm-btn-h-sm: 36px;
+  --adm-btn-h-md: 44px;
+  --adm-btn-h-lg: 52px;
   --adm-radius-box: var(--kds-radius-xl); // 16px
   --adm-radius-input: var(--kds-radius-md); // 8px (Form Input KDS)
   --adm-appbar-h: 56px;
@@ -826,15 +829,16 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   padding-top: 4px;
 }
 
-// ───────────────────────── Tombol (CTA radius 12px) ─────────────────────────
+// ───────────────────────── Tombol / CTA ─────────────────────────
+// Semua CTA radius 12px. Tinggi: small 36px (.btn-sm), medium 44px (default), large 52px (.btn-lg).
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-height: 44px;
-  padding: 10px 16px;
+  height: var(--adm-btn-h-md);
+  padding: 0 16px;
   border: 1px solid transparent;
   border-radius: var(--adm-radius-cta);
   font: inherit;
@@ -905,18 +909,30 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 }
 
 .btn-sm {
-  min-height: 36px;
-  padding: 8px 12px;
+  height: var(--adm-btn-h-sm);
+  padding: 0 12px;
   font-size: var(--kds-font-size-b3);
   line-height: 16px;
 }
 
+.btn-lg {
+  height: var(--adm-btn-h-lg);
+  padding: 0 20px;
+  font-size: var(--kds-font-size-b2);
+  line-height: 24px;
+}
+
+// Tombol ikon persegi: lebar = tinggi sesuai ukurannya
 .btn-icon {
-  min-width: 44px;
-  padding: 10px;
+  width: var(--adm-btn-h-md);
+  padding: 0;
   &.btn-sm {
-    min-width: 36px;
-    padding: 8px;
+    width: var(--adm-btn-h-sm);
+    padding: 0;
+  }
+  &.btn-lg {
+    width: var(--adm-btn-h-lg);
+    padding: 0;
   }
 }
 
@@ -927,8 +943,8 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 .icon-btn {
   display: inline-grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: var(--adm-btn-h-md);
+  height: var(--adm-btn-h-md);
   border: 0;
   border-radius: var(--adm-radius-cta);
   background: transparent;
@@ -2570,13 +2586,8 @@ ol.picker-list > .picker-item::before {
   letter-spacing: 0.02em;
 }
 
-.btn-lg {
-  min-height: 56px;
-  font-size: var(--kds-font-size-b2);
-}
-
 .input-lg {
-  min-height: 56px;
+  min-height: var(--adm-btn-h-lg);
   font-size: 24px;
   letter-spacing: 0.3em;
   text-align: center;
