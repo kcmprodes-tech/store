@@ -261,9 +261,13 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     background: var(--kds-background-paper-elevation-1);
     color: var(--kds-text-primary);
   }
+  // Aktif: latar paper elevation 1, teks text primary, ikon warna primary
   &.is-active {
-    background: var(--kds-primary-lightest);
-    color: var(--kds-primary-dark-brand);
+    background: var(--kds-background-paper-elevation-1);
+    color: var(--kds-text-primary);
+    > .ph {
+      color: var(--kds-primary-base-500);
+    }
   }
   span {
     flex: 1;
