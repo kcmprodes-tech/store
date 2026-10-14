@@ -8,6 +8,7 @@ import { prisma } from '../../../lib/prisma.js';
 import type { Prisma, StockMovementType } from '../../../generated/prisma/client.js';
 import { audit } from '../../audit.js';
 import { HttpError } from '../../http.js';
+import { notify } from '../../notifications.js';
 
 export const MOVEMENT_LABELS: Record<StockMovementType, string> = {
   IN: 'Barang masuk',
@@ -20,6 +21,101 @@ export const MOVEMENT_LABELS: Record<StockMovementType, string> = {
 };
 
 export const ADJUST_REASONS = ['Hitung ulang (opname)', 'Rusak', 'Hilang', 'Retur dari pembeli', 'Salah input', 'Lainnya'] as const;
+
+/**
+ * Efek satu baris buku besar ke stok (qtyDelta bertanda):
+ * IN/RETURN/ADJUST/TRANSFER → fisik; RESERVE/RELEASE → dipesan; OUT (barang dipesan keluar gudang) → fisik & dipesan.
+ */
+export function movementEffect(type: StockMovementType, qtyDelta: number) {
+  switch (type) {
+    case 'RESERVE':
+    case 'RELEASE':
+      return { onHand: 0, reserved: qtyDelta };
+    case 'OUT':
+      return { onHand: qtyDelta, reserved: qtyDelta };
+    default:
+      return { onHand: qtyDelta, reserved: 0 };
+  }
+}
+
+const SIGN: Record<StockMovementType, 1 | -1> = { IN: 1, RETURN: 1, RESERVE: 1, OUT: -1, RELEASE: -1, ADJUST: 1, TRANSFER: 1 };
+
+export type MoveInput = {
+  variantId: number;
+  locationId: number;
+  type: Exclude<StockMovementType, 'ADJUST' | 'TRANSFER'>;
+  /** Jumlah positif; tandanya ditentukan jenis gerakan. */
+  qty: number;
+  refType: string;
+  refId: string | null;
+  note?: string | null;
+  createdBy: string | null;
+  at?: Date;
+};
+
+/**
+ * Satu gerakan stok (pesanan, retur, …): kunci baris stok, cek tidak minus, ubah fisik/dipesan, catat buku besar,
+ * lalu cek peringatan stok menipis. Panggil di dalam transaksi; urutkan pemanggilan per variant_id untuk hindari deadlock.
+ */
+export async function moveStock(tx: Prisma.TransactionClient, m: MoveInput) {
+  if (!Number.isInteger(m.qty) || m.qty <= 0) throw new HttpError(400, 'Jumlah gerakan stok tidak valid.');
+  await tx.inventoryLevel.upsert({
+    where: { variantId_locationId: { variantId: m.variantId, locationId: m.locationId } },
+    create: { variantId: m.variantId, locationId: m.locationId, onHand: 0 },
+    update: {},
+  });
+  const [level] = await tx.$queryRaw<{ onHand: number; reserved: number }[]>`
+    SELECT on_hand AS onHand, reserved FROM inventory_levels
+    WHERE variant_id = ${m.variantId} AND location_id = ${m.locationId} FOR UPDATE`;
+  const before = { onHand: Number(level!.onHand), reserved: Number(level!.reserved) };
+  const qtyDelta = SIGN[m.type] * m.qty;
+  const effect = movementEffect(m.type, qtyDelta);
+  const after = { onHand: before.onHand + effect.onHand, reserved: before.reserved + effect.reserved };
+  if (after.onHand < 0) {
+    const v = await tx.productVariant.findUnique({ where: { id: m.variantId }, select: { sku: true } });
+    throw new HttpError(409, `Stok fisik ${v?.sku ?? ''} kurang (${before.onHand}). Lakukan penyesuaian stok dulu.`);
+  }
+  await tx.inventoryLevel.update({
+    where: { variantId_locationId: { variantId: m.variantId, locationId: m.locationId } },
+    data: { onHand: after.onHand, reserved: Math.max(0, after.reserved) },
+  });
+  await tx.stockMovement.create({
+    data: {
+      variantId: m.variantId,
+      locationId: m.locationId,
+      type: m.type,
+      qtyDelta,
+      refType: m.refType,
+      refId: m.refId,
+      note: m.note ?? null,
+      createdBy: m.createdBy,
+      ...(m.at ? { createdAt: m.at } : {}),
+    },
+  });
+  await checkLowStock(tx, m.variantId, before.onHand - before.reserved, after.onHand - Math.max(0, after.reserved), m.at);
+  return { before, after };
+}
+
+/** Notifikasi stok menipis saat stok tersedia turun melewati ambang (maks. 1×/hari per SKU). */
+export async function checkLowStock(tx: Prisma.TransactionClient, variantId: number, beforeAvailable: number, afterAvailable: number, at = new Date()) {
+  if (afterAvailable >= beforeAvailable) return;
+  const variant = await tx.productVariant.findUnique({
+    where: { id: variantId },
+    select: { sku: true, name: true, lowStockThreshold: true, trackStock: true, product: { select: { title: true } } },
+  });
+  if (!variant?.trackStock) return;
+  const threshold = variant.lowStockThreshold ?? (await defaultLowStockThreshold(tx));
+  if (beforeAvailable <= threshold || afterAvailable > threshold) return;
+  const day = new Date(at.getTime() + 7 * 3600_000).toISOString().slice(0, 10);
+  await notify(tx, {
+    type: 'stock_low',
+    title: afterAvailable <= 0 ? `Stok habis: ${variant.sku}` : `Stok menipis: ${variant.sku}`,
+    body: `${variant.product.title}${variant.name ? ` (${variant.name})` : ''} tersisa ${Math.max(0, afterAvailable)}.`,
+    url: `/admin/stok/sku/${variantId}`,
+    dedupeKey: `stock_low:${variantId}:${day}`,
+  });
+  lowCache = null;
+}
 
 /** Gudang utama (saat ini hanya Palmerah). */
 export async function mainLocation(db: Prisma.TransactionClient | typeof prisma = prisma) {
@@ -146,6 +242,7 @@ export async function adjustStock(
     where: { variantId_locationId: { variantId: input.variantId, locationId: location.id } },
     data: { onHand: next },
   });
+  await checkLowStock(tx, input.variantId, onHand - reserved, next - reserved);
   const note = [input.reason, input.note].filter(Boolean).join(' — ').slice(0, 500);
   await tx.stockMovement.create({
     data: { variantId: input.variantId, locationId: location.id, type: 'ADJUST', qtyDelta: delta, refType: 'penyesuaian', note, createdBy: req.admin?.email ?? null },
@@ -164,8 +261,10 @@ export async function adjustStock(
 
 export const DEFAULT_LOW_STOCK = 5;
 
-export async function defaultLowStockThreshold() {
-  const { low_stock_threshold_default: value } = await getSettings(['low_stock_threshold_default']);
+export async function defaultLowStockThreshold(db?: Prisma.TransactionClient) {
+  const value = db
+    ? (await db.setting.findUnique({ where: { key: 'low_stock_threshold_default' } }))?.value
+    : (await getSettings(['low_stock_threshold_default'])).low_stock_threshold_default;
   const n = Number(value);
   return Number.isInteger(n) && n >= 0 ? n : DEFAULT_LOW_STOCK;
 }

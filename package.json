@@ -18,6 +18,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:seed-admin": "tsx prisma/seed-admins.ts",
+    "db:seed-orders": "tsx prisma/seed-orders.ts",
     "db:reset": "prisma migrate reset --force",
     "db:studio": "prisma studio",
     "test": "vitest run",

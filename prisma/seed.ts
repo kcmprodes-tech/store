@@ -6,8 +6,9 @@
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { createPrisma } from '../src/lib/prisma.js';
+import { createPrisma, prisma as appPrisma } from '../src/lib/prisma.js';
 import { seedAdmins } from './seed-admins.js';
+import { seedSampleOrders } from './seed-orders.js';
 import { discountPercent, parseIndonesianDate, parsePrice } from '../src/lib/format.js';
 
 const prisma = createPrisma();
@@ -187,6 +188,8 @@ function pricing(p: ProtoProduct) {
 async function clearAll() {
   // Urutan: tabel anak dulu, lalu induk.
   await prisma.navigationItem.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.clientRequest.deleteMany();
   await prisma.videoAccess.deleteMany();
   await prisma.promoRedemption.deleteMany();
   await prisma.payment.deleteMany();
@@ -559,6 +562,8 @@ async function main() {
   await seedCuration(productIds);
   await seedCommerce(warehouse.id, productIds);
   await seedAdmins(prisma); // akun CMS tidak ikut dikosongkan clearAll()
+  const orders = await seedSampleOrders(prisma);
+  console.log(`✔ ${orders} pesanan contoh untuk CMS (pembeli *@contoh.store.test).`);
 
   const [products, skus, movements, levels] = await Promise.all([
     prisma.product.count(),
@@ -574,4 +579,4 @@ main()
     console.error(err);
     process.exitCode = 1;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(() => Promise.all([prisma.$disconnect(), appPrisma.$disconnect()]));

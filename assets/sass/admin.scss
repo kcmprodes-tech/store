@@ -349,7 +349,7 @@ img {
 }
 
 @media (min-width: $bp-desktop) {
-  body.adm {
+  body.adm:not(.adm-auth) {
     display: grid;
     grid-template-columns: $sidebar-w 1fr;
   }
@@ -1158,6 +1158,7 @@ img {
       padding-bottom: 8px;
     }
     td.col-actions {
+      width: auto;
       justify-content: flex-end;
       padding-top: 8px;
     }
