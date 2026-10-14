@@ -3,7 +3,6 @@ import { Router } from 'express';
 import { prisma } from '../../../lib/prisma.js';
 import { handle, q } from '../../http.js';
 import { canDo, permissionMap } from '../../permissions.js';
-import { formatRupiah } from '../../../lib/format.js';
 import { promoStatus } from '../promo/promo.routes.js';
 import { fulfillmentInfo, statusBadge } from '../pesanan/pesanan.view.js';
 import { lowStockCount, lowStockItems } from '../stok/stok.service.js';
@@ -109,25 +108,18 @@ async function summaryCards(perms: ReturnType<typeof permissionMap>, now: Date):
 
   if (perms.pesanan.view) {
     cards.push(
-      Promise.all([
-        prisma.order.groupBy({ by: ['status'], _count: { _all: true } }),
-        prisma.order.aggregate({ where: { paidAt: { not: null } }, _sum: { total: true } }),
-        prisma.refund.aggregate({ where: { status: 'COMPLETED' }, _sum: { amount: true } }),
-      ]).then(([rows, paid, refunded]) => {
+      // Sesuai desain Figma (Store-kompascom, node 247:4758): tanpa baris pendapatan & batal — omzet ada di bagian Penjualan
+      prisma.order.groupBy({ by: ['status'], _count: { _all: true } }).then((rows) => {
         const count = (...statuses: string[]) => rows.filter((r) => statuses.includes(r.status)).reduce((n, r) => n + r._count._all, 0);
-        const revenue = (paid._sum.total ?? 0) - (refunded._sum.amount ?? 0);
         return {
           key: 'pesanan',
           label: 'Pesanan',
           icon: 'receipt',
           value: count('UNPAID', 'PROCESSING', 'READY_PICKUP', 'SHIPPED', 'COMPLETED', 'CANCELED', 'EXPIRED'),
-          sub: `${formatRupiah(revenue)} pendapatan`,
-          subTitle: 'Total pesanan yang sudah dibayar, dikurangi refund yang sudah dikirim',
           dots: [
             { label: 'belum dibayar', count: count('UNPAID'), tone: 'warning' as Tone, href: '/admin/pesanan?status=belum-bayar' },
             { label: 'dibayar', count: count('PROCESSING', 'READY_PICKUP', 'SHIPPED'), tone: 'info' as Tone, href: '/admin/pesanan', title: 'Sudah dibayar, sedang diproses / siap diambil / dikirim' },
             { label: 'selesai', count: count('COMPLETED'), tone: 'success' as Tone, href: '/admin/pesanan?status=selesai' },
-            { label: 'batal', count: count('CANCELED', 'EXPIRED'), tone: 'plain' as Tone, href: '/admin/pesanan?status=batal', title: 'Dibatalkan atau kedaluwarsa' },
           ],
           viewHref: '/admin/pesanan?status=semua',
           viewLabel: 'Lihat semua',
