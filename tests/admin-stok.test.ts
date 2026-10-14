@@ -95,10 +95,17 @@ describe('Stok', () => {
   it('daftar stok: filter menipis/habis dan pencarian SKU', async () => {
     const { user, agent } = await loggedIn(app, ['CS']);
     admins.push(user.id);
-    const list = await get(agent, '/admin/stok?status=habis&q=pestabola');
+    // SKU habis diambil dari DB dev saat ini (stok bisa berubah lewat CMS)
+    const levels = await prisma.inventoryLevel.findMany({ include: { variant: { select: { sku: true, trackStock: true } } } });
+    const empty = levels.find((l) => l.variant.trackStock && l.onHand - l.reserved <= 0);
+    const stocked = levels.find((l) => l.variant.trackStock && l.onHand - l.reserved > 20);
+    expect(empty && stocked).toBeTruthy();
+    const list = await get(agent, `/admin/stok?status=habis&q=${encodeURIComponent(empty!.variant.sku)}`);
     expect(list.status).toBe(200);
-    expect(list.text).toContain('STORE-PESTABOLA-634812-BASIC');
+    expect(list.text).toContain(empty!.variant.sku);
     expect(list.text).not.toContain('Barang masuk</a>'); // CS hanya melihat
+    const notEmpty = await get(agent, `/admin/stok?status=habis&q=${encodeURIComponent(stocked!.variant.sku)}`);
+    expect(notEmpty.text).not.toContain(`<span class="mono">${stocked!.variant.sku}</span>`);
   });
 
   it('hak akses: CS hanya melihat, Marketing tidak boleh membuka stok', async () => {
