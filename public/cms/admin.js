@@ -576,6 +576,49 @@
     box.select();
   });
 
+  /* ---------- Grafik kolom: <div data-chart> — tooltip saat hover, panah kiri/kanan saat fokus ---------- */
+  $$('[data-chart]').forEach(function (chart) {
+    // Hari yang belum berjalan (sisa minggu/bulan) dilewati
+    var cols = $$('[data-chart-col]:not(.is-future)', chart);
+    var tip = $('[data-chart-tip]', chart);
+    var live = $('[data-chart-live]', chart);
+    var active = -1;
+    function show(i, announce) {
+      if (i < 0 || i >= cols.length) return;
+      cols.forEach(function (c, j) { c.classList.toggle('is-active', j === i); });
+      active = i;
+      var col = cols[i];
+      var orders = col.getAttribute('data-orders');
+      $('[data-chart-tip-value]', tip).textContent = col.getAttribute('data-value');
+      $('[data-chart-tip-label]', tip).textContent = col.getAttribute('data-label') + ' · ' + orders + ' pesanan';
+      tip.hidden = false;
+      var plot = tip.parentNode.getBoundingClientRect();
+      var r = col.getBoundingClientRect();
+      var center = r.left - plot.left + r.width / 2;
+      // Tooltip tidak keluar dari area grafik
+      var half = tip.offsetWidth / 2;
+      tip.style.left = Math.max(half, Math.min(plot.width - half, center)) + 'px';
+      tip.style.bottom = 'calc(' + col.getAttribute('data-height') + '% + 8px)';
+      if (announce && live) live.textContent = col.getAttribute('data-label') + ': ' + col.getAttribute('data-value') + ', ' + orders + ' pesanan';
+    }
+    function hide() {
+      cols.forEach(function (c) { c.classList.remove('is-active'); });
+      tip.hidden = true;
+    }
+    cols.forEach(function (col, i) {
+      on(col, 'pointerenter', function () { show(i, false); });
+    });
+    on($('.chart-bars', chart), 'pointerleave', function () { if (document.activeElement !== chart) hide(); });
+    on(chart, 'keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
+      e.preventDefault();
+      var last = cols.length - 1;
+      var next = e.key === 'Home' ? 0 : e.key === 'End' ? last : active < 0 ? last : active + (e.key === 'ArrowRight' ? 1 : -1);
+      show(Math.max(0, Math.min(last, next)), true);
+    });
+    on(chart, 'blur', hide);
+  });
+
   /* ---------- Cetak (label): <button data-print> ---------- */
   $$('[data-print]').forEach(function (btn) {
     on(btn, 'click', function () { window.print(); });

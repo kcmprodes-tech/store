@@ -846,6 +846,277 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
+// ───────── Penjualan & analitik (dashboard) ─────────
+
+.sales {
+  margin-top: var(--kds-spacing-32);
+  scroll-margin-top: var(--kds-spacing-16);
+}
+
+.section-head {
+  margin-bottom: var(--kds-spacing-16);
+}
+
+.section-title {
+  font-size: var(--kds-font-size-h6);
+  font-weight: var(--kds-font-weight-bold);
+  line-height: var(--kds-line-height-normal);
+}
+
+.section-desc {
+  margin-top: var(--kds-spacing-4);
+  color: var(--kds-text-secondary);
+}
+
+// Kartu angka utama = pemilih periode (aktif: bingkai primary, seperti tab kapsul)
+.kpi-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kds-spacing-12);
+  margin-bottom: var(--kds-spacing-16);
+}
+
+@media (min-width: $bp-tablet) {
+  .kpi-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--kds-spacing-16);
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-4);
+  padding: var(--kds-spacing-16) var(--kds-spacing-20);
+  border: 1px solid transparent;
+  border-radius: var(--adm-radius-box);
+  background: var(--kds-background-paper-elevation-0);
+  color: var(--kds-text-primary);
+  transition: border-color 0.16s ease;
+  &:hover {
+    border-color: var(--kds-stroke-medium);
+    color: var(--kds-text-primary);
+  }
+  &.is-active {
+    border-color: var(--kds-primary-base-500);
+  }
+}
+
+.kpi-label {
+  color: var(--kds-text-secondary);
+  font-weight: var(--kds-font-weight-semibold);
+}
+
+.kpi-value {
+  font-size: var(--kds-font-size-h5);
+  font-weight: var(--kds-font-weight-bold);
+  line-height: var(--kds-line-height-normal);
+}
+
+.kpi-meta {
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-c1);
+}
+
+// HP: kartu angka utama lebih padat (jumlah pesanan & perbandingan sebaris)
+@media (max-width: $bp-tablet - 1px) {
+  .kpi {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--kds-spacing-8);
+    padding: var(--kds-spacing-12) var(--kds-spacing-16);
+  }
+  .kpi-label,
+  .kpi-value {
+    grid-column: 1 / -1;
+  }
+  .kpi-value {
+    font-size: var(--kds-font-size-h6);
+  }
+}
+
+.kpi-delta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kds-spacing-4);
+  font-size: var(--kds-font-size-c1);
+  font-weight: var(--kds-font-weight-semibold);
+  &.is-up {
+    color: var(--kds-success-dark);
+  }
+  &.is-down {
+    color: var(--kds-error-base);
+  }
+  .muted {
+    font-weight: var(--kds-font-weight-regular);
+  }
+}
+
+// Grafik kolom: satu seri warna primary, garis bantu hairline, batang ≤ 24px dengan ujung 4px membulat
+.chart {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 220px auto;
+  column-gap: var(--kds-spacing-12);
+  border-radius: var(--kds-radius-md);
+  &:focus-visible {
+    outline-offset: var(--kds-spacing-4);
+  }
+}
+
+.chart-y {
+  position: relative;
+  min-width: 56px;
+  span {
+    position: absolute;
+    right: 0;
+    transform: translateY(50%);
+    color: var(--kds-text-tertiary);
+    font-size: var(--kds-font-size-c1);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+.chart-plot {
+  position: relative;
+}
+
+.chart-grid span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--kds-stroke-soft);
+}
+
+.chart-bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.chart-col {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 0;
+  cursor: default;
+  &.is-active {
+    background: color-mix(in srgb, var(--kds-primary-base-500) 6%, transparent);
+    .chart-bar {
+      background: var(--kds-primary-dark-brand);
+    }
+  }
+}
+
+.chart-bar {
+  display: block;
+  width: min(24px, calc(100% - var(--kds-spacing-4)));
+  border-radius: var(--kds-radius-xs) var(--kds-radius-xs) 0 0;
+  background: var(--kds-primary-base-500);
+}
+
+.chart-x {
+  grid-column: 2;
+  display: flex;
+  padding-top: var(--kds-spacing-8);
+  span {
+    flex: 1;
+    min-width: 0;
+    color: var(--kds-text-tertiary);
+    font-size: var(--kds-font-size-c1);
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+.chart-tip {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: var(--kds-spacing-8) var(--kds-spacing-12);
+  border-radius: var(--kds-radius-md);
+  background: var(--kds-background-paper-elevation-0);
+  box-shadow: var(--kds-shadow-line), var(--kds-shadow-md);
+  transform: translateX(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+  strong {
+    font-size: var(--kds-font-size-b3);
+  }
+  span {
+    color: var(--kds-text-secondary);
+    font-size: var(--kds-font-size-c1);
+  }
+}
+
+.chart-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--kds-text-tertiary);
+}
+
+// Batang horizontal (peringkat): satu warna, label & nilai di atas batang
+.hbars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kds-spacing-4);
+    min-width: 0;
+  }
+}
+
+.hbar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--kds-spacing-12);
+}
+
+.hbar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  a {
+    color: var(--kds-text-primary);
+    &:hover {
+      color: var(--kds-primary-base-500);
+    }
+  }
+}
+
+.hbar-value {
+  flex: none;
+  font-weight: var(--kds-font-weight-semibold);
+}
+
+.hbar-track {
+  display: block;
+  height: 8px;
+}
+
+.hbar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 var(--kds-radius-xs) var(--kds-radius-xs) 0;
+  background: var(--kds-primary-base-500);
+}
+
 // Pesanan terbaru di dashboard
 .recent-order-icon {
   display: grid;

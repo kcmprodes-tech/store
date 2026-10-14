@@ -66,6 +66,8 @@ export const ACTIONS = {
   'refund.request': ['ADMIN', 'CS'],
   'refund.decide': ['ADMIN', 'FINANCE'],
   'order.simulate': ['ADMIN'],
+  // Penjualan & analitik di dashboard (omzet, produk terlaris, kategori, metode bayar)
+  'sales.view': ['ADMIN', 'FINANCE', 'MARKETING'],
 } as const satisfies Record<string, readonly AdminRole[]>;
 
 export type Action = keyof typeof ACTIONS;

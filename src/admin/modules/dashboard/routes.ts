@@ -1,13 +1,13 @@
 /** Dashboard CMS: satu halaman, widget mengikuti hak akses akun. */
 import { Router } from 'express';
 import { prisma } from '../../../lib/prisma.js';
-import { ACTION_LABELS, ENTITY_LABELS } from '../../audit.js';
-import { handle } from '../../http.js';
-import { permissionMap } from '../../permissions.js';
+import { handle, q } from '../../http.js';
+import { canDo, permissionMap } from '../../permissions.js';
 import { formatRupiah } from '../../../lib/format.js';
 import { promoStatus } from '../promo/promo.routes.js';
 import { fulfillmentInfo, statusBadge } from '../pesanan/pesanan.view.js';
 import { lowStockCount, lowStockItems } from '../stok/stok.service.js';
+import { PERIODS, salesBreakdown, salesChart, salesKpis, type PeriodKey } from './sales.js';
 
 export const dashboardRouter = Router();
 
@@ -145,9 +145,10 @@ dashboardRouter.get(
     const admin = req.admin!;
     const perms = permissionMap(admin.roles);
     const now = new Date();
-    const weekAhead = new Date(now.getTime() + 7 * 86400_000);
+    const showSales = canDo(admin.roles, 'sales.view');
+    const period: PeriodKey = (q(req.query.periode) in PERIODS ? q(req.query.periode) : 'bulan') as PeriodKey;
 
-    const [cards, recentOrders, scheduled, lowStock, lowCount, promos, changes] = await Promise.all([
+    const [cards, recentOrders, scheduled, lowStock, lowCount, kpis, chart, breakdown] = await Promise.all([
       summaryCards(perms, now),
       perms.pesanan.view
         ? prisma.order.findMany({
@@ -167,18 +168,9 @@ dashboardRouter.get(
         : [],
       perms.stok.view ? lowStockItems(6) : [],
       perms.stok.view ? lowStockCount() : 0,
-      perms.promo.view
-        ? prisma.promoCode.findMany({
-            where: { isActive: true, OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
-            orderBy: [{ endsAt: 'asc' }, { code: 'asc' }],
-            take: 6,
-          })
-        : [],
-      prisma.auditLog.findMany({
-        where: perms.pengguna.view ? { action: { notIn: ['login', 'logout'] } } : { adminUserId: admin.id },
-        orderBy: { createdAt: 'desc' },
-        take: 8,
-      }),
+      showSales ? salesKpis(now) : null,
+      showSales ? salesChart(period, now) : null,
+      showSales ? salesBreakdown(period, now) : null,
     ]);
 
     await res.renderAdmin('dashboard', {
@@ -191,18 +183,15 @@ dashboardRouter.get(
       scheduled: scheduled.map((p) => ({ ...p, isScheduled: p.status === 'PUBLISHED' })),
       lowStock,
       lowCount,
-      promos: promos.map((p) => ({
-        ...p,
-        endingSoon: Boolean(p.endsAt && p.endsAt <= weekAhead),
-        notStarted: Boolean(p.startsAt && p.startsAt > now),
-        quotaLeft: p.quota === null ? null : Math.max(0, p.quota - p.usedCount),
-      })),
-      changes: changes.map((c) => ({
-        ...c,
-        actionLabel: ACTION_LABELS[c.action] ?? c.action,
-        entityName: ENTITY_LABELS[c.entityType] ?? c.entityType,
-      })),
-      changesAll: perms.pengguna.view,
+      sales: showSales
+        ? {
+            kpis: kpis!.map((k) => ({ ...k, active: k.key === period, href: `/admin?periode=${k.key}#penjualan` })),
+            period,
+            periodLabel: PERIODS[period].label,
+            chart,
+            breakdown,
+          }
+        : null,
     });
   }),
 );

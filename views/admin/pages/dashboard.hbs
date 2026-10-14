@@ -123,55 +123,6 @@
     {{/if}}
   </section>
   {{/if}}
-
-  {{#if perms.promo.view}}
-  <section class="box">
-    <div class="box-head">
-      <div>
-        <h2 class="box-title">Promo aktif</h2>
-        <p class="box-desc">Dipakai checkout mulai Tahap 3</p>
-      </div>
-      <a class="btn btn-plain btn-sm" href="/admin/promo">Lihat semua</a>
-    </div>
-    {{#if promos.length}}
-    <ul class="list">
-      {{#each promos}}
-      <li>
-        <div class="list-main">
-          <a href="/admin/promo/{{id}}"><strong class="mono">{{code}}</strong></a>
-          <span class="small muted">{{#if (eq type "PERCENT")}}{{value}}%{{else}}{{rupiah value}}{{/if}}{{#if endsAt}} · sampai {{date endsAt}}{{/if}}</span>
-        </div>
-        {{#if notStarted}}<span class="badge badge-info">Terjadwal</span>{{else if endingSoon}}<span class="badge badge-warning">Segera berakhir</span>{{else}}<span class="badge badge-success">Aktif</span>{{/if}}
-      </li>
-      {{/each}}
-    </ul>
-    {{else}}
-    <div class="empty">{{icon "ticket" size=40}}<strong>Belum ada promo aktif</strong></div>
-    {{/if}}
-  </section>
-  {{/if}}
-
-  <section class="box">
-    <div class="box-head">
-      <div>
-        <h2 class="box-title">{{#if changesAll}}Perubahan terakhir{{else}}Perubahan terakhir Anda{{/if}}</h2>
-        <p class="box-desc">Dari log perubahan CMS</p>
-      </div>
-      <a class="btn btn-plain btn-sm" href="/admin/log">Lihat log</a>
-    </div>
-    {{#if changes.length}}
-    <ul class="list">
-      {{#each changes}}
-      <li>
-        <div class="list-main">
-          <strong>{{actionLabel}} {{entityName}}{{#if entityLabel}}: {{entityLabel}}{{/if}}</strong>
-          <span class="small muted">{{actorEmail}} · {{datetime createdAt}}</span>
-        </div>
-      </li>
-      {{/each}}
-    </ul>
-    {{else}}
-    <div class="empty">{{icon "clock-counter-clockwise" size=40}}<strong>Belum ada perubahan</strong></div>
-    {{/if}}
-  </section>
 </div>
+
+{{#if sales}}{{> dashboard-sales sales=sales}}{{/if}}
