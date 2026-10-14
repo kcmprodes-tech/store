@@ -1,5 +1,5 @@
 /** Tampilan pesanan di CMS: badge status, langkah berikutnya, alamat, dan template WhatsApp ke pembeli. */
-import type { Fulfillment, OrderStatus, RefundStatus } from '../../../generated/prisma/client.js';
+import type { Fulfillment, OrderStatus, Prisma, RefundStatus } from '../../../generated/prisma/client.js';
 import { formatRupiah } from '../../../lib/format.js';
 import { formatDate, formatDateTime } from '../../time.js';
 import { AUTO_COMPLETE_DAYS, daysSince, FULFILLMENT_LABELS, LATE_PROCESSING_DAYS, PICKUP_REMINDER_DAYS, STATUS_LABELS } from './pesanan.service.js';
@@ -146,6 +146,21 @@ export function waTemplates(o: WaInput) {
   }
   list.push({ label: 'Pesan bebas', text: `Halo ${name}, kami dari Store Kompas.com terkait pesanan ${o.invoiceNo}. ` });
   return list.map((t) => ({ ...t, href: `https://wa.me/${o.buyerPhone}?text=${encodeURIComponent(t.text)}` }));
+}
+
+/** Cari no invoice, nama/HP/email pembeli, atau no resi. */
+export function orderSearchWhere(text: string): Prisma.OrderWhereInput {
+  if (!text) return {};
+  const upper = text.toUpperCase();
+  const or: Prisma.OrderWhereInput[] = [
+    { invoiceNo: { contains: upper } },
+    { buyerName: { contains: text } },
+    { trackingNo: { contains: upper } },
+    { user: { email: { contains: text } } },
+  ];
+  const digits = text.replace(/\D/g, '');
+  if (digits.length >= 4) or.push({ buyerPhone: { contains: digits.replace(/^(62|0)/, '') } });
+  return { OR: or };
 }
 
 /** 4 digit terakhir HP (verifikasi pengambilan & tampilan tersamar). */

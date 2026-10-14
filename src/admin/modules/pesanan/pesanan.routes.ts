@@ -37,6 +37,7 @@ import {
 } from './pesanan.service.js';
 import {
   addressOf,
+  orderSearchWhere,
   autoCompleteAt,
   displayPhone,
   fulfillmentInfo,
@@ -85,21 +86,6 @@ const ORDER_BY: Record<TabKey, Prisma.OrderOrderByWithRelationInput[]> = {
   semua: [{ createdAt: 'desc' }, { id: 'desc' }],
 };
 
-/** Cari no invoice, nama/HP/email pembeli, atau no resi. */
-function searchWhere(text: string): Prisma.OrderWhereInput {
-  if (!text) return {};
-  const upper = text.toUpperCase();
-  const or: Prisma.OrderWhereInput[] = [
-    { invoiceNo: { contains: upper } },
-    { buyerName: { contains: text } },
-    { trackingNo: { contains: upper } },
-    { user: { email: { contains: text } } },
-  ];
-  const digits = text.replace(/\D/g, '');
-  if (digits.length >= 4) or.push({ buyerPhone: { contains: digits.replace(/^(62|0)/, '') } });
-  return { OR: or };
-}
-
 const listSelect = {
   id: true,
   invoiceNo: true,
@@ -140,7 +126,7 @@ pesananRouter.get(
     const page = pageParam(req.query.hal);
     const now = new Date();
 
-    const base: Prisma.OrderWhereInput = { ...searchWhere(search), ...(cara ? { fulfillment: FULFILLMENT_FILTERS[cara] } : {}) };
+    const base: Prisma.OrderWhereInput = { ...orderSearchWhere(search), ...(cara ? { fulfillment: FULFILLMENT_FILTERS[cara] } : {}) };
     const statuses = TABS[tab].status;
     const where: Prisma.OrderWhereInput = {
       ...base,

@@ -1,0 +1,12 @@
+{{!-- Kotak cari global (combobox). Tanpa JS tetap jalan: Enter → /admin/cari. Dengan JS: saran per modul saat mengetik,
+     panah atas/bawah memilih, Enter membuka, Esc menutup, tombol "/" memfokuskan. --}}
+<form class="global-search" action="/admin/cari" method="get" role="search" data-global-search>
+  <div class="global-search-field">
+    {{icon "magnifying-glass" size=20}}
+    <input class="input" type="search" name="q" value="{{q}}" placeholder="Cari pesanan, produk, SKU, promo, kategori…" aria-label="Cari di CMS"
+      autocomplete="off" spellcheck="false" maxlength="100" role="combobox" aria-expanded="false" aria-controls="global-search-panel" aria-autocomplete="list"
+      data-global-search-input>
+    <kbd class="global-search-kbd" aria-hidden="true" title="Tekan / untuk mencari">/</kbd>
+  </div>
+  <div class="global-search-panel" id="global-search-panel" role="listbox" aria-label="Hasil pencarian" hidden data-global-search-panel></div>
+</form>

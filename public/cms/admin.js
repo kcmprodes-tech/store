@@ -439,6 +439,143 @@
     });
   });
 
+  /* ---------- Pencarian global: <form data-global-search> (combobox + saran per modul) ---------- */
+  $$('[data-global-search]').forEach(function (form) {
+    var input = $('[data-global-search-input]', form);
+    var panel = $('[data-global-search-panel]', form);
+    var timer = null;
+    var seq = 0;
+    var options = [];
+    var active = -1;
+
+    /** Teks dengan kata kunci ditandai <mark> (pakai text node, aman dari HTML). */
+    function marked(text, q) {
+      var frag = document.createDocumentFragment();
+      var lower = text.toLowerCase();
+      var needle = q.toLowerCase();
+      var i = 0;
+      var at;
+      while (needle && (at = lower.indexOf(needle, i)) !== -1) {
+        frag.appendChild(document.createTextNode(text.slice(i, at)));
+        frag.appendChild(el('mark', null, text.slice(at, at + needle.length)));
+        i = at + needle.length;
+      }
+      frag.appendChild(document.createTextNode(text.slice(i)));
+      return frag;
+    }
+    function setActive(i) {
+      options.forEach(function (o, j) { o.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
+      active = i;
+      if (i >= 0) {
+        input.setAttribute('aria-activedescendant', options[i].id);
+        options[i].scrollIntoView({ block: 'nearest' });
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+    }
+    function close() {
+      panel.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+      setActive(-1);
+    }
+    function option(href, build) {
+      var a = el('a', 'search-option');
+      a.href = href;
+      a.id = 'cari-opsi-' + options.length;
+      a.setAttribute('role', 'option');
+      a.setAttribute('aria-selected', 'false');
+      a.tabIndex = -1;
+      build(a);
+      options.push(a);
+      return a;
+    }
+    function render(data) {
+      panel.innerHTML = '';
+      options = [];
+      active = -1;
+      var q = data.q;
+      if (!data.groups.length) {
+        panel.appendChild(el('p', 'search-empty', 'Tidak ada hasil untuk "' + q + '".'));
+      }
+      data.groups.forEach(function (g) {
+        var group = el('div', 'search-group');
+        group.setAttribute('role', 'group');
+        var head = el('div', 'search-group-label');
+        head.appendChild(el('span', null, g.label));
+        head.appendChild(el('span', 'search-group-count', String(g.total)));
+        group.setAttribute('aria-label', g.label);
+        group.appendChild(head);
+        g.items.forEach(function (item) {
+          group.appendChild(option(item.href, function (a) {
+            if (item.image) {
+              var img = el('img', 'thumb thumb-sm');
+              img.src = item.image;
+              img.alt = '';
+              a.appendChild(img);
+            }
+            var main = el('span', 'list-main');
+            var title = el('strong');
+            title.appendChild(marked(item.title, q));
+            main.appendChild(title);
+            if (item.subtitle) {
+              var sub = el('span', 'small muted');
+              sub.appendChild(marked(item.subtitle, q));
+              main.appendChild(sub);
+            }
+            a.appendChild(main);
+            if (item.badge) a.appendChild(el('span', 'badge badge-' + item.badge.tone, item.badge.label));
+          }));
+        });
+        panel.appendChild(group);
+      });
+      panel.appendChild(option('/admin/cari?q=' + encodeURIComponent(q), function (a) {
+        a.classList.add('search-option-all');
+        a.appendChild(document.createTextNode('Lihat semua hasil untuk "' + q + '"'));
+      }));
+      panel.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+    function search() {
+      var q = input.value.trim();
+      var mine = ++seq;
+      if (q.length < 2) { close(); return; }
+      api('/admin/api/cari?q=' + encodeURIComponent(q), { method: 'GET' }).then(function (data) {
+        if (mine === seq && input.value.trim() === q) render(data);
+      }).catch(function () { /* saran gagal dimuat: Enter tetap ke halaman hasil */ });
+    }
+    on(input, 'input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(search, 200);
+    });
+    on(input, 'focus', function () { if (panel.childNodes.length && input.value.trim().length >= 2) { panel.hidden = false; input.setAttribute('aria-expanded', 'true'); } });
+    on(input, 'keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (panel.hidden || !options.length) return;
+        e.preventDefault();
+        var next = e.key === 'ArrowDown' ? active + 1 : active - 1;
+        setActive(next < 0 ? options.length - 1 : next >= options.length ? 0 : next);
+      } else if (e.key === 'Enter' && active >= 0 && !panel.hidden) {
+        e.preventDefault();
+        window.location.href = options[active].href;
+      } else if (e.key === 'Escape') {
+        if (!panel.hidden) { e.preventDefault(); close(); } else { input.blur(); }
+      }
+    });
+    on(document, 'click', function (e) { if (!form.contains(e.target)) close(); });
+  });
+
+  // Tombol "/" memfokuskan kotak cari (kecuali sedang mengetik di kolom lain)
+  on(document, 'keydown', function (e) {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    var target = e.target;
+    if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+    var box = $('[data-global-search-input]');
+    if (!box) return;
+    e.preventDefault();
+    box.focus();
+    box.select();
+  });
+
   /* ---------- Cetak (label): <button data-print> ---------- */
   $$('[data-print]').forEach(function (btn) {
     on(btn, 'click', function () { window.print(); });

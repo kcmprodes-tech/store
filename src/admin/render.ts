@@ -73,6 +73,20 @@ const helpers = {
   concat: (...args: unknown[]) => args.slice(0, -1).join(''),
   /** Pilih nilai: (ifv kondisi "a" "b"). */
   ifv: (cond: unknown, a: unknown, b: unknown) => (cond ? a : b),
+  /** Tandai kata kunci di teks (aman: teks di-escape dulu), mis. {{highlight title ../text}}. */
+  highlight(text: unknown, query: unknown) {
+    const value = String(text ?? '');
+    const q = String(query ?? '').trim();
+    if (!q) return value;
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    let out = '';
+    let last = 0;
+    for (const m of value.matchAll(re)) {
+      out += Handlebars.escapeExpression(value.slice(last, m.index)) + `<mark>${Handlebars.escapeExpression(m[0])}</mark>`;
+      last = m.index! + m[0].length;
+    }
+    return new Handlebars.SafeString(out + Handlebars.escapeExpression(value.slice(last)));
+  },
   /** Inisial nama untuk avatar, mis. "Ardi Suhanda" → "AS". */
   initials: (name: unknown) =>
     String(name ?? '')
