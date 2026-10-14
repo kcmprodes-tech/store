@@ -183,6 +183,59 @@ img {
   letter-spacing: 0.04em;
 }
 
+// Judul grup yang bisa dilipat (<details><summary>), caret di kanan
+summary.adm-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  margin-bottom: 2px;
+  padding: 4px 12px;
+  border-radius: var(--kds-radius-md);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  &::-webkit-details-marker {
+    display: none;
+  }
+  > span {
+    flex: 1;
+  }
+  &:hover {
+    background: var(--kds-background-paper-elevation-1);
+    color: var(--kds-text-secondary);
+  }
+}
+
+// Di sheet "Lainnya" (layar sentuh) judul grup lebih tinggi supaya mudah diketuk
+.adm-sheet summary.adm-nav-label {
+  min-height: 40px;
+}
+
+.adm-nav-caret {
+  transition: transform 0.15s ease-out;
+}
+
+details.adm-nav-group:not([open]) .adm-nav-caret {
+  transform: rotate(-90deg);
+}
+
+// Total badge grup hanya tampil saat grup dilipat
+.adm-nav-group-badge {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+details.adm-nav-group[open] .adm-nav-group-badge {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-nav-caret {
+    transition: none;
+  }
+}
+
 .adm-nav-link {
   display: flex;
   align-items: center;

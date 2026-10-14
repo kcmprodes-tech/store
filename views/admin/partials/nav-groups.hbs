@@ -1,11 +1,18 @@
+{{!-- Grup berlabel bisa dilipat (default terbuka). Status disimpan di cookie oleh admin.js; saat dilipat,
+     jumlah badge grup tampil di judulnya supaya pesanan/stok yang perlu perhatian tetap terlihat. --}}
 {{#each nav.groups}}
+{{#if label}}
+<details class="adm-nav-group" data-nav-group="{{key}}"{{#if open}} open{{/if}}>
+  <summary class="adm-nav-label">
+    <span>{{label}}</span>
+    {{#if badge}}<b class="adm-nav-badge adm-nav-group-badge" title="{{badge}} perlu perhatian">{{badge}}</b>{{/if}}
+    {{icon "caret-down" size=14 weight="bold" class="adm-nav-caret"}}
+  </summary>
+  {{> nav-items}}
+</details>
+{{else}}
 <div class="adm-nav-group">
-  {{#if label}}<p class="adm-nav-label">{{label}}</p>{{/if}}
-  {{#each items}}
-  <a class="adm-nav-link{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>
-    {{icon this.icon size=20 weight=(ifv active "fill" "regular")}}<span>{{label}}</span>
-    {{#if badge}}<b class="adm-nav-badge" title="{{badge}} {{badgeTitle}}">{{badge}}</b>{{/if}}
-  </a>
-  {{/each}}
+  {{> nav-items}}
 </div>
+{{/if}}
 {{/each}}

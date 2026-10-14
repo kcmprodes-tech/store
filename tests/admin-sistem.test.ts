@@ -6,7 +6,7 @@ import { verifyPassword } from '../src/admin/auth/password.js';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/lib/prisma.js';
 import { invalidateStorefront } from '../src/modules/storefront/storefront.service.js';
-import { agent as newAgent, deleteAdmins, get, login, loggedIn, postForm } from './admin-helpers.js';
+import { agent as newAgent, createAdmin, deleteAdmins, get, HOST, login, loggedIn, postForm } from './admin-helpers.js';
 
 const app = createApp();
 const admins: number[] = [];
@@ -168,5 +168,28 @@ describe('Log perubahan', () => {
     // Filter pelaku diabaikan untuk non-Admin
     const sneaky = await get(editor.agent, `/admin/log?pelaku=${admin.user.id}`);
     expect(sneaky.text).not.toContain(admin.user.email);
+  });
+});
+
+describe('Menu samping', () => {
+  it('grup default terbuka; dilipat lewat cookie skc_admin_nav; grup halaman aktif tetap terbuka', async () => {
+    const user = await createAdmin(['ADMIN']);
+    admins.push(user.id);
+    const res = await login(newAgent(app), user.email);
+    const session = ([] as string[]).concat(res.headers['set-cookie'] ?? []).find((c) => c.startsWith('skc_admin='))!.split(';')[0]!;
+    const page = (url: string, nav?: string) =>
+      request(app).get(url).set('Host', HOST).set('Cookie', nav === undefined ? session : `${session}; skc_admin_nav=${nav}`);
+    const isOpen = (html: string, key: string) => new RegExp(`data-nav-group="${key}" open`).test(html);
+
+    const plain = await page('/admin');
+    for (const key of ['pesanan', 'katalog', 'tampilan', 'operasional', 'sistem']) expect(isOpen(plain.text, key)).toBe(true);
+
+    const folded = await page('/admin', 'katalog,sistem,<script>');
+    expect(isOpen(folded.text, 'katalog')).toBe(false);
+    expect(isOpen(folded.text, 'sistem')).toBe(false);
+    expect(isOpen(folded.text, 'pesanan')).toBe(true);
+
+    const onProduct = await page('/admin/produk', 'katalog');
+    expect(isOpen(onProduct.text, 'katalog')).toBe(true);
   });
 });

@@ -94,11 +94,12 @@ const engine = create({
 // ───────────── Navigasi ─────────────
 
 type NavItem = { key: string; label: string; href: string; icon: string; module?: Module; badge?: number; badgeTitle?: string };
-type NavGroup = { label: string | null; items: NavItem[] };
+type NavGroup = { key: string; label: string | null; items: NavItem[] };
 
 const NAV: NavGroup[] = [
-  { label: null, items: [{ key: 'dasbor', label: 'Dasbor', href: '/admin', icon: 'squares-four' }] },
+  { key: 'utama', label: null, items: [{ key: 'dasbor', label: 'Dasbor', href: '/admin', icon: 'squares-four' }] },
   {
+    key: 'pesanan',
     label: 'Pesanan',
     items: [
       { key: 'pesanan', label: 'Pesanan', href: '/admin/pesanan', icon: 'receipt', module: 'pesanan', badgeTitle: 'pesanan perlu diproses' },
@@ -106,6 +107,7 @@ const NAV: NavGroup[] = [
     ],
   },
   {
+    key: 'katalog',
     label: 'Katalog',
     items: [
       { key: 'produk', label: 'Produk', href: '/admin/produk', icon: 'package', module: 'produk' },
@@ -113,6 +115,7 @@ const NAV: NavGroup[] = [
     ],
   },
   {
+    key: 'tampilan',
     label: 'Tampilan store',
     items: [
       { key: 'banner', label: 'Banner hero', href: '/admin/banner', icon: 'image', module: 'tampilan' },
@@ -122,6 +125,7 @@ const NAV: NavGroup[] = [
     ],
   },
   {
+    key: 'operasional',
     label: 'Operasional',
     items: [
       { key: 'stok', label: 'Stok', href: '/admin/stok', icon: 'warehouse', module: 'stok', badgeTitle: 'SKU stok menipis' },
@@ -129,6 +133,7 @@ const NAV: NavGroup[] = [
     ],
   },
   {
+    key: 'sistem',
     label: 'Sistem',
     items: [
       { key: 'pengaturan', label: 'Pengaturan', href: '/admin/pengaturan', icon: 'gear-six', module: 'pengaturan' },
@@ -148,14 +153,23 @@ const MOBILE_PRIORITY: Record<AdminRole, string[]> = {
   FINANCE: ['refund', 'pesanan', 'stok'],
 };
 
-function buildNav(roles: AdminRole[], active: string | undefined, badges: Partial<Record<string, number>>) {
+/** Cookie berisi kunci grup menu yang dilipat (ditulis admin.js), mis. "katalog,sistem". */
+export const NAV_COOKIE = 'skc_admin_nav';
+
+export function collapsedGroups(raw: unknown) {
+  return new Set(String(raw ?? '').split(',').filter((k) => /^[a-z-]{1,40}$/.test(k)));
+}
+
+function buildNav(roles: AdminRole[], active: string | undefined, badges: Partial<Record<string, number>>, collapsed: Set<string>) {
   const perms = permissionMap(roles);
-  const groups = NAV.map((g) => ({
-    label: g.label,
-    items: g.items
+  const groups = NAV.map((g) => {
+    const items = g.items
       .filter((i) => !i.module || perms[i.module].view)
-      .map((i) => ({ ...i, active: i.key === active, badge: badges[i.key] || 0 })),
-  })).filter((g) => g.items.length);
+      .map((i) => ({ ...i, active: i.key === active, badge: badges[i.key] || 0 }));
+    // Default terbuka; grup yang berisi halaman aktif selalu terbuka.
+    const open = !collapsed.has(g.key) || items.some((i) => i.active);
+    return { key: g.key, label: g.label, items, open, badge: items.reduce((n, i) => n + i.badge, 0) };
+  }).filter((g) => g.items.length);
   const all = groups.flatMap((g) => g.items);
   const primary = primaryRole(roles);
   const bottom = [all[0], ...MOBILE_PRIORITY[primary].map((k) => all.find((i) => i.key === k)).filter((i) => i !== undefined)].slice(0, 4);
@@ -176,7 +190,7 @@ export function adminRenderMiddleware(req: Request, res: Response, next: NextFun
     const html = await engine.renderView(join(viewsRoot, 'pages', `${view}.hbs`), {
       admin,
       perms,
-      nav: admin ? buildNav(admin.roles, data.active as string | undefined, badges) : null,
+      nav: admin ? buildNav(admin.roles, data.active as string | undefined, badges, collapsedGroups(req.cookies?.[NAV_COOKIE])) : null,
       roleNames: admin?.roles.map((r) => ROLE_LABELS[r]).join(', '),
       csrfToken: admin?.csrfToken ?? '',
       flash: takeFlash(req, res),

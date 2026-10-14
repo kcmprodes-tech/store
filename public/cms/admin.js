@@ -92,6 +92,33 @@
     $$('[data-sheet]').forEach(function (sheet) { if (!sheet.hidden) closeSheet(sheet); });
   });
 
+  /* ---------- Grup menu bisa dilipat: <details data-nav-group="kunci">. Default terbuka.
+     Status disimpan di cookie (bukan localStorage) supaya server langsung merender grup yang dilipat tanpa kedip.
+     Menu yang sama ada di sidebar & sheet "Lainnya", jadi keduanya disamakan. ---------- */
+  var navGroups = $$('details[data-nav-group]');
+  function saveNav() {
+    var closed = [];
+    navGroups.forEach(function (d) {
+      var key = d.getAttribute('data-nav-group');
+      if (!d.open && closed.indexOf(key) === -1) closed.push(key);
+    });
+    document.cookie = 'skc_admin_nav=' + encodeURIComponent(closed.join(',')) + '; path=/admin; max-age=31536000; samesite=lax' +
+      (location.protocol === 'https:' ? '; secure' : '');
+  }
+  navGroups.forEach(function (d) {
+    // Hanya lipatan oleh pengguna yang disimpan (toggle juga terpicu saat halaman dimuat dengan atribut open).
+    on($('summary', d), 'click', function () { d.__byUser = true; });
+    on(d, 'toggle', function () {
+      if (!d.__byUser) return;
+      d.__byUser = false;
+      var key = d.getAttribute('data-nav-group');
+      navGroups.forEach(function (other) {
+        if (other !== d && other.getAttribute('data-nav-group') === key && other.open !== d.open) other.open = d.open;
+      });
+      saveNav();
+    });
+  });
+
   /* ---------- Dialog konfirmasi (pola AlertDialog shadcn/ui) ----------
      <form data-confirm="Hapus X? Tindakan ini tidak bisa dibatalkan." data-confirm-ok="Hapus" data-danger data-confirm-icon="trash">
      Teks sampai tanda tanya pertama jadi judul, sisanya deskripsi (atau pakai data-confirm-title).
