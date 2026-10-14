@@ -1698,17 +1698,6 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   white-space: nowrap;
   background: var(--kds-background-paper-elevation-2);
   color: var(--kds-text-secondary);
-  &::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-}
-
-.badge-plain::before {
-  display: none;
 }
 
 .badge-success {
