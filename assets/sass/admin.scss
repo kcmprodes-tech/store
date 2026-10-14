@@ -8,7 +8,8 @@ $bp-desktop: 1024px;
 $sidebar-w: 248px;
 
 :root {
-  --adm-radius-cta: var(--kds-radius-lg); // 12px, semua CTA
+  --adm-radius-cta: var(--kds-radius-lg); // 12px, CTA medium & large
+  --adm-radius-cta-sm: var(--kds-radius-md); // 8px, CTA small
   --adm-btn-h-sm: 36px;
   --adm-btn-h-md: 44px;
   --adm-btn-h-lg: 52px;
@@ -830,7 +831,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 }
 
 // ───────────────────────── Tombol / CTA ─────────────────────────
-// Semua CTA radius 12px. Tinggi: small 36px (.btn-sm), medium 44px (default), large 52px (.btn-lg).
+// Tinggi & radius: small 36px / 8px (.btn-sm), medium 44px / 12px (default), large 52px / 12px (.btn-lg).
 
 .btn {
   display: inline-flex;
@@ -911,6 +912,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 .btn-sm {
   height: var(--adm-btn-h-sm);
   padding: 0 12px;
+  border-radius: var(--adm-radius-cta-sm);
   font-size: var(--kds-font-size-b3);
   line-height: 16px;
 }
