@@ -349,7 +349,7 @@ img {
 }
 
 @media (min-width: $bp-desktop) {
-  body.adm:not(.adm-auth) {
+  body.adm:not(.adm-auth, .adm-print) {
     display: grid;
     grid-template-columns: $sidebar-w 1fr;
   }
@@ -2234,5 +2234,572 @@ ol.picker-list > .picker-item::before {
     text-align: left;
     font-size: 12px;
     overflow: auto;
+  }
+}
+
+// ───────────────────────── Pesanan & refund ─────────────────────────
+
+.mono-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.02em;
+}
+
+.btn-lg {
+  min-height: 56px;
+  font-size: var(--kds-font-size-b2);
+}
+
+.input-lg {
+  min-height: 56px;
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.filter-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--kds-stroke-soft);
+  background: var(--kds-background-warning-elevation-1);
+  color: var(--kds-warning-dark);
+  font-size: var(--kds-font-size-c1);
+}
+
+.order-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  > li + li {
+    border-top: 1px solid var(--kds-stroke-soft);
+  }
+}
+
+.order-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--kds-text-primary);
+  &:hover {
+    color: var(--kds-text-primary);
+    background: var(--kds-background-paper-elevation-1);
+  }
+}
+
+.order-row-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--adm-radius-cta);
+  background: var(--kds-primary-lightest);
+  color: var(--kds-primary-dark-brand);
+}
+
+.order-row-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.order-row-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-row-buyer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--kds-text-secondary);
+}
+
+.order-row-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.order-stage {
+  font-size: var(--kds-font-size-c1);
+  font-weight: var(--kds-font-weight-semibold);
+  color: var(--kds-text-secondary);
+  &.is-warning {
+    color: var(--kds-warning-dark);
+  }
+  &.is-info {
+    color: var(--kds-primary-base-500);
+  }
+}
+
+@media (max-width: $bp-tablet - 1px) {
+  .order-row {
+    flex-wrap: wrap;
+  }
+  .order-row-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .order-row-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    width: 100%;
+    padding-left: 44px;
+    text-align: left;
+  }
+}
+
+@media (min-width: $bp-tablet) {
+  .order-row {
+    padding: 16px 24px;
+  }
+}
+
+.next-step {
+  border: 2px solid var(--kds-primary-lightest);
+}
+
+.next-step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  > .ph {
+    color: var(--kds-primary-base-500);
+  }
+  &.is-done > .ph {
+    color: var(--kds-success-dark);
+  }
+  &.is-muted > .ph {
+    color: var(--kds-text-tertiary);
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.pack-list {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  > li + li {
+    border-top: 1px solid var(--kds-stroke-soft);
+  }
+}
+
+.pack-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 0;
+  input {
+    width: 24px;
+    height: 24px;
+  }
+  .check-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+.pack-qty {
+  flex: none;
+  font-size: var(--kds-font-size-b2);
+  font-weight: var(--kds-font-weight-bold);
+}
+
+.disclosure {
+  border-top: 1px solid var(--kds-stroke-soft);
+  padding-top: 12px;
+  & + & {
+    margin-top: 12px;
+  }
+  > summary {
+    cursor: pointer;
+    min-height: 32px;
+    font-weight: var(--kds-font-weight-semibold);
+    color: var(--kds-primary-base-500);
+  }
+  &[open] > summary {
+    margin-bottom: 12px;
+  }
+}
+
+.qr-box {
+  width: 200px;
+  max-width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: var(--adm-radius-cta);
+  background: #fff;
+  box-shadow: var(--kds-shadow-line);
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.order-items {
+  .list-main strong {
+    white-space: normal;
+  }
+  .list-main > span {
+    display: block;
+  }
+}
+
+.totals {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--kds-stroke-soft);
+  > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 2px 0;
+  }
+  dt {
+    color: var(--kds-text-secondary);
+  }
+  dd {
+    margin: 0;
+  }
+}
+
+.totals-grand {
+  margin-top: 6px;
+  font-size: var(--kds-font-size-b2);
+  font-weight: var(--kds-font-weight-bold);
+  dt {
+    color: var(--kds-text-primary);
+  }
+}
+
+.kv {
+  margin: 0;
+  > div {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 8px;
+    padding: 6px 0;
+    border-top: 1px solid var(--kds-stroke-soft);
+    &:first-child {
+      border-top: 0;
+    }
+  }
+  dt {
+    color: var(--kds-text-tertiary);
+    font-size: var(--kds-font-size-c1);
+  }
+  dd {
+    margin: 0;
+    word-break: break-word;
+  }
+}
+
+.upload-btn {
+  position: relative;
+  overflow: hidden;
+  input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  &.is-busy {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.photo-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--kds-radius-md);
+    background: var(--kds-background-paper-elevation-2);
+  }
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.return-entry {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--kds-stroke-soft);
+  ul {
+    margin: 4px 0;
+    padding-left: 18px;
+  }
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  > li {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    padding-bottom: 14px;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      bottom: 0;
+      left: 5px;
+      width: 2px;
+      background: var(--kds-stroke-soft);
+    }
+    &:last-child {
+      padding-bottom: 0;
+      &::before {
+        display: none;
+      }
+    }
+  }
+}
+
+.timeline-dot {
+  position: relative;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--kds-stroke-medium);
+  &.is-info {
+    background: var(--kds-primary-base-500);
+  }
+  &.is-success {
+    background: var(--kds-success-dark);
+  }
+  &.is-warning {
+    background: var(--kds-warning-dark);
+  }
+}
+
+.wa-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wa-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--kds-stroke-soft);
+  border-radius: var(--adm-radius-cta);
+  color: var(--kds-text-primary);
+  > .ph {
+    color: #1fa855;
+  }
+  > span {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  &:hover {
+    color: var(--kds-text-primary);
+    border-color: var(--kds-stroke-medium);
+    background: var(--kds-background-paper-elevation-1);
+  }
+}
+
+.handover-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.handover-buyer {
+  font-size: var(--kds-font-size-b2);
+}
+
+// ───────────────────────── Label kirim (cetak 100×150 mm) ─────────────────────────
+
+body.adm-print {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.print-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.ship-label {
+  display: flex;
+  flex-direction: column;
+  width: 100mm;
+  height: 150mm;
+  padding: 4mm;
+  overflow: hidden;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font-size: 9pt;
+  line-height: 1.3;
+  svg {
+    display: block;
+  }
+}
+
+.ship-label-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 2mm;
+  border-bottom: 2px solid #000;
+  font-size: 11pt;
+}
+
+.ship-label-barcode {
+  padding: 2mm 0;
+  border-bottom: 1px solid #000;
+  text-align: center;
+  svg {
+    width: 100%;
+    height: 18mm;
+  }
+}
+
+.ship-label-code {
+  display: block;
+  margin-top: 1mm;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.ship-label-missing {
+  padding: 6mm 0;
+  border-bottom: 1px solid #000;
+  text-align: center;
+  font-weight: 700;
+}
+
+.ship-label-to,
+.ship-label-from {
+  display: flex;
+  flex-direction: column;
+  padding: 2mm 0;
+  border-bottom: 1px solid #000;
+}
+
+.ship-label-to strong {
+  font-size: 12pt;
+}
+
+.ship-label-caption {
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ship-label-foot {
+  display: flex;
+  flex: 1;
+  gap: 3mm;
+  padding-top: 2mm;
+  min-height: 0;
+}
+
+.ship-label-qr svg {
+  width: 26mm;
+  height: 26mm;
+}
+
+.ship-label-meta {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1mm;
+  min-width: 0;
+  ul {
+    margin: 0;
+    padding-left: 4mm;
+    overflow: hidden;
+    font-size: 7.5pt;
+  }
+}
+
+.ship-label-invoice {
+  svg {
+    width: 100%;
+    height: 10mm;
+  }
+  .ship-label-code {
+    font-size: 9pt;
+  }
+}
+
+@media print {
+  @page {
+    size: 100mm 150mm;
+    margin: 0;
+  }
+  body.adm-print {
+    display: block;
+    padding: 0;
+    background: #fff;
+  }
+  .print-toolbar {
+    display: none;
+  }
+  .ship-label {
+    border: 0;
   }
 }

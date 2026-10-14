@@ -24,6 +24,24 @@ export function sniffImage(buf: Buffer): ImageType | null {
 
 export const uploadsRoot = () => join(process.cwd(), 'public', 'uploads');
 
+/** Folder file privat (foto paket/retur): di luar public/, hanya disajikan lewat route ber-login. */
+export const privateRoot = () => join(process.cwd(), 'storage', 'private');
+
+/** Simpan file privat; hasilnya path relatif terhadap privateRoot, mis. orders/2026/10/k3j9…x.jpg */
+export async function savePrivateImage(buf: Buffer, type: ImageType, now = new Date()) {
+  const dir = `orders/${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const name = `${randomBytes(16).toString('base64url')}.${type.ext}`;
+  await mkdir(join(privateRoot(), dir), { recursive: true });
+  await writeFile(join(privateRoot(), dir, name), buf, { flag: 'wx' });
+  return `${dir}/${name}`;
+}
+
+/** Path absolut file privat; menolak path di luar folder privat. */
+export function privatePath(relative: string) {
+  if (!/^orders\/\d{4}\/\d{2}\/[\w-]+\.(jpg|png|webp)$/.test(relative)) throw new Error('Path file tidak valid.');
+  return join(privateRoot(), relative);
+}
+
 /** Simpan gambar; hasilnya URL publik, mis. /uploads/2026/10/k3j9…x.webp */
 export async function saveImage(buf: Buffer, type: ImageType, now = new Date()) {
   const dir = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;

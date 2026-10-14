@@ -1,0 +1,55 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Refund</h1>
+    <p class="page-subtitle">Diajukan CS, diputuskan Finance (orang yang berbeda). Tenggat 14 hari sejak diajukan.</p>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Status refund">
+  {{#each tabs}}<a class="tab{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>{{label}} <span class="count">{{count}}</span></a>{{/each}}
+</nav>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/refund" role="search">
+    {{#unless (eq filters.status "menunggu")}}<input type="hidden" name="status" value="{{filters.status}}">{{/unless}}
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input" type="search" name="q" value="{{filters.q}}" placeholder="No invoice atau nama pembeli" aria-label="Cari refund" autocomplete="off">
+    </div>
+    <button class="btn btn-secondary" type="submit">Cari</button>
+  </form>
+  {{#if rows.length}}
+  <ul class="order-list">
+    {{#each rows}}
+    <li>
+      <a class="order-row" href="/admin/refund/{{id}}">
+        <span class="order-row-icon" title="{{fulfillment.label}}">{{icon "hand-coins" size=22}}</span>
+        <span class="order-row-main">
+          <span class="order-row-top">
+            <strong class="mono">{{order.invoiceNo}}</strong>
+            <span class="badge badge-{{badge.tone}}">{{badge.label}}</span>
+            {{#if overdue}}<span class="badge badge-error">Lewat tenggat</span>{{/if}}
+          </span>
+          <span class="order-row-buyer">{{order.buyerName}} · {{reason}}</span>
+          <span class="small muted">Diajukan {{requestedBy}}, {{datetime requestedAt}}</span>
+        </span>
+        <span class="order-row-side">
+          <strong>{{rupiah amount}}</strong>
+          <span class="small muted">dari {{rupiah order.total}}</span>
+          <span class="small{{#if overdue}} warning-text{{else}} muted{{/if}}">Tenggat {{date dueAt}}</span>
+        </span>
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "hand-coins" size=40}}<strong>Tidak ada refund di sini</strong><span>Refund diajukan CS dari halaman detail pesanan.</span></div>
+  {{/if}}
+</section>

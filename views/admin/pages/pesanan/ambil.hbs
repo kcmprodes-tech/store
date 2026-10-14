@@ -1,0 +1,37 @@
+{{#if invalid}}
+<section class="box handover-card">
+  <div class="empty">{{icon "qr-code" size=48}}<strong>QR tidak dikenali</strong><span>QR ini tidak cocok dengan pesanan mana pun, atau pesanannya sudah dibatalkan. Cari pesanan lewat no invoice.</span></div>
+  <a class="btn btn-secondary btn-block" href="/admin/pesanan?status=siap">Lihat pesanan siap diambil</a>
+</section>
+{{else}}
+<section class="box handover-card">
+  <p class="row"><span class="badge badge-{{status.tone}}">{{status.label}}</span></p>
+  <h1 class="page-title mono-title mt-8">{{o.invoiceNo}}</h1>
+  <p class="handover-buyer"><strong>{{o.buyerName}}</strong> · {{itemCount}} barang</p>
+
+  <ul class="list order-items mt-16">
+    {{#each o.items}}
+    <li>
+      {{#if imageUrl}}<img class="thumb" src="{{imageUrl}}" alt="" loading="lazy">{{/if}}
+      <div class="list-main"><strong>{{productTitle}}</strong><span class="small muted">{{#if optionLabel}}{{optionLabel}} · {{/if}}<span class="mono">{{sku}}</span></span></div>
+      <strong class="pack-qty">×{{qty}}</strong>
+    </li>
+    {{/each}}
+  </ul>
+
+  {{#if pickedUp}}
+  <div class="alert alert-success mt-16" role="status">{{icon "check-circle" weight="fill"}}<div class="alert-body"><p><strong>Sudah diambil</strong> pada {{datetime pickedUp.at}}, diserahkan oleh {{pickedUp.by}}.</p></div></div>
+  {{else if canHandover}}
+  <form class="mt-16" method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-pembeli" data-busy-form>
+    {{> csrf}}
+    <input type="hidden" name="token" value="{{token}}">
+    <button class="btn btn-primary btn-block btn-lg" type="submit">{{icon "hand-arrow-up" size=20}} Serahkan ke pembeli</button>
+  </form>
+  {{else if (eq o.status "READY_PICKUP")}}
+  <p class="help mt-16">Hanya Gudang/Admin yang bisa menyerahkan pesanan.</p>
+  {{else}}
+  <div class="alert alert-warning mt-16" role="status">{{icon "warning" weight="fill"}}<div class="alert-body"><p>Pesanan {{status.label}} — belum bisa diserahkan.</p></div></div>
+  {{/if}}
+  <a class="btn btn-plain btn-block mt-8" href="/admin/pesanan/{{o.invoiceNo}}">Buka detail pesanan</a>
+</section>
+{{/if}}

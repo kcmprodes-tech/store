@@ -389,6 +389,11 @@
     });
   });
 
+  /* ---------- Cetak (label): <button data-print> ---------- */
+  $$('[data-print]').forEach(function (btn) {
+    on(btn, 'click', function () { window.print(); });
+  });
+
   /* ---------- Filter otomatis: <select data-autosubmit> ---------- */
   $$('[data-autosubmit]').forEach(function (el) {
     on(el, 'change', function () { if (el.form) el.form.submit(); });

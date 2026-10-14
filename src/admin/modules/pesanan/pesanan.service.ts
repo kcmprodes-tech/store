@@ -327,7 +327,7 @@ export async function completeOrder(tx: Tx, orderId: number, actor: Actor, at = 
 
 export async function cancelOrder(tx: Tx, orderId: number, reason: string, actor: Actor, at = new Date()) {
   const order = await lockOrder(tx, orderId);
-  if (order.status === 'CANCELED') return result(order, true);
+  if (order.status === 'CANCELED') return { ...result(order, true), refund: null };
   if (!['UNPAID', 'PROCESSING', 'READY_PICKUP'].includes(order.status)) {
     throw new OrderError(order.status === 'SHIPPED' || order.status === 'COMPLETED' ? 'Pesanan sudah dikirim/selesai — gunakan retur & refund.' : `Pesanan ${STATUS_LABELS[order.status].toLowerCase()}.`);
   }

@@ -3,6 +3,7 @@
  * Semua langkah aman diulang: transisi memeriksa status terbaru, notifikasi memakai dedupe.
  */
 import { prisma } from '../lib/prisma.js';
+import type { Prisma } from '../generated/prisma/client.js';
 import { notify } from './notifications.js';
 import {
   AUTO_COMPLETE_DAYS,
@@ -16,11 +17,12 @@ import {
 
 const DAY = 86400_000;
 
-export async function runJobs(now = new Date()) {
+/** `scope` membatasi pesanan yang diproses (dipakai tes supaya tidak menyentuh pesanan contoh). */
+export async function runJobs(now = new Date(), scope: Prisma.OrderWhereInput = {}) {
   const summary = { expired: 0, completed: 0, lateNotified: 0, pickupNotified: 0 };
 
   // UNPAID lewat batas bayar → EXPIRED (stok dilepas)
-  const unpaid = await prisma.order.findMany({ where: { status: 'UNPAID', paymentDueAt: { lt: now } }, select: { id: true } });
+  const unpaid = await prisma.order.findMany({ where: { ...scope, status: 'UNPAID', paymentDueAt: { lt: now } }, select: { id: true } });
   for (const o of unpaid) {
     const r = await inOrderTx((tx) => expireOrder(tx, o.id, now));
     if (!r.already) summary.expired++;
@@ -28,7 +30,7 @@ export async function runJobs(now = new Date()) {
 
   // Dikirim lebih dari 7 hari → Selesai otomatis
   const shipped = await prisma.order.findMany({
-    where: { status: 'SHIPPED', shippedAt: { lt: new Date(now.getTime() - AUTO_COMPLETE_DAYS * DAY) } },
+    where: { ...scope, status: 'SHIPPED', shippedAt: { lt: new Date(now.getTime() - AUTO_COMPLETE_DAYS * DAY) } },
     select: { id: true },
   });
   for (const o of shipped) {
@@ -38,7 +40,7 @@ export async function runJobs(now = new Date()) {
 
   // Diproses lebih dari 2 hari → notifikasi (sekali per pesanan)
   const late = await prisma.order.findMany({
-    where: { status: 'PROCESSING', paidAt: { lt: new Date(now.getTime() - LATE_PROCESSING_DAYS * DAY) } },
+    where: { ...scope, status: 'PROCESSING', paidAt: { lt: new Date(now.getTime() - LATE_PROCESSING_DAYS * DAY) } },
     select: { invoiceNo: true, fulfillment: true },
   });
   for (const o of late) {
@@ -53,7 +55,7 @@ export async function runJobs(now = new Date()) {
 
   // Siap diambil lebih dari 2 hari → pengingat (sekali per pesanan)
   const waiting = await prisma.order.findMany({
-    where: { status: 'READY_PICKUP', readyAt: { lt: new Date(now.getTime() - PICKUP_REMINDER_DAYS * DAY) } },
+    where: { ...scope, status: 'READY_PICKUP', readyAt: { lt: new Date(now.getTime() - PICKUP_REMINDER_DAYS * DAY) } },
     select: { invoiceNo: true },
   });
   for (const o of waiting) {

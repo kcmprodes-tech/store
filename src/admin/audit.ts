@@ -70,6 +70,8 @@ export const ENTITY_LABELS: Record<string, string> = {
   setting: 'Pengaturan',
   admin_user: 'Pengguna CMS',
   auth: 'Login',
+  order: 'Pesanan',
+  refund: 'Refund',
 };
 
 export const ACTION_LABELS: Record<string, string> = {
@@ -84,4 +86,18 @@ export const ACTION_LABELS: Record<string, string> = {
   'password.reset': 'Mereset password',
   'stock.in': 'Barang masuk',
   'stock.adjust': 'Penyesuaian stok',
+  'order.pay': 'Tandai dibayar',
+  'order.pack': 'Selesai dikemas',
+  'order.tracking': 'Mengisi resi',
+  'order.ship': 'Serah terima kurir',
+  'order.ready': 'Siap diambil',
+  'order.pickup': 'Diserahkan ke pembeli',
+  'order.complete': 'Menyelesaikan',
+  'order.cancel': 'Membatalkan',
+  'order.return': 'Menerima retur',
+  'order.photo': 'Mengunggah foto',
+  'refund.request': 'Mengajukan refund',
+  'refund.approve': 'Menyetujui refund',
+  'refund.reject': 'Menolak refund',
+  'refund.complete': 'Refund dibayar',
 };

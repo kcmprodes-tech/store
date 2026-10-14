@@ -1,0 +1,18 @@
+<form class="tracking-form" method="post" action="/admin/pesanan/{{o.invoiceNo}}/resi" data-busy-form>
+  {{> csrf}}
+  <div class="form-grid form-grid-2">
+    <div class="field">
+      <label class="label label-req" for="tracking-courier">Kurir</label>
+      <select class="select" id="tracking-courier" name="courier" required>
+        {{#unless o.courier}}<option value="">Pilih kurir</option>{{/unless}}
+        {{#each couriers}}<option {{selected this @root.o.courier}}>{{this}}</option>{{/each}}
+        {{#if o.courier}}{{#unless (includes couriers o.courier)}}<option selected>{{o.courier}}</option>{{/unless}}{{/if}}
+      </select>
+    </div>
+    <div class="field">
+      <label class="label label-req" for="tracking-no">No resi</label>
+      <input class="input mono" id="tracking-no" name="trackingNo" value="{{o.trackingNo}}" maxlength="40" autocapitalize="characters" autocomplete="off" spellcheck="false" required pattern="[A-Za-z0-9\-]{6,40}">
+    </div>
+  </div>
+  <button class="btn btn-primary btn-block mt-16" type="submit">{{icon "floppy-disk" size=18}} Simpan resi</button>
+</form>

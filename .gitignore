@@ -6,3 +6,4 @@ src/generated/
 *.log
 .DS_Store
 public/uploads/
+storage/

@@ -1,0 +1,102 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/refund">Refund</a>{{icon "caret-right" size=12}}<span>Detail</span></nav>
+    <h1 class="page-title">{{rupiah r.amount}}</h1>
+    <p class="page-subtitle row">
+      <span class="badge badge-{{badge.tone}}">{{badge.label}}</span>
+      {{#if overdue}}<span class="badge badge-error">Lewat tenggat</span>{{/if}}
+      <span class="mono">{{r.order.invoiceNo}}</span>
+    </p>
+  </div>
+  <div class="page-actions">
+    {{#if canOpenOrder}}<a class="btn btn-secondary" href="/admin/pesanan/{{r.order.invoiceNo}}">{{icon "receipt" size=18}} Buka pesanan</a>{{/if}}
+    <a class="btn btn-secondary" href="/admin/log?entitas=refund&id={{r.id}}">{{icon "clock-counter-clockwise" size=18}} Log</a>
+  </div>
+</div>
+
+{{#if intent}}
+{{!-- Dari notifikasi: satu tombol konfirmasi besar --}}
+<section class="box next-step" aria-labelledby="intent-title">
+  <div class="next-step-head">{{icon (ifv (eq intent "setujui") "check-circle" "x-circle") size=28}}<div><h2 id="intent-title" class="box-title">{{#if (eq intent "setujui")}}Setujui refund ini?{{else}}Tolak refund ini?{{/if}}</h2><p class="box-desc">{{rupiah r.amount}} untuk {{r.order.buyerName}} · {{r.reason}}</p></div></div>
+  <form method="post" action="/admin/refund/{{r.id}}/putuskan" data-busy-form>
+    {{> csrf}}
+    <input type="hidden" name="keputusan" value="{{intent}}">
+    <div class="field">
+      <label class="label{{#if (eq intent "tolak")}} label-req{{/if}}" for="intent-note">{{#if (eq intent "tolak")}}Alasan penolakan{{else}}Catatan (opsional){{/if}}</label>
+      <textarea class="textarea" id="intent-note" name="note" rows="2" maxlength="500"{{#if (eq intent "tolak")}} required{{/if}}></textarea>
+    </div>
+    <button class="btn {{#if (eq intent "setujui")}}btn-primary{{else}}btn-danger{{/if}} btn-block btn-lg mt-16" type="submit">{{#if (eq intent "setujui")}}Ya, setujui {{rupiah r.amount}}{{else}}Ya, tolak refund{{/if}}</button>
+  </form>
+  <p class="help mt-8"><a href="/admin/refund/{{r.id}}">Lihat detail lengkap dulu</a></p>
+</section>
+{{/if}}
+
+<div class="grid grid-main-side{{#if intent}} mt-16{{/if}}">
+  <div class="stack">
+    <section class="box">
+      <h2 class="section-block-title">Pengajuan</h2>
+      <dl class="kv">
+        <div><dt>Jumlah</dt><dd><strong>{{rupiah r.amount}}</strong> dari total {{rupiah r.order.total}}</dd></div>
+        <div><dt>Alasan</dt><dd>{{r.reason}}</dd></div>
+        <div><dt>Diajukan</dt><dd>{{r.requestedBy}}<br><span class="small muted">{{datetime r.requestedAt}}</span></dd></div>
+        <div><dt>Tenggat</dt><dd>{{datetime r.dueAt}}</dd></div>
+        {{#if r.decidedAt}}<div><dt>Diputuskan</dt><dd>{{r.decidedBy}}<br><span class="small muted">{{datetime r.decidedAt}}</span>{{#if r.decisionNote}}<br>{{r.decisionNote}}{{/if}}</dd></div>{{/if}}
+        {{#if r.completedAt}}<div><dt>Dana dikirim</dt><dd>{{r.completedBy}}<br><span class="small muted">{{datetime r.completedAt}}</span></dd></div>{{/if}}
+      </dl>
+    </section>
+
+    <section class="box">
+      <div class="box-head"><div><h2 class="box-title">Pesanan</h2><p class="box-desc">{{icon fulfillment.icon size=14}} {{fulfillment.label}} · <span class="badge badge-{{orderStatus.tone}}">{{orderStatus.label}}</span></p></div></div>
+      <ul class="list order-items">
+        {{#each r.order.items}}
+        <li>
+          {{#if imageUrl}}<img class="thumb" src="{{imageUrl}}" alt="" loading="lazy">{{/if}}
+          <div class="list-main"><strong>{{productTitle}}</strong><span class="small muted">{{qty}} × {{rupiah price}} · <span class="mono">{{sku}}</span>{{#if returnedQty}} · {{returnedQty}} diretur{{/if}}</span></div>
+        </li>
+        {{/each}}
+      </ul>
+      <dl class="kv mt-16">
+        <div><dt>Pembeli</dt><dd>{{r.order.buyerName}}{{#if phone}}<br><span class="small mono">{{phone}}</span>{{/if}}</dd></div>
+        <div><dt>Metode bayar</dt><dd>{{r.order.paymentMethodCode}}</dd></div>
+        {{#if refundedOther}}<div><dt>Refund lain</dt><dd>{{rupiah refundedOther}}</dd></div>{{/if}}
+      </dl>
+      {{#if others.length}}
+      <ul class="list mt-16">
+        {{#each others}}<li><div class="list-main"><strong>{{rupiah amount}}</strong><span class="small muted">{{reason}}</span></div><span class="badge badge-{{badge.tone}}">{{badge.label}}</span><a class="btn btn-plain btn-sm" href="/admin/refund/{{id}}">Buka</a></li>{{/each}}
+      </ul>
+      {{/if}}
+    </section>
+  </div>
+
+  <aside class="stack grid-sticky">
+    {{#if canDecide}}{{#unless intent}}
+    <section class="box">
+      <h2 class="section-block-title">Keputusan</h2>
+      <form method="post" action="/admin/refund/{{r.id}}/putuskan" data-busy-form>
+        {{> csrf}}
+        <div class="field">
+          <label class="label" for="decision-note">Catatan</label>
+          <textarea class="textarea" id="decision-note" name="note" rows="3" maxlength="500" placeholder="Wajib diisi bila menolak"></textarea>
+        </div>
+        <div class="stack mt-16">
+          <button class="btn btn-primary btn-block" type="submit" name="keputusan" value="setujui" data-confirm="Setujui refund {{rupiah r.amount}}?" data-confirm-ok="Ya, setujui">{{icon "check" size=18}} Setujui</button>
+          <button class="btn btn-secondary btn-block" type="submit" name="keputusan" value="tolak" data-confirm="Tolak refund ini? Pastikan alasan sudah ditulis." data-confirm-ok="Ya, tolak" data-danger>{{icon "x" size=18}} Tolak</button>
+        </div>
+      </form>
+    </section>
+    {{/unless}}{{/if}}
+    {{#if ownRequest}}
+    <div class="alert alert-warning" role="status">{{icon "info" weight="fill"}}<div class="alert-body"><p>Anda yang mengajukan refund ini, jadi keputusannya harus diambil orang lain.</p></div></div>
+    {{/if}}
+    {{#if canComplete}}
+    <section class="box">
+      <h2 class="section-block-title">Kirim dana</h2>
+      <p class="small">Kirim dana ke pembeli lewat dasbor pembayaran (manual sampai integrasi Xendit), lalu tandai di sini.</p>
+      <form class="mt-16" method="post" action="/admin/refund/{{r.id}}/selesai" data-busy-form data-confirm="Dana {{rupiah r.amount}} sudah dikirim ke pembeli?" data-confirm-ok="Ya, sudah dikirim">
+        {{> csrf}}
+        <button class="btn btn-primary btn-block" type="submit">{{icon "money" size=18}} Dana sudah dikembalikan</button>
+      </form>
+    </section>
+    {{/if}}
+  </aside>
+</div>

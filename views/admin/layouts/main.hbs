@@ -34,7 +34,7 @@
     {{#each nav.bottom}}
     <a class="adm-bottomnav-item{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>
       {{icon this.icon size=24 weight=(ifv active "fill" "regular")}}<span>{{label}}</span>
-      {{#if badge}}<b class="adm-nav-badge">{{badge}}</b>{{/if}}
+      {{#if badge}}<b class="adm-nav-badge" title="{{badge}} {{badgeTitle}}">{{badge}}</b>{{/if}}
     </a>
     {{/each}}
     <button class="adm-bottomnav-item{{#if nav.moreActive}} is-active{{/if}}" type="button" data-sheet-open="sheet-more">
@@ -58,7 +58,7 @@
 
   {{#if flash}}
   <div class="toast is-{{flash.type}}" role="status" data-toast>
-    {{#if (eq flash.type "error")}}{{icon "warning-circle" size=20 weight="fill"}}{{else}}{{icon "check-circle" size=20 weight="fill"}}{{/if}}
+    {{#if (eq flash.type "error")}}{{icon "warning-circle" size=20 weight="fill"}}{{else if (eq flash.type "info")}}{{icon "info" size=20 weight="fill"}}{{else}}{{icon "check-circle" size=20 weight="fill"}}{{/if}}
     <span class="toast-text">{{flash.message}}</span>
     <button class="icon-btn" type="button" data-toast-close aria-label="Tutup">{{icon "x" size=18}}</button>
   </div>

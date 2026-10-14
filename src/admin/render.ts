@@ -12,7 +12,8 @@ import { formatNumber, formatRupiah } from '../lib/format.js';
 import { assetVersion, helpers as storeHelpers } from '../view/engine.js';
 import type { AdminRole } from '../generated/prisma/client.js';
 import { takeFlash } from './http.js';
-import { permissionMap, ROLE_LABELS, type Module } from './permissions.js';
+import { permissionMap, primaryRole, ROLE_LABELS, type Module } from './permissions.js';
+import { prisma } from '../lib/prisma.js';
 import { formatDate, formatDateTime, toDateTimeLocal } from './time.js';
 import { lowStockCount } from './modules/stok/stok.service.js';
 
@@ -92,11 +93,18 @@ const engine = create({
 
 // ───────────── Navigasi ─────────────
 
-type NavItem = { key: string; label: string; href: string; icon: string; module?: Module; badge?: number };
+type NavItem = { key: string; label: string; href: string; icon: string; module?: Module; badge?: number; badgeTitle?: string };
 type NavGroup = { label: string | null; items: NavItem[] };
 
 const NAV: NavGroup[] = [
   { label: null, items: [{ key: 'dasbor', label: 'Dasbor', href: '/admin', icon: 'squares-four' }] },
+  {
+    label: 'Pesanan',
+    items: [
+      { key: 'pesanan', label: 'Pesanan', href: '/admin/pesanan', icon: 'receipt', module: 'pesanan', badgeTitle: 'pesanan perlu diproses' },
+      { key: 'refund', label: 'Refund', href: '/admin/refund', icon: 'hand-coins', module: 'refund', badgeTitle: 'refund menunggu keputusan' },
+    ],
+  },
   {
     label: 'Katalog',
     items: [
@@ -116,7 +124,7 @@ const NAV: NavGroup[] = [
   {
     label: 'Operasional',
     items: [
-      { key: 'stok', label: 'Stok', href: '/admin/stok', icon: 'warehouse', module: 'stok' },
+      { key: 'stok', label: 'Stok', href: '/admin/stok', icon: 'warehouse', module: 'stok', badgeTitle: 'SKU stok menipis' },
       { key: 'promo', label: 'Promo', href: '/admin/promo', icon: 'ticket', module: 'promo' },
     ],
   },
@@ -132,12 +140,12 @@ const NAV: NavGroup[] = [
 
 /** Menu bawah di HP: Dasbor + 3 modul yang paling sering dipakai peran utama akun. */
 const MOBILE_PRIORITY: Record<AdminRole, string[]> = {
-  ADMIN: ['produk', 'stok', 'promo'],
+  ADMIN: ['pesanan', 'produk', 'stok'],
   EDITOR: ['produk', 'seksi', 'kategori'],
   MARKETING: ['promo', 'banner', 'seksi'],
-  CS: ['produk', 'stok', 'promo'],
-  GUDANG: ['stok', 'produk', 'log'],
-  FINANCE: ['promo', 'stok', 'produk'],
+  CS: ['pesanan', 'refund', 'produk'],
+  GUDANG: ['pesanan', 'stok', 'produk'],
+  FINANCE: ['refund', 'pesanan', 'stok'],
 };
 
 function buildNav(roles: AdminRole[], active: string | undefined, badges: Partial<Record<string, number>>) {
@@ -149,7 +157,7 @@ function buildNav(roles: AdminRole[], active: string | undefined, badges: Partia
       .map((i) => ({ ...i, active: i.key === active, badge: badges[i.key] || 0 })),
   })).filter((g) => g.items.length);
   const all = groups.flatMap((g) => g.items);
-  const primary = roles[0] ?? 'CS';
+  const primary = primaryRole(roles);
   const bottom = [all[0], ...MOBILE_PRIORITY[primary].map((k) => all.find((i) => i.key === k)).filter((i) => i !== undefined)].slice(0, 4);
   const moreActive = !bottom.some((i) => i.active);
   return { groups, bottom, moreActive };
@@ -163,6 +171,8 @@ export function adminRenderMiddleware(req: Request, res: Response, next: NextFun
     const perms = admin ? permissionMap(admin.roles) : null;
     const badges: Record<string, number> = {};
     if (perms?.stok.view) badges.stok = await lowStockCount();
+    if (perms?.pesanan.view) badges.pesanan = await prisma.order.count({ where: { status: 'PROCESSING' } });
+    if (perms?.refund.view) badges.refund = await prisma.refund.count({ where: { status: 'REQUESTED' } });
     const html = await engine.renderView(join(viewsRoot, 'pages', `${view}.hbs`), {
       admin,
       perms,

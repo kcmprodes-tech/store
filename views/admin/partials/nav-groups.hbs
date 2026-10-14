@@ -4,7 +4,7 @@
   {{#each items}}
   <a class="adm-nav-link{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>
     {{icon this.icon size=20 weight=(ifv active "fill" "regular")}}<span>{{label}}</span>
-    {{#if badge}}<b class="adm-nav-badge" title="{{badge}} SKU stok menipis">{{badge}}</b>{{/if}}
+    {{#if badge}}<b class="adm-nav-badge" title="{{badge}} {{badgeTitle}}">{{badge}}</b>{{/if}}
   </a>
   {{/each}}
 </div>

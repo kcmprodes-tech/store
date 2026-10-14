@@ -26,6 +26,8 @@ import { pengaturanRouter } from './modules/pengaturan/pengaturan.routes.js';
 import { penggunaRouter } from './modules/pengguna/pengguna.routes.js';
 import { logRouter } from './modules/log/log.routes.js';
 import { uploadRouter } from './modules/upload/upload.routes.js';
+import { pesananRouter } from './modules/pesanan/pesanan.routes.js';
+import { refundRouter } from './modules/pesanan/refund.routes.js';
 
 export const adminRouter = Router();
 
@@ -156,6 +158,8 @@ adminRouter.use(authRouter);
 adminRouter.use(requireLogin);
 adminRouter.use(dashboardRouter);
 adminRouter.use(uploadRouter);
+adminRouter.use(pesananRouter);
+adminRouter.use(refundRouter);
 adminRouter.use(produkRouter);
 adminRouter.use(stokRouter);
 adminRouter.use(promoRouter);
