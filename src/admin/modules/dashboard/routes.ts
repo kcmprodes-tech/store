@@ -130,7 +130,7 @@ async function summaryCards(perms: ReturnType<typeof permissionMap>, now: Date):
             { label: 'batal', count: count('CANCELED', 'EXPIRED'), tone: 'plain' as Tone, href: '/admin/pesanan?status=batal', title: 'Dibatalkan atau kedaluwarsa' },
           ],
           viewHref: '/admin/pesanan?status=semua',
-          viewLabel: 'Lihat semua pesanan',
+          viewLabel: 'Lihat semua',
         };
       }),
     );

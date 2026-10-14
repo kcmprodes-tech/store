@@ -869,23 +869,30 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   padding-top: var(--kds-spacing-4);
 }
 
-// Kartu sempit (isi < 260px, "Lihat semua" + "+ … baru" tidak muat sebaris): rincian & tombol bertumpuk,
-// tombol penuh lebar (label boleh dua baris)
+// "Lihat semua" rata kiri (120px), tombol tambah rata kanan berupa lingkaran "+"
+.summary-card-actions {
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.summary-card-view {
+  flex: 0 1 120px; // 120px, menyusut hanya bila kartu terlalu sempit
+  min-width: 0;
+}
+
+// Kartu sempit: rincian bertumpuk
 @container kartu (max-width: 259px) {
   .summary-card-dots {
     flex-direction: column;
     gap: var(--kds-spacing-4);
   }
-  .summary-card-actions {
-    flex-direction: column;
-    .btn {
-      width: 100%;
-      height: auto;
-      min-height: var(--adm-btn-h-sm);
-      padding: var(--kds-spacing-8);
-      white-space: normal;
-      text-align: center;
-    }
+}
+
+// Kartu sangat sempit (120 + 8 + 36 tidak muat): padding samping dirapatkan supaya label tetap utuh
+@container kartu (max-width: 163px) {
+  .summary-card-view {
+    padding-inline: var(--kds-spacing-8);
   }
 }
 
@@ -988,6 +995,11 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   padding: 0 var(--kds-spacing-20);
   font-size: var(--kds-font-size-b2);
   line-height: 20px; // tombol large KDS
+}
+
+// Tombol bulat (mis. "+" di kartu dashboard)
+.btn-circle {
+  border-radius: var(--kds-radius-rounded);
 }
 
 // Tombol ikon persegi: lebar = tinggi sesuai ukurannya

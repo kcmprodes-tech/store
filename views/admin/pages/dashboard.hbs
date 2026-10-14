@@ -29,8 +29,8 @@
       {{/each}}
     </ul>
     <div class="summary-card-actions">
-      <a class="btn btn-secondary btn-sm" href="{{viewHref}}">{{viewLabel}}</a>
-      {{#if newHref}}<a class="btn btn-primary btn-sm" href="{{newHref}}">{{icon "plus" size=16}} {{newLabel}}</a>{{/if}}
+      <a class="btn btn-secondary btn-sm summary-card-view" href="{{viewHref}}">{{viewLabel}}</a>
+      {{#if newHref}}<a class="btn btn-primary btn-sm btn-icon btn-circle" href="{{newHref}}" aria-label="{{newLabel}}" title="{{newLabel}}">{{icon "plus" size=18 weight="bold"}}</a>{{/if}}
     </div>
   </section>
   {{/each}}
