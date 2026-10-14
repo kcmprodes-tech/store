@@ -10832,3 +10832,8 @@ html.sv2-lightbox-open { overflow: hidden; }
 .btn-whatsapp, .btn-whatsapp * {
   letter-spacing: var(--sv2-letter-spacing) !important;
 }
+
+/* ---------- Store hanya bertema terang ----------
+   CSS kompas.com memasang `color-scheme: light dark` / `normal !important`; blok mode gelapnya
+   sudah dibuang scripts/purge-legacy-css.mjs. Ini menjaga scrollbar & kontrol form tetap terang. */
+:root { color-scheme: light !important; }

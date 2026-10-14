@@ -4,12 +4,16 @@
  * CSS lama yang dimuat prototipe ±5 MB per platform. Skrip ini menyaring hanya selector yang
  * dipakai template (views/**) dan store-v2.js, lalu menyalin gambar yang dirujuk CSS tersebut.
  *
+ * Store hanya bertema terang, jadi blok `@media (prefers-color-scheme: dark)` kompas.com dibuang:
+ * kalau tidak, browser mode gelap memberi latar #121212 di bawah teks KDS yang gelap.
+ *
  * Pakai:  node scripts/purge-legacy-css.mjs ../dummy-kompascom-product
  * Hasil:  public/vendor/kompas/legacy-{desktop,mobile}.css + public/vendor/kompas/{desktop,mobile}/images/…
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import postcss from 'postcss';
 import { PurgeCSS } from 'purgecss';
 
 const proto = resolve(process.argv[2] ?? '../dummy-kompascom-product');
@@ -61,6 +65,19 @@ function rewriteUrls(css, cssDir, platform) {
   });
 }
 
+/** Buang aturan mode gelap; kembalikan CSS baru + jumlah blok yang dibuang. */
+function stripDarkMode(css) {
+  const ast = postcss.parse(css);
+  let removed = 0;
+  ast.walkAtRules('media', (rule) => {
+    if (/prefers-color-scheme:\s*dark/.test(rule.params)) {
+      rule.remove();
+      removed++;
+    }
+  });
+  return { css: ast.toString(), removed };
+}
+
 for (const [platform, files] of Object.entries(SOURCES)) {
   const cssDir = join(proto, 'build', platform, 'asset/css');
   const raw = [...files.map((f) => join(cssDir, f)), KGM_VERIFY].map((file) => {
@@ -82,9 +99,10 @@ for (const [platform, files] of Object.entries(SOURCES)) {
   mkdirSync(outDir, { recursive: true });
   const out = join(outDir, `legacy-${platform}.css`);
   const header = `/* Dihasilkan oleh scripts/purge-legacy-css.mjs dari CSS kompas.com prototipe. Jangan edit manual. */\n`;
-  writeFileSync(out, header + result.css);
+  const light = stripDarkMode(result.css);
+  writeFileSync(out, header + light.css);
   const before = raw.reduce((n, s) => n + s.length, 0);
-  console.log(`${platform}: ${(before / 1024).toFixed(0)} KB → ${(result.css.length / 1024).toFixed(0)} KB (${out})`);
+  console.log(`${platform}: ${(before / 1024).toFixed(0)} KB → ${(light.css.length / 1024).toFixed(0)} KB, ${light.removed} blok mode gelap dibuang (${out})`);
 }
 
 console.log(`Gambar disalin: ${copied}`);
