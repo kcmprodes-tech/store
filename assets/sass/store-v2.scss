@@ -10508,9 +10508,9 @@ body.is-infinite-scroll .footer.column { display: none !important; }
 /* kartu pesanan: CTA kiri (Detail) & kanan sama lebar.
    Desktop: min 144px (= label terpanjang "Pesanan selesai"); mobile: dibagi rata, tombol ⋯ tetap kecil */
 .store-v2-content .order-card-actions .btn { min-width: 144px; justify-content: center; }
-/* layar HP: kartu profil + menu akun disembunyikan di Daftar Pesanan (sudah ada di menu avatar header) */
+/* layar HP: kartu profil + menu akun disembunyikan (Daftar Pesanan & Alamat Pengiriman); sudah ada di menu avatar header */
 @media (max-width: 640px) {
-  .store-v2-content .account-page--orders .account-sidebar { display: none; }
+  .store-v2-content .account-sidebar { display: none; }
 }
 @media (max-width: 640px) {
   .store-v2-content .order-card-actions .btn { flex: 1 1 0; width: auto; min-width: 0; padding: 0 10px; }

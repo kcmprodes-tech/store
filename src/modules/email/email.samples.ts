@@ -103,7 +103,7 @@ const refundOrder: EmailData['order'] = {
   courier: 'JNE Regular',
 };
 
-const vaPayment = { method: 'VA' as const, vaNumber: '8077 0812 3456 7890', deadline: '15 Oktober 2026, 10.12 WIB' };
+const vaPayment = { method: 'VA' as const, vaNumber: '8077081234567890', deadline: '15 Oktober 2026, 10.12 WIB' };
 const refund = { amount: 108000, destination: 'Saldo GoPay', eta: '28 Oktober 2026', doneAt: '20 Oktober 2026', reference: 'RF-261020-8K2M' };
 
 export const EMAIL_SAMPLES: Record<string, EmailData> = {

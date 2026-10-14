@@ -86,6 +86,8 @@ export async function renderEmail(
       buyAgainUrl: absolute(baseUrl, order.items[0]?.url ?? '/'),
       items: order.items.map((i) => ({ ...i, url: absolute(baseUrl, i.url), image: absolute(baseUrl, i.image), lineTotal: i.price * i.qty })),
     },
+    // nomor VA tanpa spasi: satu "kata" sehingga tekan lama / klik dua kali menyalin seluruh nomor
+    payment: data.payment && { ...data.payment, vaNumber: data.payment.vaNumber?.replace(/\s+/g, '') },
     video: data.video && { ...data.video, url: absolute(baseUrl, data.video.url), image: absolute(baseUrl, data.video.image) },
     baseUrl,
     homeUrl: `${baseUrl}/`,

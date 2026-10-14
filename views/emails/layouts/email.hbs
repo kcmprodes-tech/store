@@ -8,14 +8,16 @@
   <meta name="color-scheme" content="light">
   <meta name="supported-color-schemes" content="light">
   <title>{{subject}}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* Email Store Kompas.com — warna & tipografi KOMPAS.com Design System (light only).
        Di-inline otomatis oleh juice; media query tetap di <style>. */
     body { margin: 0; padding: 0; width: 100%; background: #F0F0F0; -webkit-text-size-adjust: 100%; }
     table { border-collapse: collapse; }
     img { border: 0; outline: none; text-decoration: none; }
-    .e-font, .e-font td, .e-font div, .e-font p, .e-font a, .e-font span, .e-font h1 { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: -0.2px; }
+    .e-font, .e-font td, .e-font div, .e-font p, .e-font a, .e-font span, .e-font strong, .e-font h1 { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: -0.2px; }
+    /* teks tebal = semibold (600), tidak ada bold 700 */
+    .e-font strong, .e-font b, .e-font h1 { font-weight: 600; }
     .e-preheader { display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0; mso-hide: all; font-size: 1px; line-height: 1px; color: #F0F0F0; }
     .e-outer { width: 100%; background: #F0F0F0; }
     .e-outer-td { padding: 32px 16px 40px; }
@@ -30,7 +32,7 @@
     .e-badge--info { background: #CFE4F4; color: #083D63; }
     .e-badge--error { background: #FEE4E2; color: #912018; }
     .e-badge--neutral { background: #F0F0F0; color: #5A5A5A; }
-    .e-title { margin: 16px 0 8px; font-size: 24px; line-height: 32px; font-weight: 700; color: #2A2A2A; }
+    .e-title { margin: 16px 0 8px; font-size: 24px; line-height: 32px; font-weight: 600; color: #2A2A2A; }
     .e-text { margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #5A5A5A; }
     .e-text strong { color: #2A2A2A; font-weight: 600; white-space: nowrap; }
     .e-note { margin: 16px 0 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
@@ -41,19 +43,20 @@
     .e-hl-row-last { padding: 0; }
     .e-label { display: block; font-size: 12px; line-height: 16px; color: #888888; }
     .e-value { display: block; margin-top: 4px; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
-    .e-value-lg { display: block; margin-top: 4px; font-size: 24px; line-height: 32px; font-weight: 700; color: #2A2A2A; letter-spacing: 0.5px; }
-    .e-value-price { display: block; margin-top: 4px; font-size: 20px; line-height: 28px; font-weight: 700; color: #0F79C6; }
+    /* nomor VA / resi: bisa disalin utuh (satu kata, sekali pilih langsung semua) */
+    .e-value-lg { display: block; margin-top: 4px; font-size: 24px; line-height: 32px; font-weight: 600; color: #2A2A2A; -webkit-user-select: all; user-select: all; }
+    .e-value-price { display: block; margin-top: 4px; font-size: 20px; line-height: 28px; font-weight: 600; color: #0F79C6; }
     .e-value-text { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; color: #5A5A5A; }
 
     .e-btn-table { margin: 0 0 8px; }
     .e-btn-td { border-radius: 12px; background: #0F79C6; }
-    .e-btn { display: inline-block; padding: 14px 28px; border-radius: 12px; font-size: 16px; line-height: 20px; font-weight: 700; color: #FFFFFF; text-decoration: none; }
+    .e-btn { display: inline-block; padding: 14px 28px; border-radius: 12px; font-size: 16px; line-height: 20px; font-weight: 600; color: #FFFFFF; text-decoration: none; }
     .e-btn-td--secondary { border-radius: 12px; background: #FFFFFF; }
     .e-btn--secondary { padding: 13px 27px; border: 1px solid #0F79C6; color: #0F79C6; }
     .e-btn-gap { width: 12px; font-size: 0; line-height: 0; }
 
     .e-section { padding-top: 32px; }
-    .e-section-title { margin: 0 0 12px; font-size: 16px; line-height: 24px; font-weight: 700; color: #2A2A2A; }
+    .e-section-title { margin: 0 0 12px; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
     .e-divider { border-top: 1px solid #E8E8E8; font-size: 0; line-height: 0; height: 1px; }
     .e-meta-label { padding: 4px 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
     .e-meta-value { padding: 4px 0; font-size: 14px; line-height: 20px; color: #2A2A2A; text-align: right; font-weight: 600; }
@@ -68,8 +71,8 @@
     .e-row-label { padding: 4px 0; font-size: 14px; line-height: 20px; color: #5A5A5A; }
     .e-row-value { padding: 4px 0; font-size: 14px; line-height: 20px; color: #2A2A2A; text-align: right; white-space: nowrap; }
     .e-row-discount { color: #039855; }
-    .e-total-label { padding: 12px 0 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #2A2A2A; }
-    .e-total-value { padding: 12px 0 0; font-size: 18px; line-height: 24px; font-weight: 700; color: #0F79C6; text-align: right; white-space: nowrap; }
+    .e-total-label { padding: 12px 0 0; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
+    .e-total-value { padding: 12px 0 0; font-size: 18px; line-height: 24px; font-weight: 600; color: #0F79C6; text-align: right; white-space: nowrap; }
 
     .e-info-title { display: block; font-size: 14px; line-height: 20px; font-weight: 600; color: #2A2A2A; }
     .e-info-text { display: block; margin-top: 2px; font-size: 14px; line-height: 20px; color: #5A5A5A; }
@@ -79,7 +82,7 @@
     .e-video-title { margin: 12px 0 24px; font-size: 16px; line-height: 24px; font-weight: 600; color: #2A2A2A; }
 
     .e-help { padding: 24px 4px 0; }
-    .e-help-title { font-size: 14px; line-height: 20px; font-weight: 700; color: #2A2A2A; }
+    .e-help-title { font-size: 14px; line-height: 20px; font-weight: 600; color: #2A2A2A; }
     .e-help-text { font-size: 14px; line-height: 20px; color: #5A5A5A; }
     .e-footer { padding: 24px 4px 0; font-size: 12px; line-height: 18px; color: #888888; }
     .e-footer a { color: #5A5A5A; text-decoration: underline; }

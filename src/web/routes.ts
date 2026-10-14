@@ -165,15 +165,7 @@ web.get('/pesanan', route(async (_req, res) => res.renderPage('order-detail', { 
 web.get('/pesanan/:id/diambil', route(async (_req, res) => res.renderPage('pickup-success', { pageTitle: 'Pesanan berhasil diambil' })));
 web.get('/pesanan/:id', route(async (_req, res) => res.renderPage('order-detail', { pageTitle: 'Detail Transaksi' })));
 
-web.get(
-  '/akun',
-  route(async (req, res) =>
-    res.renderPage('account', {
-      pageTitle: 'Akun',
-      accountSection: req.query.accountSection === 'addresses' ? 'addresses' : 'orders',
-    }),
-  ),
-);
+web.get('/akun', route(async (_req, res) => res.renderPage('account', { pageTitle: 'Akun' })));
 
 // ───────────── Redirect URL prototipe (*.html) ─────────────
 
