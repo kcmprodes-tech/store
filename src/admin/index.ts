@@ -29,6 +29,7 @@ import { uploadRouter } from './modules/upload/upload.routes.js';
 import { pesananRouter } from './modules/pesanan/pesanan.routes.js';
 import { refundRouter } from './modules/pesanan/refund.routes.js';
 import { cariRouter } from './modules/cari/cari.routes.js';
+import { notifikasiRouter } from './modules/notifikasi/notifikasi.routes.js';
 
 export const adminRouter = Router();
 
@@ -159,6 +160,7 @@ adminRouter.use(authRouter);
 adminRouter.use(requireLogin);
 adminRouter.use(dashboardRouter);
 adminRouter.use(cariRouter);
+adminRouter.use(notifikasiRouter);
 adminRouter.use(uploadRouter);
 adminRouter.use(pesananRouter);
 adminRouter.use(refundRouter);

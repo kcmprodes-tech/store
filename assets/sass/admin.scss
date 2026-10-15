@@ -439,22 +439,26 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   background: var(--kds-stroke-medium);
 }
 
+// Desktop — desain Figma "Store-kompascom" node 233:1131: latar abu, sidebar berupa kartu putih melayang
+// (24px dari tepi, lebar 248, radius 12), konten mulai 32px di kanannya, bar atas di atas konten.
 @media (min-width: $bp-desktop) {
   body.adm:not(.adm-auth, .adm-print) {
     display: grid;
-    grid-template-columns: $sidebar-w 1fr;
+    grid-template-columns: calc(var(--kds-spacing-24) + #{$sidebar-w}) minmax(0, 1fr);
+    align-items: start;
   }
   .adm-sidebar {
     position: sticky;
-    top: 0;
+    top: var(--kds-spacing-24);
     display: flex;
     flex-direction: column;
     gap: var(--kds-spacing-24);
-    height: 100vh;
+    max-height: calc(100vh - var(--kds-spacing-48));
+    margin: var(--kds-spacing-24) 0 var(--kds-spacing-24) var(--kds-spacing-24);
     overflow-y: auto;
-    padding: var(--kds-spacing-20) var(--kds-spacing-16);
+    padding: var(--kds-spacing-20) var(--kds-spacing-16) var(--kds-spacing-40);
+    border-radius: var(--kds-radius-lg);
     background: var(--kds-background-paper-elevation-0);
-    border-right: 1px solid var(--kds-stroke-soft);
     // Scrollbar menu hanya muncul saat kursor/fokus ada di sidebar
     scrollbar-color: transparent transparent;
     &::-webkit-scrollbar-thumb {
@@ -468,9 +472,6 @@ details.adm-nav-group[open] .adm-nav-group-badge {
       }
     }
   }
-  .adm-sidebar nav {
-    flex: 1;
-  }
   .adm-shell {
     padding-bottom: 0;
   }
@@ -480,7 +481,217 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
   .adm-main {
     --adm-main-pb: var(--kds-spacing-64);
-    padding: var(--kds-spacing-32) var(--kds-spacing-40) var(--adm-main-pb);
+    padding: 0 var(--kds-spacing-32) var(--adm-main-pb);
+  }
+}
+
+// ───────── Bar atas desktop: sapaan (dashboard) · cari · bantuan · kotak masuk · akun ─────────
+
+.adm-topbar {
+  display: none;
+}
+
+@media (min-width: $bp-desktop) {
+  .adm-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--kds-spacing-24);
+    max-width: 1200px;
+    padding: var(--kds-spacing-24) var(--kds-spacing-32) 0;
+    margin-bottom: var(--kds-spacing-24);
+    &.adm-main-wide {
+      max-width: 1440px;
+    }
+    // Dashboard: sapaan + subjudul, baris tab 6px di bawahnya (desain: tab di y 83)
+    &:has(.adm-greeting) {
+      margin-bottom: var(--kds-spacing-6);
+    }
+  }
+  // Di desktop sapaan & kotak cari dashboard pindah ke bar atas
+  .adm-main .dashboard-hello,
+  .adm-main .dashboard-search {
+    display: none;
+  }
+}
+
+.adm-topbar-lead {
+  min-width: 0;
+}
+
+.adm-greeting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kds-spacing-8);
+  font-size: var(--kds-font-size-h5);
+  font-weight: var(--kds-font-weight-semibold);
+  line-height: var(--kds-line-height-normal);
+}
+
+.adm-greeting-sub {
+  margin-top: var(--kds-spacing-4);
+  color: var(--kds-text-secondary);
+  line-height: var(--kds-line-height-normal);
+}
+
+// Badge peran di sebelah nama (desain: latar error-light, teks secondary-dark, tinggi 24)
+.badge.badge-role {
+  padding: var(--kds-spacing-2) var(--kds-spacing-8);
+  background: var(--kds-error-light);
+  color: var(--kds-secondary-dark);
+}
+
+.adm-topbar-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--kds-spacing-12);
+}
+
+// Jarak tampak antar-ikon ±24px (tombol 32px dengan ikon 20px di tengah)
+.adm-topbar-search {
+  width: 316px;
+  margin-right: var(--kds-spacing-4);
+}
+
+.adm-topbar-tools > .adm-pop:last-child {
+  margin-left: var(--kds-spacing-4);
+}
+
+.adm-topbar-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--kds-radius-rounded);
+  background: none;
+  color: var(--kds-text-secondary);
+  cursor: pointer;
+  &:hover,
+  &[aria-expanded='true'] {
+    background: var(--kds-background-paper-elevation-2);
+    color: var(--kds-text-primary);
+  }
+}
+
+// Titik merah di lonceng saat ada notifikasi belum dibaca
+.adm-topbar-dot {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--kds-background-paper-elevation-1);
+  border-radius: var(--kds-radius-rounded);
+  background: var(--kds-error-base);
+  box-sizing: content-box;
+}
+
+.adm-topbar-avatar {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--kds-radius-rounded);
+  background: none;
+  cursor: pointer;
+  .adm-avatar {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--kds-base-white);
+    background: var(--kds-primary-base-500);
+    font-size: var(--kds-font-size-c1);
+  }
+}
+
+// ───────── Popover (bantuan, akun, rincian kartu) — dibuka [data-popover-toggle] ─────────
+
+.adm-pop {
+  position: relative;
+}
+
+.adm-popover {
+  position: absolute;
+  top: calc(100% + var(--kds-spacing-8));
+  left: 0;
+  z-index: 40;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(320px, calc(100vw - 32px));
+  padding: var(--kds-spacing-12);
+  border-radius: var(--kds-radius-lg);
+  background: var(--kds-background-paper-elevation-0);
+  box-shadow: var(--kds-shadow-lg), var(--kds-shadow-line);
+  color: var(--kds-text-primary);
+  font-size: var(--kds-font-size-b3);
+  font-weight: var(--kds-font-weight-regular);
+  line-height: var(--kds-line-height-normal);
+  &[hidden] {
+    display: none;
+  }
+}
+
+.adm-popover-end {
+  left: auto;
+  right: 0;
+}
+
+.adm-popover-title {
+  margin-bottom: var(--kds-spacing-8);
+  color: var(--kds-text-tertiary);
+  font-size: var(--kds-font-size-c1);
+  font-weight: var(--kds-font-weight-semibold);
+  & ~ & {
+    margin-top: var(--kds-spacing-16);
+  }
+}
+
+.adm-popover-help {
+  width: 300px;
+}
+
+.shortcut-list {
+  display: grid;
+  gap: var(--kds-spacing-8);
+  > div {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    align-items: center;
+    gap: var(--kds-spacing-12);
+  }
+  dd {
+    color: var(--kds-text-secondary);
+  }
+  kbd {
+    display: inline-block;
+    min-width: 24px;
+    padding: 0 var(--kds-spacing-6);
+    border: 1px solid var(--kds-stroke-soft);
+    border-radius: var(--kds-radius-xs);
+    background: var(--kds-background-paper-elevation-1);
+    font: inherit;
+    font-size: var(--kds-font-size-c1);
+    line-height: 20px;
+    text-align: center;
+  }
+}
+
+.adm-popover-link {
+  display: flex;
+  align-items: center;
+  gap: var(--kds-spacing-8);
+  margin-top: var(--kds-spacing-12);
+  font-weight: var(--kds-font-weight-semibold);
+}
+
+.adm-popover-account {
+  width: 280px;
+  .adm-account-actions {
+    margin-top: var(--kds-spacing-12);
   }
 }
 
@@ -862,6 +1073,240 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 }
 
 
+// ───────── Dashboard: tab Pesanan · Penjualan (Figma 233:1131) ─────────
+
+// Baris tab: garis bawah melebar 24px di kiri-kanan konten; tombol Barang masuk di kanan
+.dash-tabs {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--kds-spacing-16);
+  margin: 0 calc(var(--kds-spacing-16) * -1) var(--kds-spacing-20);
+  padding: 0 var(--kds-spacing-16);
+  border-bottom: 1px solid var(--kds-stroke-soft);
+}
+
+@media (min-width: $bp-desktop) {
+  .dash-tabs {
+    margin-inline: calc(var(--kds-spacing-24) * -1);
+    padding-inline: var(--kds-spacing-24);
+  }
+}
+
+.dash-tablist {
+  display: flex;
+  gap: var(--kds-spacing-8);
+}
+
+@media (min-width: $bp-tablet) {
+  .dash-tablist {
+    gap: var(--kds-spacing-40);
+    margin-left: var(--kds-spacing-8);
+  }
+}
+
+// Tinggi baris tab 50px termasuk garis; garis aktif 2px menimpa garis baris
+.dash-tab {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  margin-bottom: -1px;
+  padding: 0 var(--kds-spacing-12);
+  border-bottom: 2px solid transparent;
+  color: var(--kds-text-primary);
+  font-size: var(--kds-font-size-b3);
+  font-weight: var(--kds-font-weight-regular);
+  &:hover {
+    color: var(--kds-primary-base-500);
+  }
+  &.is-active {
+    border-bottom-color: var(--kds-primary-base-500);
+    color: var(--kds-primary-base-500);
+    font-weight: var(--kds-font-weight-semibold);
+  }
+}
+
+.btn.dash-tabs-action {
+  flex: none;
+}
+
+@media (min-width: $bp-tablet) {
+  .btn.dash-tabs-action {
+    padding-inline: var(--kds-spacing-24);
+  }
+}
+
+.dash-panel[hidden] {
+  display: none;
+}
+
+.dash-panel .summary-cards-wrap {
+  margin-bottom: var(--kds-spacing-32);
+}
+
+.dash-panel .sales {
+  margin-top: 0;
+}
+
+// Angka kartu Pesanan + caret: tombol pembuka rincian status
+.summary-card-text {
+  min-width: 0;
+}
+
+.summary-card-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kds-spacing-4);
+  padding: 0;
+  border: 0;
+  border-radius: var(--kds-radius-xs);
+  background: none;
+  color: var(--kds-text-primary);
+  font-family: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  &:hover .summary-card-toggle-caret {
+    color: var(--kds-primary-base-500);
+  }
+}
+
+.summary-card-toggle-caret {
+  color: var(--kds-text-secondary);
+  transition: transform 0.15s ease-out;
+  [aria-expanded='true'] > & {
+    transform: rotate(180deg);
+  }
+}
+
+// Kartu yang popover-nya terbuka berada di atas kartu & kotak lain
+.summary-card:has([aria-expanded='true']) {
+  position: relative;
+  z-index: 5;
+}
+
+.summary-breakdown {
+  width: 240px;
+}
+
+.summary-breakdown-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  a {
+    display: flex;
+    align-items: center;
+    gap: var(--kds-spacing-8);
+    min-height: 36px;
+    padding: var(--kds-spacing-6) var(--kds-spacing-8);
+    border-radius: var(--kds-radius-md);
+    color: var(--kds-text-primary);
+    &:hover {
+      background: var(--kds-background-paper-elevation-1);
+      color: var(--kds-text-primary);
+    }
+  }
+  strong {
+    font-weight: var(--kds-font-weight-semibold);
+  }
+}
+
+.summary-breakdown-label {
+  flex: 1;
+}
+
+// Titik status (rincian kartu): hijau selesai, biru dibayar, kuning belum dibayar, merah batal
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--kds-radius-rounded);
+  background: var(--kds-stroke-medium);
+}
+
+.dot-success {
+  background: var(--kds-success-base);
+}
+
+.dot-info {
+  background: var(--kds-primary-base-500);
+}
+
+.dot-warning {
+  background: var(--kds-warning-base);
+}
+
+.dot-error {
+  background: var(--kds-error-base);
+}
+
+// Kotak Stok menipis & Pesanan terbaru: tinggi sama, "Lihat semua" di tengah bawah
+.dash-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-box-head {
+  margin-bottom: var(--kds-spacing-16);
+}
+
+.dash-box-title {
+  font-size: var(--kds-font-size-h6);
+  font-weight: var(--kds-font-weight-semibold);
+  line-height: var(--kds-line-height-normal);
+}
+
+.dash-box-desc {
+  margin-top: var(--kds-spacing-2);
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-c1);
+}
+
+.dash-list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  > li {
+    display: flex;
+    align-items: center;
+    gap: var(--kds-spacing-12);
+    padding: var(--kds-spacing-12) 0;
+    & + li {
+      border-top: 1px solid var(--kds-stroke-soft);
+    }
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+  .list-main > strong,
+  .list-main > a strong {
+    font-weight: var(--kds-font-weight-semibold);
+  }
+}
+
+.dash-box .empty {
+  flex: 1;
+}
+
+.dash-box-foot {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: var(--kds-spacing-16);
+  .btn {
+    padding-inline: var(--kds-spacing-20);
+  }
+}
+
+.recent-order-no {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--kds-primary-base-500);
+  font-weight: var(--kds-font-weight-semibold);
+}
+
 // ───────── Penjualan & analitik (dashboard) ─────────
 
 .sales {
@@ -1145,7 +1590,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   height: 36px;
   border-radius: var(--kds-radius-md);
   background: var(--kds-primary-lightest);
-  color: var(--kds-primary-dark-brand);
+  color: var(--kds-primary-base-500);
 }
 
 .recent-order-side {
@@ -1537,6 +1982,29 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   line-height: 20px;
   text-align: center;
   pointer-events: none;
+}
+
+// Versi bar atas: ikon 16, kolom 40px bergaris tipis tanpa bayangan, placeholder 12px
+.global-search-compact {
+  .global-search-field {
+    > .ph {
+      left: var(--kds-spacing-12);
+    }
+    .input {
+      padding-left: calc(var(--kds-spacing-12) + 16px + var(--kds-spacing-8));
+      padding-right: var(--kds-spacing-12);
+      border-color: var(--kds-stroke-soft);
+      border-radius: var(--adm-radius-input);
+      box-shadow: none;
+      &::placeholder {
+        font-size: var(--kds-font-size-c1);
+      }
+    }
+  }
+  .global-search-panel {
+    left: auto;
+    width: min(480px, calc(100vw - 64px));
+  }
 }
 
 // Petunjuk "/" hanya untuk keyboard fisik (desktop) dan saat kolom kosong

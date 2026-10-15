@@ -9,6 +9,9 @@ import { PERIODS, salesBreakdown, salesChart, salesKpis, type PeriodKey } from '
 
 export const dashboardRouter = Router();
 
+type Tone = 'success' | 'info' | 'warning' | 'error';
+type BreakdownItem = { label: string; count: number; tone: Tone; href: string; title?: string };
+
 type SummaryCard = {
   key: string;
   label: string;
@@ -18,10 +21,33 @@ type SummaryCard = {
   viewLabel: string;
   newHref?: string;
   newLabel?: string;
+  /** Rincian status bertitik warna, dibuka lewat caret di sebelah angka (kartu Pesanan). */
+  breakdown?: BreakdownItem[];
 };
 
+/** Rincian pesanan per status untuk popover di kartu Pesanan. */
+async function orderBreakdown(): Promise<{ total: number; items: BreakdownItem[] }> {
+  const rows = await prisma.order.groupBy({ by: ['status'], _count: { _all: true } });
+  const count = (...statuses: string[]) => rows.filter((r) => statuses.includes(r.status)).reduce((n, r) => n + r._count._all, 0);
+  return {
+    total: rows.reduce((n, r) => n + r._count._all, 0),
+    items: [
+      { label: 'Belum dibayar', count: count('UNPAID'), tone: 'warning', href: '/admin/pesanan?status=belum-bayar' },
+      {
+        label: 'Dibayar',
+        count: count('PROCESSING', 'READY_PICKUP', 'SHIPPED'),
+        tone: 'info',
+        href: '/admin/pesanan?status=proses',
+        title: 'Sudah dibayar: sedang diproses, siap diambil, atau dikirim',
+      },
+      { label: 'Selesai', count: count('COMPLETED'), tone: 'success', href: '/admin/pesanan?status=selesai' },
+      { label: 'Batal', count: count('CANCELED', 'EXPIRED'), tone: 'error', href: '/admin/pesanan?status=batal', title: 'Dibatalkan atau kedaluwarsa' },
+    ],
+  };
+}
+
 /**
- * Kartu ringkasan per modul di atas dashboard (desain Figma "Store-kompascom" node 252:4778):
+ * Kartu ringkasan per modul di atas dashboard (desain Figma "Store-kompascom" node 233:1131 / 252:4778):
  * label, angka total, ikon, lalu "Lihat semua ›" + tombol tambah. Mengikuti hak akses.
  */
 async function summaryCards(perms: ReturnType<typeof permissionMap>): Promise<SummaryCard[]> {
@@ -53,20 +79,25 @@ async function summaryCards(perms: ReturnType<typeof permissionMap>): Promise<Su
       viewHref: '/admin/promo',
       ...(perms.promo.edit ? { newHref: '/admin/promo/baru', newLabel: 'Promo baru' } : {}),
     },
-    {
-      key: 'pesanan',
-      show: perms.pesanan.view,
-      label: 'Pesanan',
-      icon: 'receipt',
-      count: () => prisma.order.count(),
-      viewHref: '/admin/pesanan?status=semua',
-    },
   ];
-  return Promise.all(
-    defs
-      .filter((d) => d.show)
-      .map(async ({ show: _show, count, ...d }) => ({ ...d, value: await count(), viewLabel: 'Lihat semua' })),
-  );
+  const cards: Promise<SummaryCard>[] = defs
+    .filter((d) => d.show)
+    .map(async ({ show: _show, count, ...d }) => ({ ...d, value: await count(), viewLabel: 'Lihat semua' }));
+  if (perms.pesanan.view) {
+    // Desain menampilkan "+" juga di kartu Pesanan, tetapi pesanan hanya dibuat dari checkout store — tanpa tombol tambah.
+    cards.push(
+      orderBreakdown().then(({ total, items }) => ({
+        key: 'pesanan',
+        label: 'Pesanan',
+        icon: 'receipt',
+        value: total,
+        viewHref: '/admin/pesanan?status=semua',
+        viewLabel: 'Lihat semua',
+        breakdown: items,
+      })),
+    );
+  }
+  return Promise.all(cards);
 }
 
 dashboardRouter.get(
@@ -77,6 +108,8 @@ dashboardRouter.get(
     const now = new Date();
     const showSales = canDo(admin.roles, 'sales.view');
     const period: PeriodKey = (q(req.query.periode) in PERIODS ? q(req.query.periode) : 'bulan') as PeriodKey;
+    // Tab aktif: ?tab=penjualan (juga dipakai tautan periode penjualan); default ringkasan
+    const salesTab = showSales && q(req.query.tab) === 'penjualan';
 
     const [cards, recentOrders, scheduled, lowStock, lowCount, kpis, chart, breakdown] = await Promise.all([
       summaryCards(perms),
@@ -96,7 +129,7 @@ dashboardRouter.get(
             select: { id: true, title: true, status: true, publishedAt: true, updatedAt: true },
           })
         : [],
-      perms.stok.view ? lowStockItems(6) : [],
+      perms.stok.view ? lowStockItems(5) : [],
       perms.stok.view ? lowStockCount() : 0,
       showSales ? salesKpis(now) : null,
       showSales ? salesChart(period, now) : null,
@@ -106,7 +139,10 @@ dashboardRouter.get(
     await res.renderAdmin('dashboard', {
       pageTitle: 'Dashboard',
       wideMain: true,
+      greeting: true,
       active: 'dasbor',
+      salesTab,
+      overviewLabel: perms.pesanan.view ? 'Pesanan' : 'Ringkasan',
       cards,
       recentOrders: recentOrders.map((o) => ({ ...o, status: statusBadge(o), fulfillment: fulfillmentInfo(o.fulfillment) })),
       scheduled: scheduled.map((p) => ({ ...p, isScheduled: p.status === 'PUBLISHED' })),
@@ -114,7 +150,7 @@ dashboardRouter.get(
       lowCount,
       sales: showSales
         ? {
-            kpis: kpis!.map((k) => ({ ...k, active: k.key === period, href: `/admin?periode=${k.key}#penjualan` })),
+            kpis: kpis!.map((k) => ({ ...k, active: k.key === period, href: `/admin?tab=penjualan&periode=${k.key}` })),
             period,
             periodLabel: PERIODS[period].label,
             chart,

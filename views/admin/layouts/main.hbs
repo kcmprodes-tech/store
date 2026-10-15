@@ -6,10 +6,10 @@
 <body class="adm">
   <a class="adm-skip" href="#main">Lewati ke konten</a>
 
+  {{!-- Desktop (Figma 233:1131): sidebar kartu melayang; akun pindah ke avatar di bar atas --}}
   <aside class="adm-sidebar" aria-label="Menu CMS">
     {{> brand}}
     <nav aria-label="Navigasi CMS">{{> nav-groups}}</nav>
-    {{> account}}
   </aside>
 
   <div class="adm-shell">
@@ -24,6 +24,43 @@
         <span class="adm-avatar" aria-hidden="true">{{initials admin.name}}</span>
       </button>
     </header>
+
+    {{!-- Bar atas desktop: sapaan (dashboard) di kiri; cari, bantuan, kotak masuk, akun di kanan --}}
+    <div class="adm-topbar{{#if wideMain}} adm-main-wide{{/if}}">
+      <div class="adm-topbar-lead">
+        {{#if greeting}}
+        <h1 class="adm-greeting"><span>Halo, {{admin.name}}</span>{{#each admin.roles}}<span class="badge badge-role">{{roleLabel this}}</span>{{/each}}</h1>
+        <p class="adm-greeting-sub">Ringkasan Store Kompas.com hari ini</p>
+        {{/if}}
+      </div>
+      <div class="adm-topbar-tools">
+        <div class="adm-topbar-search">{{> search-box sid="topbar-search" compact=true}}</div>
+        <div class="adm-pop">
+          <button class="adm-topbar-btn" type="button" aria-label="Bantuan dan pintasan" title="Bantuan dan pintasan" aria-expanded="false" aria-controls="pop-bantuan" data-popover-toggle>{{icon "question" size=20}}</button>
+          <div class="adm-popover adm-popover-end adm-popover-help" id="pop-bantuan" hidden>
+            <p class="adm-popover-title">Pintasan keyboard</p>
+            <dl class="shortcut-list">
+              <div><dt><kbd>/</kbd></dt><dd>Cari pesanan, produk, SKU, promo, kategori</dd></div>
+              <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Pilih saran pencarian</dd></div>
+              <div><dt><kbd>Enter</kbd></dt><dd>Buka saran terpilih</dd></div>
+              <div><dt><kbd>Esc</kbd></dt><dd>Tutup saran atau menu</dd></div>
+            </dl>
+            <p class="adm-popover-title">Bantuan</p>
+            <p class="small muted">Lupa password atau butuh akses modul lain? Hubungi Admin CMS.</p>
+            <a class="adm-popover-link" href="/admin/akun/password">{{icon "key" size=16}} Ganti password</a>
+          </div>
+        </div>
+        <a class="adm-topbar-btn" href="/admin/notifikasi" aria-label="Kotak masuk{{#if unread}}, {{unread}} belum dibaca{{/if}}" title="Kotak masuk">
+          {{icon "bell" size=20}}{{#if unread}}<span class="adm-topbar-dot" aria-hidden="true"></span>{{/if}}
+        </a>
+        <div class="adm-pop">
+          <button class="adm-topbar-avatar" type="button" aria-label="Akun {{admin.name}}" title="Akun" aria-expanded="false" aria-controls="pop-akun" data-popover-toggle>
+            <span class="adm-avatar" aria-hidden="true">{{initials admin.name}}</span>
+          </button>
+          <div class="adm-popover adm-popover-end adm-popover-account" id="pop-akun" hidden>{{> account}}</div>
+        </div>
+      </div>
+    </div>
 
     <main id="main" class="adm-main{{#if wideMain}} adm-main-wide{{/if}}">
       {{{body}}}

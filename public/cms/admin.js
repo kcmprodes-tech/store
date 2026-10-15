@@ -233,6 +233,71 @@
     });
   });
 
+  /* ---------- Popover: <button data-popover-toggle aria-controls="id"> (bantuan, akun, rincian kartu) ----------
+     Satu popover terbuka sekaligus; tutup dengan klik di luar atau Esc (fokus kembali ke tombolnya). */
+  var openPop = null;
+  function closePop(focus) {
+    if (!openPop) return;
+    var btn = openPop;
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (panel) panel.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    openPop = null;
+    if (focus) btn.focus();
+  }
+  $$('[data-popover-toggle]').forEach(function (btn) {
+    on(btn, 'click', function (e) {
+      e.stopPropagation();
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      if (!panel) return;
+      var wasOpen = openPop === btn;
+      closePop(false);
+      if (wasOpen) return;
+      panel.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      openPop = btn;
+    });
+  });
+  on(document, 'click', function (e) {
+    if (!openPop) return;
+    var panel = document.getElementById(openPop.getAttribute('aria-controls'));
+    if (panel && panel.contains(e.target)) return;
+    closePop(false);
+  });
+  on(document, 'keydown', function (e) {
+    if (e.key === 'Escape' && openPop) closePop(true);
+  });
+
+  /* ---------- Tab dashboard (Pesanan · Penjualan): ganti panel tanpa memuat ulang ---------- */
+  $$('[data-dash-tabs]').forEach(function (list) {
+    var tabs = $$('[data-dash-tab]', list);
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on_ = t === tab;
+        t.classList.toggle('is-active', on_);
+        t.setAttribute('aria-selected', on_ ? 'true' : 'false');
+        t.tabIndex = on_ ? 0 : -1;
+        var panel = document.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on_;
+      });
+      if (focus) tab.focus();
+      if (window.history && history.replaceState) history.replaceState(null, '', tab.getAttribute('href'));
+    }
+    tabs.forEach(function (tab, i) {
+      on(tab, 'click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        e.preventDefault();
+        select(tab, false);
+      });
+      on(tab, 'keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(next, true);
+      });
+    });
+  });
+
   /* ---------- Slug otomatis dari judul (selama slug belum diubah manual) ---------- */
   function slugify(text) {
     return text.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
@@ -495,7 +560,7 @@
     function option(href, build) {
       var a = el('a', 'search-option');
       a.href = href;
-      a.id = 'cari-opsi-' + options.length;
+      a.id = panel.id + '-opsi-' + options.length;
       a.setAttribute('role', 'option');
       a.setAttribute('aria-selected', 'false');
       a.tabIndex = -1;
@@ -583,7 +648,8 @@
     if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
     var target = e.target;
     if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
-    var box = $('[data-global-search-input]');
+    // Kotak cari yang sedang terlihat (bar atas di desktop, kotak di halaman pada HP)
+    var box = $$('[data-global-search-input]').filter(function (i) { return i.offsetParent !== null; })[0];
     if (!box) return;
     e.preventDefault();
     box.focus();

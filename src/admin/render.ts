@@ -16,6 +16,7 @@ import { permissionMap, primaryRole, ROLE_LABELS, type Module } from './permissi
 import { prisma } from '../lib/prisma.js';
 import { formatDate, formatDateTime, toDateTimeLocal } from './time.js';
 import { lowStockCount } from './modules/stok/stok.service.js';
+import { unreadCount } from './notifications.js';
 
 const viewsRoot = join(process.cwd(), 'views', 'admin');
 const iconRoot = join(process.cwd(), 'node_modules', '@phosphor-icons', 'core', 'assets');
@@ -61,6 +62,7 @@ const helpers = {
   dtlocal: (d: unknown) => toDateTimeLocal(d as Date),
   roleLabel: (r: AdminRole) => ROLE_LABELS[r] ?? r,
   includes: (list: unknown, value: unknown) => Array.isArray(list) && list.includes(value),
+  lower: (v: unknown) => String(v ?? '').toLowerCase(),
   not: (v: unknown) => !v,
   or: (...args: unknown[]) => args.slice(0, -1).some(Boolean),
   and: (...args: unknown[]) => args.slice(0, -1).every(Boolean),
@@ -204,6 +206,8 @@ export function adminRenderMiddleware(req: Request, res: Response, next: NextFun
     const html = await engine.renderView(join(viewsRoot, 'pages', `${view}.hbs`), {
       admin,
       perms,
+      // Lonceng di bar atas desktop: jumlah notifikasi belum dibaca
+      unread: admin ? await unreadCount(admin.id) : 0,
       nav: admin ? buildNav(admin.roles, data.active as string | undefined, badges, collapsedGroups(req.cookies?.[NAV_COOKIE])) : null,
       roleNames: admin?.roles.map((r) => ROLE_LABELS[r]).join(', '),
       csrfToken: admin?.csrfToken ?? '',

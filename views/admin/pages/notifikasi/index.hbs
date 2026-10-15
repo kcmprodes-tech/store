@@ -1,0 +1,36 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Kotak masuk</h1>
+    <p class="page-subtitle">{{#if unread}}{{number unread}} belum dibaca · {{/if}}{{limit}} notifikasi terbaru untuk akun Anda.</p>
+  </div>
+  {{#if unread}}
+  <form class="page-actions" method="post" action="/admin/notifikasi/baca-semua" data-busy-form>
+    {{> csrf}}
+    <button class="btn btn-secondary" type="submit">{{icon "checks" size=18}} Tandai semua dibaca</button>
+  </form>
+  {{/if}}
+</div>
+
+<section class="box box-flush">
+  {{#if items.length}}
+  <ul class="order-list">
+    {{#each items}}
+    <li>
+      <a class="order-row notif-row{{#if unread}} is-unread{{/if}}" href="/admin/notifikasi/{{id}}/buka">
+        <span class="order-row-icon" aria-hidden="true">{{icon "bell" size=22}}</span>
+        <span class="order-row-main">
+          <span class="order-row-top">
+            <strong>{{title}}</strong>
+            {{#if unread}}<span class="badge badge-info">Baru</span>{{/if}}
+          </span>
+          <span class="order-row-buyer">{{body}}</span>
+          <span class="small muted">{{typeLabel}} · {{datetime createdAt}}</span>
+        </span>
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <div class="empty">{{icon "bell" size=40}}<strong>Belum ada notifikasi</strong><span>Pesanan dibayar, refund, dan stok menipis akan muncul di sini.</span></div>
+  {{/if}}
+</section>
