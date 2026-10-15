@@ -151,6 +151,7 @@ const assetPath = (p: string) => p.replace(/^(\.\.\/)?asset\/images\//, '/images
 
 /** Link halaman prototipe → route baru. */
 function routeFromPrototypeHref(href: string): string {
+  if (href.startsWith('/')) return href; // sudah berupa route baru, mis. /produk/<slug>
   const [file, query = ''] = href.split('?');
   const params = new URLSearchParams(query);
   if (file === 'koleksi.html') return `/koleksi/${params.get('tab') ?? 'terlaris'}`;

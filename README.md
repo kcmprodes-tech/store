@@ -78,6 +78,37 @@ tests/               vitest + supertest
 
 URL lama prototipe (`koleksi.html?tab=…`, `detail.html?product=…`, dst.) di-redirect 301 ke route baru.
 
+## Membagikan link cepat (tanpa hosting)
+
+Klik dua kali **`Bagikan Store.command`** di Finder: store dinyalakan di Mac (kalau belum), lalu muncul link publik
+`https://….trycloudflare.com` yang otomatis tersalin. Link hidup selama jendela Terminal itu terbuka dan Mac
+menyala (Mac dijaga tidak tidur); tiap kali dijalankan ulang alamatnya berganti. Butuh `cloudflared`
+(`brew install cloudflared`) dan MySQL lokal yang menyala.
+
+## Deploy ke Vercel (staging)
+
+Build Vercel memakai `scripts/vercel-build.mjs` (Build Output API): file `public/` + CSS jadi file statis di CDN,
+seluruh aplikasi Express + `views/` jadi satu fungsi Node di region Singapura (`sin1`). Database harus MySQL di
+cloud karena Vercel tidak bisa menjangkau MySQL di laptop; contoh yang sudah disiapkan: **TiDB Cloud Starter**
+(gratis, kompatibel MySQL, region AWS Singapura).
+
+1. **Database (TiDB Cloud):** buat cluster *Starter* di region **AWS Singapore** → tombol **Connect** → buat
+   password → salin connection string, bentuknya
+   `mysql://USER:PASSWORD@gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/test?sslaccept=strict`.
+2. **Vercel:** *Add New → Project* → impor repo `kcmprodes-tech/store`. Pengaturan build dibaca otomatis dari
+   `vercel.json` (Framework: Other, build `npm run vercel-build`).
+3. **Environment Variables** (Production & Preview):
+   - `DATABASE_URL` = connection string langkah 1 (wajib, akhiran `?sslaccept=strict`)
+   - `DATABASE_POOL_SIZE` = `5`
+   - `PUBLIC_BASE_URL` = alamat Vercel-nya, mis. `https://store-xxx.vercel.app` (untuk link di email; isi setelah deploy pertama)
+   - `WHATSAPP_NUMBER` = opsional
+4. **Deploy.** Deploy *Production* otomatis menjalankan `prisma migrate deploy` lalu mengisi data awal kalau database
+   masih kosong (`scripts/seed-if-empty.ts`); deploy berikutnya tidak menimpa data. Deploy *Preview* tidak mengubah database.
+
+Setelah itu setiap push ke `main` otomatis tayang. Mode produksi menutup halaman khusus development
+(`/__email`, `/__prototipe`). TLS database dibaca dari parameter URL: `sslaccept=strict` / `ssl-mode=VERIFY_*`
+(sertifikat dicek, CA tambahan lewat `DATABASE_CA_CERT`) atau `sslaccept=accept_invalid_certs` / `ssl-mode=REQUIRED`.
+
 ## Pratinjau email pembeli
 
 `http://localhost:3000/__email` (hanya di development) menampilkan semua template email dengan data contoh,

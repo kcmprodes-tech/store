@@ -5,3 +5,4 @@ public/css/
 src/generated/
 *.log
 .DS_Store
+.vercel/

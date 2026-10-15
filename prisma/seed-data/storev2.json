@@ -12,6 +12,12 @@
       "image_mobile": "../asset/images/store-v2/banner-kompasiana-tumblers-mobile.jpg",
       "title": "Kompasiana Tumblers",
       "href": "semua-produk.html?category=merchandise&sub=drinkware"
+    },
+    {
+      "image": "../asset/images/store-v2/banner-tumbler-jernih.jpg",
+      "image_mobile": "../asset/images/store-v2/banner-tumbler-jernih-mobile.jpg",
+      "title": "Tumbler Eksklusif Kompas.com: Jernih Melihat Dunia",
+      "href": "/produk/tumbler-eksklusif-kompascom"
     }
   ],
   "terlaris": [

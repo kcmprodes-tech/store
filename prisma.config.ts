@@ -9,6 +9,7 @@ export default defineConfig({
   },
   datasource: {
     url: env('DATABASE_URL'),
-    shadowDatabaseUrl: env('SHADOW_DATABASE_URL'),
+    // shadow DB hanya dipakai `migrate dev` lokal; di Vercel (migrate deploy) tidak perlu
+    shadowDatabaseUrl: process.env.SHADOW_DATABASE_URL,
   },
 });
