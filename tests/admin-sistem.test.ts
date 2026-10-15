@@ -200,7 +200,7 @@ describe('Dashboard', () => {
     admins.push(admin.user.id);
     const a = await get(admin.agent, '/admin');
     for (const key of ['produk', 'kategori', 'promo', 'pesanan']) expect(a.text).toContain(`id="ringkasan-${key}"`);
-    for (const text of ['tayang', 'unggulan', 'berlaku sekarang', 'nonaktif / berakhir', 'belum dibayar', 'aria-label="Produk baru"']) {
+    for (const text of ['aria-label="Lihat semua Produk"', 'aria-label="Lihat semua Pesanan"', 'aria-label="Produk baru"', 'summary-card-caret']) {
       expect(a.text).toContain(text);
     }
     const editor = await loggedIn(app, ['EDITOR']);

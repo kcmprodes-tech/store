@@ -763,16 +763,16 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
-// Kartu ringkasan — desain Figma "Store-kompascom" node 247:4758: kartu putih radius 12, padding 20,
-// label 12 semibold kapital, angka 28 bold, ikon dalam kotak 48 primary-lightest, rincian bertitik tersusun ke bawah,
-// "Lihat semua" mengisi lebar + tombol "+" bulat 36.
+// Kartu ringkasan — desain Figma "Store-kompascom" node 252:4778: kartu putih radius 12, padding 20 (bawah 8),
+// label 12 semibold kapital + angka 28 bold + ikon dalam kotak 48 primary-lightest, garis pemisah paper-elevation-3,
+// lalu "Lihat semua ›" (teks) di kiri dan tombol "+" bulat 36 di kanan.
 .summary-card {
   container: kartu / inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--kds-spacing-8);
   min-width: 0;
-  padding: var(--kds-spacing-20);
+  padding: var(--kds-spacing-20) var(--kds-spacing-20) var(--kds-spacing-8);
   border-radius: var(--kds-radius-lg);
   background: var(--kds-background-paper-elevation-0);
   box-shadow: var(--kds-shadow-base), var(--kds-shadow-line);
@@ -811,47 +811,6 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   color: var(--kds-primary-base-500);
 }
 
-.summary-card-sub {
-  margin-top: calc(var(--kds-spacing-4) * -1);
-  color: var(--kds-text-secondary);
-}
-
-.summary-card-dots {
-  display: flex;
-  flex-direction: column;
-  gap: var(--kds-spacing-8);
-  margin: 0;
-  padding: 0;
-  font-size: var(--kds-font-size-c1);
-  line-height: var(--kds-line-height-loose);
-  list-style: none;
-  a {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--kds-spacing-6);
-    color: var(--kds-text-secondary);
-    &:hover {
-      color: var(--kds-text-primary);
-    }
-  }
-}
-
-.dot {
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--kds-stroke-medium);
-  &.dot-success {
-    background: var(--kds-success-base);
-  }
-  &.dot-warning {
-    background: var(--kds-warning-base);
-  }
-  &.dot-info {
-    background: var(--kds-primary-base-500);
-  }
-}
 
 // ───────── Penjualan & analitik (dashboard) ─────────
 
@@ -1144,28 +1103,37 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   gap: var(--kds-spacing-2);
 }
 
+// Garis pemisah lalu baris aksi: "Lihat semua ›" (tautan teks) di kiri, "+" bulat di kanan
 .summary-card-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--kds-spacing-12);
   margin-top: auto;
-  padding-top: var(--kds-spacing-8); // + gap kartu 8 = 16 dari rincian
+  padding-top: var(--kds-spacing-8);
+  border-top: 1px solid var(--kds-background-paper-elevation-3);
 }
 
-// "Lihat semua" mengisi sisa lebar; tombol "+" bulat 36 di kanan
 .summary-card-view {
-  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kds-spacing-2);
   min-width: 0;
+  height: var(--adm-btn-h-sm);
+  border-radius: var(--kds-radius-md);
+  color: var(--kds-text-primary);
+  font-size: var(--kds-font-size-b3);
+  font-weight: var(--kds-font-weight-semibold);
+  line-height: 16px;
+  white-space: nowrap;
+  &:hover {
+    color: var(--kds-primary-base-500);
+  }
 }
 
-// Kartu sangat sempit: jarak & padding tombol dirapatkan supaya "Lihat semua" tetap utuh
-@container kartu (max-width: 179px) {
-  .summary-card-actions {
-    gap: var(--kds-spacing-8);
-  }
-  .summary-card-view {
-    padding-inline: var(--kds-spacing-4);
-  }
+// Panah "›": caret-down diputar -90° (sama dengan aset di desain)
+.summary-card-caret {
+  transform: rotate(-90deg);
 }
 
 // Kartu sangat sempit: ikon dekoratif disembunyikan supaya label & angka tetap lega

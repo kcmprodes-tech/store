@@ -24,14 +24,8 @@
       </div>
       <span class="summary-card-icon" aria-hidden="true">{{icon this.icon size=24}}</span>
     </div>
-    {{#if sub}}<p class="summary-card-sub" title="{{subTitle}}">{{sub}}</p>{{/if}}
-    <ul class="summary-card-dots">
-      {{#each dots}}
-      <li{{#if title}} title="{{title}}"{{/if}}><a href="{{href}}"><span class="dot dot-{{tone}}" aria-hidden="true"></span>{{number count}} {{label}}</a></li>
-      {{/each}}
-    </ul>
     <div class="summary-card-actions">
-      <a class="btn btn-secondary btn-sm summary-card-view" href="{{viewHref}}">{{viewLabel}}</a>
+      <a class="summary-card-view" href="{{viewHref}}" aria-label="{{viewLabel}} {{label}}">{{viewLabel}}{{icon "caret-down" size=14 weight="bold" class="summary-card-caret"}}</a>
       {{#if newHref}}<a class="btn btn-primary btn-sm btn-icon btn-circle" href="{{newHref}}" aria-label="{{newLabel}}" title="{{newLabel}}">{{icon "plus" size=18 weight="bold"}}</a>{{/if}}
     </div>
   </section>
