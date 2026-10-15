@@ -13,6 +13,7 @@ $sidebar-w: 248px;
   --adm-btn-h-sm: 36px;
   --adm-btn-h-md: 44px;
   --adm-btn-h-lg: 52px;
+  --adm-field-h: 40px; // semua isian form (input, select) & tombol yang sebaris dengannya
   --adm-radius-box: var(--kds-radius-xl); // 16px
   --adm-radius-input: var(--kds-radius-md); // 8px (Form Input KDS)
   // Keputusan proyek: semua teks CMS -0.2px (token KDS hanya 0 / -0.02em)
@@ -549,6 +550,33 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 
 // ───────────────────────── Kotak & grid ─────────────────────────
 
+// Garis pemisah di dalam kartu tidak mentok ke tepi: menjorok sebesar padding kartu
+// (16px di HP, 24px mulai tablet). Dipakai di toolbar, daftar pesanan/refund, paginasi, kepala kotak.
+:root {
+  --adm-divider-inset: var(--kds-spacing-16);
+}
+
+@media (min-width: $bp-tablet) {
+  :root {
+    --adm-divider-inset: var(--kds-spacing-24);
+  }
+}
+
+@mixin inset-divider($side) {
+  position: relative;
+  border-#{$side}: 0;
+  &::#{if($side == top, before, after)} {
+    content: '';
+    position: absolute;
+    #{$side}: 0;
+    left: var(--adm-divider-inset);
+    right: var(--adm-divider-inset);
+    height: 1px;
+    background: var(--kds-stroke-soft);
+    pointer-events: none;
+  }
+}
+
 // Kartu di atas latar abu (paper-elevation-1) tanpa garis tepi & bayangan: cukup putih.
 .box {
   background: var(--kds-background-paper-elevation-0);
@@ -586,7 +614,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 .box-flush .box-head {
   margin: 0;
   padding: var(--kds-spacing-16);
-  border-bottom: 1px solid var(--kds-stroke-soft);
+  @include inset-divider(bottom);
 }
 
 @media (min-width: $bp-tablet) {
@@ -1219,6 +1247,16 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
+// Tombol abu-abu netral (mis. Cari di toolbar, Lihat semua di kartu dashboard)
+.btn-neutral {
+  background: var(--kds-background-paper-elevation-2);
+  color: var(--kds-text-primary);
+  &:hover {
+    background: var(--kds-background-paper-elevation-3);
+    color: var(--kds-text-primary);
+  }
+}
+
 .btn-ghost {
   background: var(--kds-primary-lightest);
   color: var(--kds-primary-dark-brand);
@@ -1351,7 +1389,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 .select,
 .textarea {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--adm-field-h);
   padding: var(--kds-spacing-8) var(--kds-spacing-12);
   border: 1px solid var(--kds-stroke-medium);
   border-radius: var(--adm-radius-input);
@@ -1389,9 +1427,14 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   .select,
   .textarea {
     font-size: var(--kds-font-size-p3);
-    min-height: 40px;
-    padding: var(--kds-spacing-8) var(--kds-spacing-12);
   }
+}
+
+// Isian satu baris selalu 40px (HP & desktop), juga saat berada di baris flex yang lebih tinggi
+.input,
+.select {
+  height: var(--adm-field-h);
+  line-height: var(--kds-line-height-normal);
 }
 
 .textarea {
@@ -1466,7 +1509,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     pointer-events: none;
   }
   .input {
-    min-height: var(--adm-btn-h-lg);
+    min-height: var(--adm-field-h);
     padding-left: calc(var(--kds-spacing-16) + 20px + var(--kds-spacing-12)); // ikon 20px
     padding-right: var(--kds-spacing-48);
     border-color: var(--kds-stroke-soft);
@@ -2260,7 +2303,7 @@ $dialog-icons: question, warning, trash, check;
   flex-wrap: wrap;
   gap: var(--kds-spacing-8);
   padding: var(--kds-spacing-16);
-  border-bottom: 1px solid var(--kds-stroke-soft);
+  @include inset-divider(bottom);
   .select {
     width: auto;
     min-width: 150px;
@@ -2332,9 +2375,15 @@ $dialog-icons: question, warning, trash, check;
   justify-content: space-between;
   gap: var(--kds-spacing-12);
   padding: var(--kds-spacing-12) var(--kds-spacing-16);
-  border-top: 1px solid var(--kds-stroke-soft);
+  @include inset-divider(top);
   font-size: var(--kds-font-size-c1);
   color: var(--kds-text-tertiary);
+}
+
+@media (min-width: $bp-tablet) {
+  .pagination {
+    padding: var(--kds-spacing-12) var(--kds-spacing-24);
+  }
 }
 
 .empty {
@@ -2586,13 +2635,6 @@ ol.picker-list > .picker-item::before {
   padding: var(--kds-spacing-8) var(--kds-spacing-12);
 }
 
-@media (min-width: $bp-desktop) {
-  .input-sm,
-  .select.input-sm {
-    min-height: 36px;
-    padding: var(--kds-spacing-6) var(--kds-spacing-12);
-  }
-}
 
 .select.input-sm {
   padding-right: var(--kds-spacing-32);
@@ -3292,6 +3334,7 @@ body.adm-auth {
 }
 
 .input-lg {
+  height: var(--adm-btn-h-lg);
   min-height: var(--adm-btn-h-lg);
   font-size: var(--kds-font-size-h5);
   font-variant-numeric: tabular-nums;
@@ -3315,7 +3358,7 @@ body.adm-auth {
   padding: 0;
   list-style: none;
   > li + li {
-    border-top: 1px solid var(--kds-stroke-soft);
+    @include inset-divider(top);
   }
 }
 
@@ -3466,11 +3509,14 @@ body.adm-auth {
   }
 }
 
-// Desktop: isian 40px, tombol di baris yang sama ikut 40px supaya rata atas-bawah
-@media (min-width: $bp-desktop) {
+// Tombol yang sebaris dengan isian ikut tinggi isian (40px) supaya rata atas-bawah
+.toolbar .btn {
+  height: var(--adm-field-h);
+}
+
+@media (min-width: $bp-tablet) {
   .tracking-form > .next-step-actions > .btn {
-    min-height: 40px;
-    height: 40px;
+    height: var(--adm-field-h);
   }
 }
 

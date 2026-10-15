@@ -20,7 +20,7 @@
     <select class="select" name="cara" aria-label="Cara kirim" data-autosubmit>
       {{#each fulfillmentOptions}}<option value="{{value}}" {{selected value ../filters.cara}}>{{label}}</option>{{/each}}
     </select>
-    <button class="btn btn-secondary" type="submit">Cari</button>
+    <button class="btn btn-neutral" type="submit">Cari</button>
   </form>
   {{#if clearLateHref}}
   <div class="filter-note">{{icon "warning" size=16}} Hanya pesanan yang diproses lebih dari 2 hari. <a href="{{clearLateHref}}">Tampilkan semua</a></div>
