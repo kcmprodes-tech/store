@@ -773,17 +773,23 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
-@mixin inset-divider($side) {
+@mixin inset-divider($side, $pseudo: null, $style: solid) {
+  @if not $pseudo {
+    @if $side == top {
+      $pseudo: before;
+    } @else {
+      $pseudo: after;
+    }
+  }
   position: relative;
   border-#{$side}: 0;
-  &::#{if($side == top, before, after)} {
+  &::#{$pseudo} {
     content: '';
     position: absolute;
     #{$side}: 0;
     left: var(--adm-divider-inset);
     right: var(--adm-divider-inset);
-    height: 1px;
-    background: var(--kds-stroke-soft);
+    border-top: 1px $style var(--kds-stroke-soft);
     pointer-events: none;
   }
 }
@@ -2290,7 +2296,6 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     font-size: var(--kds-font-size-c1);
     font-weight: var(--kds-font-weight-semibold);
     color: var(--kds-text-tertiary);
-    background: var(--kds-background-paper-elevation-1);
     white-space: nowrap;
   }
   td {
@@ -2299,12 +2304,44 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     vertical-align: middle;
   }
   tbody tr:hover td {
-    background: var(--kds-background-paper-elevation-1);
+    background-color: var(--kds-background-paper-elevation-1);
   }
   .col-actions {
     width: 1%;
     white-space: nowrap;
     text-align: right;
+  }
+}
+
+// Tabel di kotak flush (daftar Produk, Stok, Promo, Pengguna, …): garis antar baris tidak mentok ke tepi
+// kartu — digambar sebagai latar 1px di tiap sel; sel pertama/terakhir memendekkan garisnya sebesar inset.
+.box-flush .table {
+  th:first-child,
+  td:first-child {
+    padding-left: var(--adm-divider-inset);
+  }
+  th:last-child,
+  td:last-child {
+    padding-right: var(--adm-divider-inset);
+  }
+  td {
+    border-top: 0;
+    background-image: linear-gradient(var(--kds-stroke-soft), var(--kds-stroke-soft));
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: 100% 1px;
+  }
+  td:first-child {
+    background-position: right top;
+    background-size: calc(100% - var(--adm-divider-inset)) 1px;
+  }
+  td:last-child {
+    background-position: left top;
+    background-size: calc(100% - var(--adm-divider-inset)) 1px;
+  }
+  td:first-child:last-child {
+    background-position: center top;
+    background-size: calc(100% - var(--adm-divider-inset) * 2) 1px;
   }
 }
 
@@ -2380,10 +2417,9 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     }
     tr {
       padding: var(--kds-spacing-12) var(--kds-spacing-16);
-      border-top: 1px solid var(--kds-stroke-soft);
     }
-    tbody tr:first-child {
-      border-top: 0;
+    tbody tr + tr {
+      @include inset-divider(top);
     }
     td {
       display: flex;
@@ -2391,6 +2427,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
       gap: var(--kds-spacing-12);
       padding: var(--kds-spacing-4) 0;
       border: 0;
+      background-image: none;
       text-align: right;
       &::before {
         content: attr(data-label);
@@ -2418,6 +2455,16 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     }
     tbody tr:hover td {
       background: none;
+    }
+  }
+  // Kartu tabel: aturan garis & inset sel tabel flush (desktop) tidak berlaku
+  .box-flush .table-cards {
+    td,
+    td:first-child,
+    td:last-child {
+      padding-left: 0;
+      padding-right: 0;
+      background-image: none;
     }
   }
 }
@@ -2889,7 +2936,12 @@ $dialog-icons: question, warning, trash, check;
   align-items: center;
   gap: var(--kds-spacing-8) var(--kds-spacing-12);
   padding: var(--kds-spacing-12) var(--kds-spacing-16);
-  border-top: 1px solid var(--kds-stroke-soft);
+  // ::after, karena ::before dipakai garis cabang .tree-child
+  @include inset-divider(top, after);
+  &:first-child::after,
+  .box-head + &::after {
+    display: none;
+  }
   &:first-child {
     border-top: 0;
   }
@@ -2941,7 +2993,7 @@ $dialog-icons: question, warning, trash, check;
   align-items: center;
   gap: var(--kds-spacing-6);
   padding: var(--kds-spacing-12) var(--kds-spacing-16) var(--kds-spacing-12) var(--kds-spacing-32);
-  border-top: 1px dashed var(--kds-stroke-soft);
+  @include inset-divider(top, before, dashed);
   font-weight: var(--kds-font-weight-semibold);
 }
 
@@ -3456,9 +3508,9 @@ ol.picker-list > .picker-item::before {
 
 .log-item {
   padding: var(--kds-spacing-12) var(--kds-spacing-16);
-  border-top: 1px solid var(--kds-stroke-soft);
-  &:first-child {
-    border-top: 0;
+  @include inset-divider(top);
+  &:first-child::before {
+    display: none;
   }
 }
 
@@ -3822,8 +3874,10 @@ body.adm-auth {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--kds-spacing-6);
-  padding: var(--kds-spacing-8) var(--kds-spacing-16);
-  border-bottom: 1px solid var(--kds-stroke-soft);
+  // Catatan filter berupa kotak menjorok (tidak mentok ke tepi kartu)
+  margin: var(--kds-spacing-12) var(--adm-divider-inset) 0;
+  padding: var(--kds-spacing-8) var(--kds-spacing-12);
+  border-radius: var(--kds-radius-md);
   background: var(--kds-background-warning-elevation-1);
   color: var(--kds-warning-dark);
   font-size: var(--kds-font-size-c1);
