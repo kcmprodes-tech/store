@@ -2985,90 +2985,83 @@ ol.picker-list > .picker-item::before {
 }
 
 // ───────────────────────── Login ─────────────────────────
-// Desain Figma "Store-kompascom" node 254:4888 (frame 1672×941): latar gradasi, logo KOMPAS.com kiri atas,
-// ilustrasi transparan selebar 720px di kiri, judul "CMS Store" + kartu login di kanan.
-// Font tetap Inter (fondasi KDS), ukuran & warna mengikuti desain.
+// Desain Figma "Store-kompascom" node 254:7183, frame 1440px:
+//   logo 246×31 di (109, 68) · "CMS Store" 32px rata kanan dengan tepi kartu, tengah di y 92,5
+//   ilustrasi 640×433 di (109, 174) · kartu 464px di (823, 166), padding 40/32/48, radius 24
+// Font tetap Inter (fondasi KDS). Letter-spacing judul mengikuti desain.
 
 body.adm-auth {
-  // Gradasi latar mengikuti contoh desain: lavender di kiri → merah muda di tengah atas → persik di kanan
-  // (warna dekoratif khusus halaman login, bukan token KDS)
-  --adm-login-lavender: #e2d3f0;
-  --adm-login-rose: #f9ded8;
-  --adm-login-peach: #fee9de;
-  --adm-login-mauve: #e6d4e6;
-  position: relative;
+  // Gradasi latar persis desain: 123°, #EAD8E1 3% → #F1DBDB 62,8% → #F9DED6 98% (warna dekoratif khusus login)
+  --adm-login-grad-1: #ead8e1;
+  --adm-login-grad-2: #f1dbdb;
+  --adm-login-grad-3: #f9ded6;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(ellipse 60% 70% at 0% 100%, var(--adm-login-lavender), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 100% 0%, var(--adm-login-peach), transparent 70%),
-    linear-gradient(105deg, var(--adm-login-mauve) 0%, var(--adm-login-rose) 50%, var(--adm-login-peach) 100%);
-  background-attachment: fixed;
+  background: linear-gradient(123.23deg, var(--adm-login-grad-1) 3%, var(--adm-login-grad-2) 62.8%, var(--adm-login-grad-3) 98%) fixed;
 }
 
-// Ilustrasi transparan: lebar 720px (menyusut bila kolom lebih sempit), tinggi menyesuaikan
+// Bingkai 1440px: kolom 640 (ilustrasi) + jarak 74 + 464 (kartu), mulai 109px dari kiri.
+// Di layar 1024–1439 jarak & kolom ilustrasi menyusut proporsional; > 1440 bingkai di tengah.
+.auth-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) 464px;
+  grid-template-rows: 31px auto;
+  column-gap: clamp(var(--kds-spacing-32), 5.14vw, 74px);
+  row-gap: 67px; // bawah logo (99) → atas kartu (166)
+  max-width: 1440px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 68px var(--kds-spacing-32) var(--kds-spacing-48) clamp(var(--kds-spacing-32), 7.57vw, 109px);
+}
+
+.auth-logo {
+  grid-area: 1 / 1;
+  display: block;
+  width: 246px;
+  height: 31px;
+}
+
+.auth-title {
+  grid-area: 1 / 2;
+  justify-self: end;
+  align-self: start;
+  margin-top: var(--kds-spacing-4); // tengah teks di y 92,5
+  color: var(--kds-base-black);
+  font-size: var(--kds-font-size-h3);
+  font-weight: var(--kds-font-weight-regular);
+  line-height: var(--kds-line-height-normal);
+  letter-spacing: -1.28px;
+  white-space: nowrap;
+}
+
 .auth-art {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  grid-area: 2 / 1;
+  align-self: start;
   min-width: 0;
+  margin-top: var(--kds-spacing-8); // ilustrasi 8px lebih rendah dari kartu (174 vs 166)
 }
 
 .auth-illustration {
   display: block;
-  width: min(720px, 100%);
+  width: 100%;
+  max-width: 640px;
   height: auto;
   user-select: none;
 }
 
-// Logo KOMPAS.com: 333×42 di (5,2% ; 10,41%) frame desain
-.auth-logo {
-  position: absolute;
-  top: 10.41vh;
-  left: 5.2vw;
-  z-index: 1;
-  width: clamp(200px, 19.95vw, 333px);
-  height: auto;
-}
-
-// Kolom kiri ilustrasi (rata tengah vertikal), kolom kanan 464px (judul di 16,7% tinggi layar)
-.auth {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 464px;
-  column-gap: var(--kds-spacing-32);
-  min-height: 100vh;
-  padding: 0 9.5vw var(--kds-spacing-48) var(--kds-spacing-32);
-}
-
 .auth-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--kds-spacing-32);
-  width: 100%;
-  padding-top: 16.7vh;
-}
-
-.auth-title {
-  color: var(--kds-text-primary);
-  font-size: 48px; // skala tipografi primitif KDS (tanpa token semantik)
-  font-weight: var(--kds-font-weight-bold);
-  line-height: var(--kds-line-height-tight);
+  grid-area: 2 / 2;
+  align-self: start;
 }
 
 .auth-card {
   display: flex;
   flex-direction: column;
-  gap: var(--kds-spacing-32);
+  gap: var(--kds-spacing-24);
   width: 100%;
   padding: var(--kds-spacing-40) var(--kds-spacing-32) var(--kds-spacing-48);
   border-radius: var(--kds-radius-3xl);
   background: var(--kds-background-paper-elevation-0);
-  .alert {
-    margin-top: calc(var(--kds-spacing-16) * -1);
-  }
 }
 
 .auth-card-head {
@@ -3078,10 +3071,11 @@ body.adm-auth {
 }
 
 .auth-card-title {
-  color: var(--kds-text-primary);
+  color: var(--kds-base-black);
   font-size: var(--kds-font-size-h5);
   font-weight: var(--kds-font-weight-bold);
-  line-height: var(--kds-line-height-tight);
+  line-height: 30px;
+  letter-spacing: -0.72px;
 }
 
 .auth-card-desc {
@@ -3123,17 +3117,18 @@ body.adm-auth {
   color: var(--kds-primary-base-500);
   font-size: var(--kds-font-size-b1);
   font-weight: var(--kds-font-weight-semibold);
-  line-height: var(--kds-line-height-normal);
+  line-height: 18px;
+  letter-spacing: -0.36px;
   &:hover {
     color: var(--kds-primary-dark-brand);
   }
 }
 
-// Tombol Login: 56px, radius 16, latar text primary, teks putih bold
+// Tombol Login: 56px, radius 16, latar text primary, teks putih bold; 32px di bawah "Lupa password"
 .btn.auth-submit {
   width: 100%;
   height: 56px;
-  margin-top: var(--kds-spacing-16); // + jarak form 16 = 32 dari "Lupa password"
+  margin-top: var(--kds-spacing-16);
   border-radius: var(--kds-radius-xl);
   background: var(--kds-text-primary);
   color: var(--kds-base-white);
@@ -3146,7 +3141,7 @@ body.adm-auth {
 }
 
 .auth-card > .btn.auth-submit {
-  margin-top: 0;
+  margin-top: var(--kds-spacing-8);
 }
 
 .auth-steps {
@@ -3163,38 +3158,39 @@ body.adm-auth {
   }
 }
 
-// Di bawah desktop (KDS 1024): ilustrasi disembunyikan, logo & kartu di tengah
+// Di bawah desktop (KDS 1024): ilustrasi disembunyikan; logo, judul & kartu tersusun di tengah
 @media (max-width: $bp-desktop - 1px) {
+  .auth-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--kds-spacing-16);
+    min-height: 0;
+    padding: var(--kds-spacing-32) var(--kds-spacing-16) var(--kds-spacing-40);
+  }
+  .auth-logo {
+    width: 200px;
+    height: auto;
+  }
+  .auth-title {
+    align-self: center;
+    margin: 0 0 var(--kds-spacing-8);
+    font-size: var(--kds-font-size-h5);
+    letter-spacing: -0.96px;
+  }
   .auth-art {
     display: none;
   }
-  .auth-logo {
-    position: static;
-    display: block;
-    width: 200px;
-    margin: var(--kds-spacing-32) auto 0;
-  }
-  .auth {
-    grid-template-columns: minmax(0, 464px);
-    justify-content: center;
-    min-height: 0;
-    padding: 0 var(--kds-spacing-16) var(--kds-spacing-40);
-  }
   .auth-panel {
-    gap: var(--kds-spacing-24);
-    padding-top: var(--kds-spacing-32);
-  }
-  .auth-title {
-    font-size: var(--kds-font-size-h3);
+    width: 100%;
+    max-width: 464px;
   }
 }
 
 @media (max-width: $bp-tablet - 1px) {
   .auth-card {
-    gap: var(--kds-spacing-24);
-    padding: var(--kds-spacing-32) var(--kds-spacing-20) var(--kds-spacing-32);
+    padding: var(--kds-spacing-32) var(--kds-spacing-20);
   }
-  .auth-card-desc,
   .auth-forgot {
     font-size: var(--kds-font-size-b2);
   }
