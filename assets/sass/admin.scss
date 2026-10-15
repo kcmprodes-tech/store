@@ -2405,9 +2405,10 @@ $dialog-icons: question, warning, trash, check;
 
 // ───────────────────────── Baris daftar + aksi (urutan, tampil, ubah, hapus) ─────────────────────────
 
+// Tombol aksi per baris selalu berjejer ke samping (tidak turun ke bawah)
 .row-actions {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--kds-spacing-4);
   form {
     display: inline-flex;
@@ -3282,6 +3283,13 @@ body.adm-auth {
 
 .narrow {
   max-width: 560px;
+}
+
+// Halaman form sempit (Pengaturan, Promo, Kategori, Pengguna, …): judul, peringatan & kartu
+// jadi satu kolom 560px di tengah area konten, tidak rata kiri.
+.adm-main:has(> .narrow) > * {
+  max-width: 560px;
+  margin-inline: auto;
 }
 
 .row-center {
