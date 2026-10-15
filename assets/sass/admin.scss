@@ -2985,29 +2985,39 @@ ol.picker-list > .picker-item::before {
 }
 
 // ───────────────────────── Login ─────────────────────────
-// Desain Figma "Store-kompascom" node 254:4888 (frame 1672×941): ilustrasi penuh di belakang, logo KOMPAS.com kiri atas,
-// judul "CMS Store" + kartu login di kanan. Font tetap Inter (fondasi KDS), ukuran & warna mengikuti desain.
+// Desain Figma "Store-kompascom" node 254:4888 (frame 1672×941): latar gradasi, logo KOMPAS.com kiri atas,
+// ilustrasi transparan selebar 720px di kiri, judul "CMS Store" + kartu login di kanan.
+// Font tetap Inter (fondasi KDS), ukuran & warna mengikuti desain.
 
 body.adm-auth {
-  // Warna latar ilustrasi (bagian dari aset desain), terlihat bila layar lebih lebar dari gambar
-  --adm-login-backdrop: #fdf1d6;
+  // Gradasi latar mengikuti contoh desain: lavender di kiri → merah muda di tengah atas → persik di kanan
+  // (warna dekoratif khusus halaman login, bukan token KDS)
+  --adm-login-lavender: #e2d3f0;
+  --adm-login-rose: #f9ded8;
+  --adm-login-peach: #fee9de;
+  --adm-login-mauve: #e6d4e6;
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
-  background: var(--adm-login-backdrop);
+  background:
+    radial-gradient(ellipse 60% 70% at 0% 100%, var(--adm-login-lavender), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 0%, var(--adm-login-peach), transparent 70%),
+    linear-gradient(105deg, var(--adm-login-mauve) 0%, var(--adm-login-rose) 50%, var(--adm-login-peach) 100%);
+  background-attachment: fixed;
 }
 
-// Ilustrasi: setinggi 108,82% layar, digeser 10,18% lebar gambar ke kiri (sama dengan frame desain)
+// Ilustrasi transparan: lebar 720px (menyusut bila kolom lebih sempit), tinggi menyesuaikan
+.auth-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
 .auth-illustration {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  width: auto;
-  max-width: none;
-  height: 108.82vh;
-  transform: translateX(-10.18%);
-  pointer-events: none;
+  display: block;
+  width: min(720px, 100%);
+  height: auto;
   user-select: none;
 }
 
@@ -3021,13 +3031,15 @@ body.adm-auth {
   height: auto;
 }
 
+// Kolom kiri ilustrasi (rata tengah vertikal), kolom kanan 464px (judul di 16,7% tinggi layar)
 .auth {
   position: relative;
   z-index: 1;
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 464px;
+  column-gap: var(--kds-spacing-32);
   min-height: 100vh;
-  padding: 0 9.5vw var(--kds-spacing-48) var(--kds-spacing-16);
+  padding: 0 9.5vw var(--kds-spacing-48) var(--kds-spacing-32);
 }
 
 .auth-panel {
@@ -3035,8 +3047,7 @@ body.adm-auth {
   flex-direction: column;
   align-items: center;
   gap: var(--kds-spacing-32);
-  width: 464px;
-  max-width: 100%;
+  width: 100%;
   padding-top: 16.7vh;
 }
 
@@ -3154,7 +3165,7 @@ body.adm-auth {
 
 // Di bawah desktop (KDS 1024): ilustrasi disembunyikan, logo & kartu di tengah
 @media (max-width: $bp-desktop - 1px) {
-  .auth-illustration {
+  .auth-art {
     display: none;
   }
   .auth-logo {
@@ -3164,6 +3175,7 @@ body.adm-auth {
     margin: var(--kds-spacing-32) auto 0;
   }
   .auth {
+    grid-template-columns: minmax(0, 464px);
     justify-content: center;
     min-height: 0;
     padding: 0 var(--kds-spacing-16) var(--kds-spacing-40);

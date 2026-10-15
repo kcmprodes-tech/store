@@ -24,9 +24,10 @@ describe('login', () => {
     expect(res.headers.location).toBe('/admin/login?next=%2Fadmin%2Fproduk%3Fstatus%3Ddraft');
     const page = await request(app).get('/admin/login');
     expect(page.status).toBe(200);
-    expect(page.text).toContain('Siap-siap beresin kerjaan hari ini');
+    expect(page.text).toContain('<h1 class="auth-card-title">Login</h1>');
+    expect(page.text).not.toContain('Siap-siap beresin kerjaan hari ini');
     expect(page.text).toContain('href="/admin/lupa-password"');
-    expect(page.text).toContain('src="/cms/login/ilustrasi.png"');
+    expect(page.text).toContain('src="/cms/login/ilustrasi-cms.png"');
   });
 
   it('lupa password: info reset oleh Admin; yang sudah login diarahkan ke dashboard', async () => {

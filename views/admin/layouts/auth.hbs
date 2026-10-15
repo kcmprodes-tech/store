@@ -4,10 +4,13 @@
   {{> head}}
 </head>
 <body class="adm adm-auth">
-  {{!-- Desain Figma "Store-kompascom" node 254:4888: ilustrasi penuh + logo KOMPAS.com, judul "CMS Store", kartu login di kanan --}}
-  <img class="auth-illustration" src="/cms/login/ilustrasi.png" alt="" width="2000" height="1048" decoding="async">
+  {{!-- Desain Figma "Store-kompascom" node 254:4888: latar gradasi, logo KOMPAS.com, ilustrasi di kiri (720px),
+       judul "CMS Store" + kartu login di kanan --}}
   <img class="auth-logo" src="/cms/login/logo-kompascom.svg" alt="KOMPAS.com" width="333" height="42">
   <main class="auth">
+    <div class="auth-art">
+      <img class="auth-illustration" src="/cms/login/ilustrasi-cms.png" alt="" width="966" height="653" decoding="async">
+    </div>
     <div class="auth-panel">
       <p class="auth-title">CMS Store</p>
       {{{body}}}
