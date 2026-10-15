@@ -478,7 +478,8 @@ details.adm-nav-group[open] .adm-nav-group-badge {
     display: none;
   }
   .adm-main {
-    padding: var(--kds-spacing-32) var(--kds-spacing-40) var(--kds-spacing-64);
+    --adm-main-pb: var(--kds-spacing-64);
+    padding: var(--kds-spacing-32) var(--kds-spacing-40) var(--adm-main-pb);
   }
 }
 
@@ -620,29 +621,37 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
-// Halaman detail (pesanan, refund, produk): jarak antar kartu 24px atas-bawah, 32px antar kolom.
+// Halaman detail (pesanan, refund, produk): jarak antar kartu 16px atas-bawah, 24px antar kolom.
 .grid-main-side {
-  row-gap: var(--kds-spacing-24);
+  row-gap: var(--kds-spacing-16);
   > .stack {
-    gap: var(--kds-spacing-24);
+    gap: var(--kds-spacing-16);
   }
 }
 
 @media (min-width: $bp-desktop) {
   .grid-main-side {
     grid-template-columns: minmax(0, 1fr) 320px;
-    column-gap: var(--kds-spacing-32);
+    column-gap: var(--kds-spacing-24);
     align-items: start;
   }
-  // Kolom kanan punya scroll sendiri: halaman berhenti saat kolom kiri habis, sisa kolom kanan
-  // di-scroll dari area kanan (tidak merambat ke halaman). Padding 4px supaya bayangan kartu &
-  // cincin fokus tidak terpotong oleh overflow.
+  // Grid paling bawah halaman ikut menutup padding bawah .adm-main, supaya kolom kanan bisa memanjang
+  // sampai tepi bawah layar; kolom kiri tetap menyisakan ruang yang sama di bawah kartu terakhir.
+  .adm-main > .grid-main-side:last-child {
+    margin-bottom: calc(var(--adm-main-pb) * -1);
+    > .stack:not(.grid-sticky) {
+      padding-bottom: var(--adm-main-pb);
+    }
+  }
+  // Kolom kanan punya scroll sendiri dan terpotong tepat di tepi bawah layar: halaman berhenti saat
+  // kolom kiri habis, sisa kolom kanan di-scroll dari area kanan (tidak merambat ke halaman).
+  // Padding 4px supaya cincin fokus tidak terpotong oleh overflow.
   .grid-sticky {
     position: sticky;
     top: var(--kds-spacing-20);
-    max-height: calc(100vh - var(--kds-spacing-40));
-    margin: calc(var(--kds-spacing-4) * -1);
-    padding: var(--kds-spacing-4);
+    max-height: calc(100vh - var(--kds-spacing-20));
+    margin: calc(var(--kds-spacing-4) * -1) calc(var(--kds-spacing-4) * -1) 0;
+    padding: var(--kds-spacing-4) var(--kds-spacing-4) var(--kds-spacing-24);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
