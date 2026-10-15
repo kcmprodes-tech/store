@@ -3418,6 +3418,28 @@ body.adm-auth {
   }
 }
 
+// Judul langkah di kiri, CTA sejajar di kanan (HP: CTA turun ke bawah judul)
+.next-step-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-16);
+  > .next-step-head {
+    margin-bottom: 0;
+  }
+  @media (min-width: $bp-tablet) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    > .next-step-head {
+      flex: 1;
+      min-width: 0;
+    }
+    > form {
+      flex: none;
+    }
+  }
+}
+
 // Panel yang dibuka tombol sekunder di .next-step-actions (mis. Ubah kurir / no resi).
 .next-step-panel {
   margin-top: var(--kds-spacing-16);
