@@ -22,8 +22,8 @@
     {{#if actions.simulatePay}}
     <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/bayar-simulasi" data-busy-form>
       {{> csrf}}
-      <button class="btn btn-secondary btn-block" type="submit">{{icon "credit-card" size=18}} Tandai dibayar (simulasi)</button>
-      <p class="help mt-8">Hanya di development, pengganti notifikasi pembayaran Xendit sampai Tahap 3.</p>
+      <div class="next-step-actions"><button class="btn btn-secondary" type="submit">{{icon "credit-card" size=18}} Tandai dibayar (simulasi)</button></div>
+      <p class="help mt-8 text-right">Hanya di development, pengganti notifikasi pembayaran Xendit sampai Tahap 3.</p>
     </form>
     {{/if}}
 
@@ -43,7 +43,7 @@
         </li>
         {{/each}}
       </ul>
-      <button class="btn btn-primary btn-block" type="submit">{{icon "check" size=18}} Selesai dikemas</button>
+      <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "check" size=18}} Selesai dikemas</button></div>
     </form>
 
   {{else if (and actions.tracking (not o.trackingNo))}}
@@ -54,18 +54,20 @@
     <div class="next-step-head">{{icon "truck" size=28}}<div><h2 id="next-title" class="box-title">Serahkan ke kurir</h2><p class="box-desc">{{o.courier}} · resi <span class="mono">{{o.trackingNo}}</span>. Stok baru berkurang saat paket diserahkan.</p></div></div>
     <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-kurir" data-busy-form data-confirm="Paket {{o.invoiceNo}} sudah diterima kurir {{o.courier}}? Status jadi Dikirim dan stok berkurang. Langkah ini tidak bisa dibatalkan." data-confirm-icon="check" data-confirm-ok="Ya, sudah diserahkan">
       {{> csrf}}
-      <button class="btn btn-primary btn-block" type="submit">{{icon "hand-arrow-up" size=18}} Sudah diserahkan ke kurir</button>
+      <div class="next-step-actions">
+        <button class="btn btn-secondary" type="button" data-toggle-panel="ubah-resi" aria-controls="ubah-resi" aria-expanded="false">{{icon "pencil-simple" size=18}} Ubah kurir / no resi</button>
+        <button class="btn btn-primary" type="submit">{{icon "hand-arrow-up" size=18}} Sudah diserahkan ke kurir</button>
+      </div>
     </form>
-    <details class="disclosure mt-16">
-      <summary>Ubah kurir / no resi</summary>
+    <div class="next-step-panel" id="ubah-resi" hidden>
       {{> order-tracking-form}}
-    </details>
+    </div>
 
   {{else if actions.readyPickup}}
     <div class="next-step-head">{{icon "storefront" size=28}}<div><h2 id="next-title" class="box-title">Siapkan untuk diambil</h2><p class="box-desc">Siapkan {{itemCount}} barang di {{o.pickupLocation.name}}, lalu tandai siap. Pembeli akan dikabari.</p></div></div>
     <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/siap-diambil" data-busy-form>
       {{> csrf}}
-      <button class="btn btn-primary btn-block" type="submit">{{icon "check" size=18}} Tandai siap diambil</button>
+      <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "check" size=18}} Tandai siap diambil</button></div>
     </form>
 
   {{else if (eq o.status "READY_PICKUP")}}
@@ -78,7 +80,7 @@
         <input class="input input-lg mono" id="phone4" name="phone4" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" required placeholder="····">
         <p class="help">Lebih cepat: pindai QR di HP pembeli dengan kamera, layar serah terima terbuka otomatis.</p>
       </div>
-      <button class="btn btn-primary btn-block" type="submit">{{icon "hand-arrow-up" size=18}} Serahkan ke pembeli</button>
+      <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "hand-arrow-up" size=18}} Serahkan ke pembeli</button></div>
     </form>
     {{/if}}
     {{#if pickupQr}}
@@ -97,7 +99,7 @@
     {{#if actions.complete}}
     <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/selesai" data-busy-form data-confirm="Pembeli sudah menerima pesanan {{o.invoiceNo}}? Status jadi Selesai. Retur dan refund tetap bisa dicatat sesudahnya." data-confirm-icon="check" data-confirm-ok="Ya, tandai selesai">
       {{> csrf}}
-      <button class="btn btn-secondary btn-block" type="submit">{{icon "check-circle" size=18}} Tandai selesai (sudah diterima)</button>
+      <div class="next-step-actions"><button class="btn btn-secondary" type="submit">{{icon "check-circle" size=18}} Tandai selesai (sudah diterima)</button></div>
     </form>
     {{/if}}
 
@@ -112,7 +114,7 @@
   {{/if}}
 </section>
 
-<div class="grid grid-main-side mt-16">
+<div class="grid grid-main-side mt-24">
   <div class="stack">
     <section class="box">
       <div class="box-head"><h2 class="box-title">Barang ({{itemCount}})</h2></div>

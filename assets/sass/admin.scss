@@ -174,11 +174,6 @@ img {
   max-width: 1440px;
 }
 
-// Kartu tanpa bayangan/garis tepi (dashboard): putih di atas latar paper-elevation-1
-.adm-flat-cards :is(.box, .summary-card, .stat) {
-  box-shadow: none;
-}
-
 .adm-brand {
   display: flex;
   align-items: center;
@@ -553,10 +548,10 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 
 // ───────────────────────── Kotak & grid ─────────────────────────
 
+// Kartu di atas latar abu (paper-elevation-1) tanpa garis tepi & bayangan: cukup putih.
 .box {
   background: var(--kds-background-paper-elevation-0);
   border-radius: var(--adm-radius-box);
-  box-shadow: var(--kds-shadow-base), var(--kds-shadow-line);
   padding: var(--kds-spacing-16);
   & + & {
     margin-top: var(--kds-spacing-16);
@@ -625,14 +620,31 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   }
 }
 
+// Halaman detail (pesanan, refund, produk): jarak antar kartu 24px atas-bawah, 32px antar kolom.
+.grid-main-side {
+  row-gap: var(--kds-spacing-24);
+  > .stack {
+    gap: var(--kds-spacing-24);
+  }
+}
+
 @media (min-width: $bp-desktop) {
   .grid-main-side {
     grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: var(--kds-spacing-32);
     align-items: start;
   }
+  // Kolom kanan punya scroll sendiri: halaman berhenti saat kolom kiri habis, sisa kolom kanan
+  // di-scroll dari area kanan (tidak merambat ke halaman). Padding 4px supaya bayangan kartu &
+  // cincin fokus tidak terpotong oleh overflow.
   .grid-sticky {
     position: sticky;
-    top: 24px;
+    top: var(--kds-spacing-20);
+    max-height: calc(100vh - var(--kds-spacing-40));
+    margin: calc(var(--kds-spacing-4) * -1);
+    padding: var(--kds-spacing-4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 }
 
@@ -704,11 +716,9 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   padding: var(--kds-spacing-16);
   border-radius: var(--adm-radius-box);
   background: var(--kds-background-paper-elevation-0);
-  box-shadow: var(--kds-shadow-base), var(--kds-shadow-line);
   color: var(--kds-text-primary);
   &:hover {
     color: var(--kds-text-primary);
-    box-shadow: var(--kds-shadow-md);
   }
 }
 
@@ -775,7 +785,6 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   padding: var(--kds-spacing-20) var(--kds-spacing-20) var(--kds-spacing-8);
   border-radius: var(--kds-radius-lg);
   background: var(--kds-background-paper-elevation-0);
-  box-shadow: var(--kds-shadow-base), var(--kds-shadow-line);
 }
 
 .summary-card-head {
@@ -854,17 +863,20 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   flex-direction: column;
   gap: var(--kds-spacing-4);
   padding: var(--kds-spacing-16) var(--kds-spacing-20);
-  border: 1px solid transparent;
   border-radius: var(--adm-radius-box);
   background: var(--kds-background-paper-elevation-0);
   color: var(--kds-text-primary);
-  transition: border-color 0.16s ease;
+  transition: background-color 0.16s ease;
   &:hover {
-    border-color: var(--kds-stroke-medium);
+    background: var(--kds-background-paper-elevation-2);
     color: var(--kds-text-primary);
   }
+  // Periode terpilih ditandai warna latar, bukan garis tepi (kartu tanpa border)
   &.is-active {
-    border-color: var(--kds-primary-base-500);
+    background: var(--kds-primary-lightest);
+    .kpi-label {
+      color: var(--kds-primary-base-500);
+    }
   }
 }
 
@@ -1186,7 +1198,7 @@ details.adm-nav-group[open] .adm-nav-group-badge {
 
 .btn-secondary {
   background: var(--kds-background-paper-elevation-0);
-  border-color: var(--kds-stroke-medium);
+  border-color: var(--kds-background-paper-elevation-3);
   color: var(--kds-text-primary);
   &:hover {
     background: var(--kds-background-paper-elevation-1);
@@ -3385,8 +3397,28 @@ body.adm-auth {
   }
 }
 
-.next-step {
-  border: 2px solid var(--kds-primary-lightest);
+.next-step-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--kds-spacing-8);
+  > .btn {
+    width: 100%;
+  }
+  @media (min-width: $bp-tablet) {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: var(--kds-spacing-12);
+    > .btn {
+      width: auto;
+    }
+  }
+}
+
+// Panel yang dibuka tombol sekunder di .next-step-actions (mis. Ubah kurir / no resi).
+.next-step-panel {
+  margin-top: var(--kds-spacing-16);
+  padding-top: var(--kds-spacing-16);
+  border-top: 1px solid var(--kds-stroke-soft);
 }
 
 .next-step-head {

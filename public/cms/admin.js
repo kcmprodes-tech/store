@@ -219,6 +219,20 @@
     });
   });
 
+  /* ---------- Tombol buka/tutup panel (mis. Ubah kurir / no resi) ---------- */
+  $$('[data-toggle-panel]').forEach(function (btn) {
+    on(btn, 'click', function () {
+      var panel = document.getElementById(btn.getAttribute('data-toggle-panel'));
+      if (!panel) return;
+      panel.hidden = !panel.hidden;
+      btn.setAttribute('aria-expanded', String(!panel.hidden));
+      if (!panel.hidden) {
+        var first = panel.querySelector('input, select, textarea');
+        if (first) first.focus();
+      }
+    });
+  });
+
   /* ---------- Slug otomatis dari judul (selama slug belum diubah manual) ---------- */
   function slugify(text) {
     return text.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()

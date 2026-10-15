@@ -106,7 +106,6 @@ dashboardRouter.get(
     await res.renderAdmin('dashboard', {
       pageTitle: 'Dashboard',
       wideMain: true,
-      flatCards: true,
       active: 'dasbor',
       cards,
       recentOrders: recentOrders.map((o) => ({ ...o, status: statusBadge(o), fulfillment: fulfillmentInfo(o.fulfillment) })),
