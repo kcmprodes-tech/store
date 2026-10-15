@@ -3449,6 +3449,31 @@ body.adm-auth {
   }
 }
 
+// Form resi: Kurir · No resi · Simpan sebaris (HP: tombol di bawah, lebar penuh)
+@media (min-width: $bp-tablet) {
+  .tracking-form {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--kds-spacing-16);
+    > .form-grid {
+      flex: 1;
+      min-width: 0;
+    }
+    > .next-step-actions {
+      flex: none;
+      margin-top: 0;
+    }
+  }
+}
+
+// Desktop: isian 40px, tombol di baris yang sama ikut 40px supaya rata atas-bawah
+@media (min-width: $bp-desktop) {
+  .tracking-form > .next-step-actions > .btn {
+    min-height: 40px;
+    height: 40px;
+  }
+}
+
 // Panel yang dibuka tombol sekunder di .next-step-actions (mis. Ubah kurir / no resi).
 .next-step-panel {
   margin-top: var(--kds-spacing-16);
