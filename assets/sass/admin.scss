@@ -2985,41 +2985,207 @@ ol.picker-list > .picker-item::before {
 }
 
 // ───────────────────────── Login ─────────────────────────
+// Desain Figma "Store-kompascom" node 254:4888 (frame 1672×941): ilustrasi penuh di belakang, logo KOMPAS.com kiri atas,
+// judul "CMS Store" + kartu login di kanan. Font tetap Inter (fondasi KDS), ukuran & warna mengikuti desain.
+
+body.adm-auth {
+  // Warna latar ilustrasi (bagian dari aset desain), terlihat bila layar lebih lebar dari gambar
+  --adm-login-backdrop: #fdf1d6;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--adm-login-backdrop);
+}
+
+// Ilustrasi: setinggi 108,82% layar, digeser 10,18% lebar gambar ke kiri (sama dengan frame desain)
+.auth-illustration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: auto;
+  max-width: none;
+  height: 108.82vh;
+  transform: translateX(-10.18%);
+  pointer-events: none;
+  user-select: none;
+}
+
+// Logo KOMPAS.com: 333×42 di (5,2% ; 10,41%) frame desain
+.auth-logo {
+  position: absolute;
+  top: 10.41vh;
+  left: 5.2vw;
+  z-index: 1;
+  width: clamp(200px, 19.95vw, 333px);
+  height: auto;
+}
 
 .auth {
-  display: grid;
-  place-items: center;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
   min-height: 100vh;
-  padding: var(--kds-spacing-24) var(--kds-spacing-16);
-  background:
-    radial-gradient(circle at 20% 0%, var(--kds-primary-lightest), transparent 55%),
-    var(--kds-background-paper-elevation-1);
+  padding: 0 9.5vw var(--kds-spacing-48) var(--kds-spacing-16);
+}
+
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kds-spacing-32);
+  width: 464px;
+  max-width: 100%;
+  padding-top: 16.7vh;
+}
+
+.auth-title {
+  color: var(--kds-text-primary);
+  font-size: 48px; // skala tipografi primitif KDS (tanpa token semantik)
+  font-weight: var(--kds-font-weight-bold);
+  line-height: var(--kds-line-height-tight);
 }
 
 .auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-32);
   width: 100%;
-  max-width: 400px;
-  padding: var(--kds-spacing-32) var(--kds-spacing-24);
-  border-radius: var(--adm-radius-box);
+  padding: var(--kds-spacing-40) var(--kds-spacing-32) var(--kds-spacing-48);
+  border-radius: var(--kds-radius-3xl);
   background: var(--kds-background-paper-elevation-0);
-  box-shadow: var(--kds-shadow-lg), var(--kds-shadow-line);
-  .adm-brand {
-    margin-bottom: var(--kds-spacing-24);
-  }
-  h1 {
-    font-size: var(--kds-font-size-h6);
-    font-weight: var(--kds-font-weight-bold);
-  }
-  .page-subtitle {
-    margin-bottom: var(--kds-spacing-24);
+  .alert {
+    margin-top: calc(var(--kds-spacing-16) * -1);
   }
 }
 
-.auth-foot {
-  margin-top: var(--kds-spacing-24);
-  text-align: center;
-  font-size: var(--kds-font-size-c1);
-  color: var(--kds-text-tertiary);
+.auth-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-8);
+}
+
+.auth-card-title {
+  color: var(--kds-text-primary);
+  font-size: var(--kds-font-size-h5);
+  font-weight: var(--kds-font-weight-bold);
+  line-height: var(--kds-line-height-tight);
+}
+
+.auth-card-desc {
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-b1);
+  line-height: var(--kds-line-height-normal);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-16);
+}
+
+.auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-16);
+}
+
+.input.auth-input {
+  height: 60px;
+  padding: var(--kds-spacing-8) var(--kds-spacing-20);
+  border-color: var(--kds-stroke-soft);
+  border-radius: var(--kds-radius-xl);
+  font-size: var(--kds-font-size-b2);
+  line-height: var(--kds-line-height-normal);
+  &::placeholder {
+    color: var(--kds-text-secondary);
+  }
+}
+
+.password-field .input.auth-input {
+  padding-right: var(--kds-spacing-48);
+}
+
+.auth-forgot {
+  align-self: flex-end;
+  color: var(--kds-primary-base-500);
+  font-size: var(--kds-font-size-b1);
+  font-weight: var(--kds-font-weight-semibold);
+  line-height: var(--kds-line-height-normal);
+  &:hover {
+    color: var(--kds-primary-dark-brand);
+  }
+}
+
+// Tombol Login: 56px, radius 16, latar text primary, teks putih bold
+.btn.auth-submit {
+  width: 100%;
+  height: 56px;
+  margin-top: var(--kds-spacing-16); // + jarak form 16 = 32 dari "Lupa password"
+  border-radius: var(--kds-radius-xl);
+  background: var(--kds-text-primary);
+  color: var(--kds-base-white);
+  font-size: var(--kds-font-size-b2);
+  font-weight: var(--kds-font-weight-bold);
+  &:hover {
+    background: var(--kds-base-black);
+    color: var(--kds-base-white);
+  }
+}
+
+.auth-card > .btn.auth-submit {
+  margin-top: 0;
+}
+
+.auth-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kds-spacing-12);
+  margin: 0;
+  padding-left: var(--kds-spacing-20);
+  color: var(--kds-text-secondary);
+  font-size: var(--kds-font-size-b2);
+  line-height: var(--kds-line-height-normal);
+  strong {
+    color: var(--kds-text-primary);
+  }
+}
+
+// Di bawah desktop (KDS 1024): ilustrasi disembunyikan, logo & kartu di tengah
+@media (max-width: $bp-desktop - 1px) {
+  .auth-illustration {
+    display: none;
+  }
+  .auth-logo {
+    position: static;
+    display: block;
+    width: 200px;
+    margin: var(--kds-spacing-32) auto 0;
+  }
+  .auth {
+    justify-content: center;
+    min-height: 0;
+    padding: 0 var(--kds-spacing-16) var(--kds-spacing-40);
+  }
+  .auth-panel {
+    gap: var(--kds-spacing-24);
+    padding-top: var(--kds-spacing-32);
+  }
+  .auth-title {
+    font-size: var(--kds-font-size-h3);
+  }
+}
+
+@media (max-width: $bp-tablet - 1px) {
+  .auth-card {
+    gap: var(--kds-spacing-24);
+    padding: var(--kds-spacing-32) var(--kds-spacing-20) var(--kds-spacing-32);
+  }
+  .auth-card-desc,
+  .auth-forgot {
+    font-size: var(--kds-font-size-b2);
+  }
 }
 
 .password-field {

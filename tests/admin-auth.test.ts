@@ -24,7 +24,22 @@ describe('login', () => {
     expect(res.headers.location).toBe('/admin/login?next=%2Fadmin%2Fproduk%3Fstatus%3Ddraft');
     const page = await request(app).get('/admin/login');
     expect(page.status).toBe(200);
-    expect(page.text).toContain('Masuk ke CMS');
+    expect(page.text).toContain('Siap-siap beresin kerjaan hari ini');
+    expect(page.text).toContain('href="/admin/lupa-password"');
+    expect(page.text).toContain('src="/cms/login/ilustrasi.png"');
+  });
+
+  it('lupa password: info reset oleh Admin; yang sudah login diarahkan ke dashboard', async () => {
+    const page = await request(app).get('/admin/lupa-password');
+    expect(page.status).toBe(200);
+    expect(page.text).toContain('Pengguna CMS');
+    expect(page.text).toContain('href="/admin/login"');
+    const user = track(await createAdmin(['CS']));
+    const a = agent(app);
+    await login(a, user.email);
+    const logged = await get(a, '/admin/lupa-password');
+    expect(logged.status).toBe(303);
+    expect(logged.headers.location).toBe('/admin');
   });
 
   it('password salah ditolak, password benar masuk ke Dashboard dan tercatat di log', async () => {

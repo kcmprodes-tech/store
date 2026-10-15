@@ -24,7 +24,16 @@ authRouter.get(
   '/login',
   handle(async (req, res) => {
     if (req.admin) return res.redirect(303, safeNext(req.query.next));
-    await res.renderAdmin('login', { layout: 'auth', pageTitle: 'Masuk', next: safeNext(req.query.next) });
+    await res.renderAdmin('login', { layout: 'auth', pageTitle: 'Login', next: safeNext(req.query.next) });
+  }),
+);
+
+/** Lupa password: password CMS hanya bisa direset Admin CMS (menu Pengguna CMS). */
+authRouter.get(
+  '/lupa-password',
+  handle(async (req, res) => {
+    if (req.admin) return res.redirect(303, '/admin');
+    await res.renderAdmin('lupa-password', { layout: 'auth', pageTitle: 'Lupa password' });
   }),
 );
 
@@ -34,7 +43,7 @@ authRouter.post(
     const next = safeNext(req.body?.next);
     const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase().slice(0, 191) : '';
     const fail = (message: string, status = 401) =>
-      res.renderAdmin('login', { layout: 'auth', pageTitle: 'Masuk', next, email, error: message }, status);
+      res.renderAdmin('login', { layout: 'auth', pageTitle: 'Login', next, email, error: message }, status);
 
     const parsed = parseForm(loginSchema, req.body);
     if (!parsed.ok) return fail(parsed.errors.email ?? parsed.errors.password ?? 'Periksa email dan password.', 400);
