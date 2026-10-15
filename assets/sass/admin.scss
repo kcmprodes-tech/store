@@ -652,6 +652,10 @@ details.adm-nav-group[open] .adm-nav-group-badge {
   display: flex;
   flex-direction: column;
   gap: var(--kds-spacing-16);
+  // Jarak antar kartu cukup dari gap (tidak ditambah margin .box + .box)
+  > .box + .box {
+    margin-top: 0;
+  }
 }
 
 .row {
