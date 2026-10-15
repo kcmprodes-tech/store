@@ -1,0 +1,25 @@
+{{!-- Pemilih produk berurutan. Parameter: name (input tersembunyi berisi id dipisah koma), products (terpilih), label, help, error --}}
+<div class="field picker" data-picker>
+  <span class="label">{{label}}</span>
+  <input type="hidden" name="{{name}}" value="{{#each products}}{{id}}{{#unless @last}},{{/unless}}{{/each}}" data-picker-input>
+  <div class="picker-search">
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input" type="search" placeholder="Cari judul, slug, atau SKU…" autocomplete="off" data-picker-search aria-label="Cari produk untuk ditambahkan">
+    </div>
+    <div class="picker-results" data-picker-results hidden></div>
+  </div>
+  <ol class="picker-list" data-picker-list>
+    {{#each products}}
+    <li class="picker-item" data-id="{{id}}">
+      <img class="thumb thumb-sm" src="{{image}}" alt="">
+      <div class="list-main"><strong>{{title}}</strong><span class="small muted">{{price}} · {{status}}</span></div>
+      <button class="btn btn-secondary btn-sm btn-icon" type="button" data-picker-move="-1" aria-label="Naikkan">{{icon "arrow-up" size=16}}</button>
+      <button class="btn btn-secondary btn-sm btn-icon" type="button" data-picker-move="1" aria-label="Turunkan">{{icon "arrow-down" size=16}}</button>
+      <button class="btn btn-danger btn-sm btn-icon" type="button" data-picker-remove aria-label="Hapus dari daftar">{{icon "x" size=16}}</button>
+    </li>
+    {{/each}}
+  </ol>
+  <p class="help" data-picker-empty{{#if products.length}} hidden{{/if}}>Belum ada produk dipilih.</p>
+  {{#if error}}<p class="field-error">{{error}}</p>{{else if help}}<p class="help">{{help}}</p>{{/if}}
+</div>

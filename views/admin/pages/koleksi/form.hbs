@@ -1,0 +1,61 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/koleksi">Koleksi</a>{{icon "caret-right" size=12}}<span>{{#if collection}}{{collection.title}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if collection}}<p class="page-subtitle">{{#if collection.isActive}}Sekarang berisi {{liveCount}} produk{{else}}Nonaktif — halaman 404{{/if}}</p>{{/if}}
+  </div>
+  {{#if collection}}
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="{{href}}" target="_blank" rel="noopener">{{icon "arrow-square-out" size=18}} Lihat di store</a>
+    <a class="btn btn-secondary" href="/admin/log?entitas=collection&id={{collection.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+  {{/if}}
+</div>
+
+{{#if errors}}<div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body">Periksa kembali isian yang ditandai.</div></div>{{/if}}
+
+<form method="post" action="{{#if collection}}/admin/koleksi/{{collection.id}}{{else}}/admin/koleksi{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <fieldset class="plain-fieldset stack"{{#if readOnly}} disabled{{/if}}>
+    <section class="box">
+      <div class="form-grid form-grid-2">
+        <div class="field">
+          <label class="label label-req" for="title">Judul</label>
+          <input class="input{{#if errors.title}} is-invalid{{/if}}" id="title" name="title" value="{{values.title}}" maxlength="120" required data-slug-source="key">
+          {{#if errors.title}}<p class="field-error">{{errors.title}}</p>{{/if}}
+        </div>
+        <div class="field">
+          <label class="label label-req" for="key">Alamat</label>
+          <div class="input-group"><span class="input-addon">/koleksi/</span><input class="input mono{{#if errors.key}} is-invalid{{/if}}" id="key" name="key" value="{{values.key}}" maxlength="60" required></div>
+          {{#if errors.key}}<p class="field-error">{{errors.key}}</p>{{else}}<p class="help">Menu yang memilih koleksi ini ikut berubah otomatis; link yang diketik manual tidak.</p>{{/if}}
+        </div>
+        {{> image-field name="icon" id="icon" value=values.icon label="Ikon" error=errors.icon help="Tampil di samping judul halaman koleksi."}}
+        <div class="field">
+          <span class="label">Status</span>
+          <label class="switch"><input type="checkbox" name="isActive" {{checked values.isActive}}><span class="check-text"><span>Aktif</span><span class="help">Nonaktif = halaman 404 dan menu/link yang menautnya disembunyikan.</span></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2 class="section-block-title">Isi koleksi</h2>
+      <div class="form-grid">
+        <div class="choice-group">
+          <label class="choice"><input type="radio" name="mode" value="MIXED" {{checked (eq values.mode "MIXED")}}><span>{{icon "magic-wand" size=16}} Kurasi di depan + aturan</span></label>
+          <label class="choice"><input type="radio" name="mode" value="ONLY" {{checked (eq values.mode "ONLY")}}><span>{{icon "hand-pointing" size=16}} Hanya produk kurasi</span></label>
+        </div>
+        {{> product-picker name="productIds" products=values.products label="Produk kurasi (tampil paling depan, sesuai urutan)" error=errors.productIds}}
+        <div data-show-when="mode=MIXED">
+          <p class="label">Produk lain dari aturan</p>
+          {{> rules-fields values=values categoryOptions=categoryOptions preview=true limitField=""}}
+        </div>
+      </div>
+    </section>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/koleksi">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>

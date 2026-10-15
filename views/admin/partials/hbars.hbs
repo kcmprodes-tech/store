@@ -1,0 +1,17 @@
+{{!-- Daftar batang horizontal (peringkat): label + nilai di atas, batang satu warna, jumlah & persen di bawah. --}}
+{{#if list.length}}
+<ol class="hbars">
+  {{#each list}}
+  <li>
+    <div class="hbar-head">
+      <span class="hbar-label">{{#if href}}<a href="{{href}}">{{label}}</a>{{else}}{{label}}{{/if}}</span>
+      <span class="hbar-value">{{valueText}}</span>
+    </div>
+    <span class="hbar-track" aria-hidden="true"><span class="hbar-fill" style="width: {{width}}%"></span></span>
+    <span class="small muted">{{number qty}} {{../unit}} · {{pct}}%</span>
+  </li>
+  {{/each}}
+</ol>
+{{else}}
+<p class="help">Belum ada data di periode ini.</p>
+{{/if}}

@@ -1,0 +1,9 @@
+<div class="error-page">
+  {{#if (eq status 403)}}{{icon "lock-simple" size=56}}{{else if (eq status 404)}}{{icon "compass" size=56}}{{else}}{{icon "warning" size=56}}{{/if}}
+  <h1>{{#if (eq status 403)}}Akses ditolak{{else if (eq status 404)}}Halaman tidak ditemukan{{else}}Terjadi kesalahan{{/if}}</h1>
+  <p>{{message}}</p>
+  <div class="row row-center mt-24">
+    {{#if admin}}<a class="btn btn-primary" href="/admin">Ke Dashboard</a>{{else}}<a class="btn btn-primary" href="/admin/login">Masuk</a>{{/if}}
+  </div>
+  {{#if stack}}<pre>{{stack}}</pre>{{/if}}
+</div>

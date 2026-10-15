@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  {{> head}}
+</head>
+<body class="adm adm-auth">
+  {{!-- Desain Figma "Store-kompascom" node 254:7183 (frame 1440px): latar gradasi, logo + "CMS Store" di atas,
+       ilustrasi 640×433 di kiri, kartu login 464px di kanan --}}
+  <div class="auth-frame">
+    <img class="auth-logo" src="/cms/login/logo-kompascom.svg" alt="KOMPAS.com" width="246" height="31">
+    <p class="auth-title">CMS Store</p>
+    <div class="auth-art">
+      <img class="auth-illustration" src="/cms/login/ilustrasi-cms.png" alt="" width="640" height="433" decoding="async">
+    </div>
+    <main class="auth-panel">
+      {{{body}}}
+    </main>
+  </div>
+  <script src="/cms/admin.js?v={{assetVersion}}" defer></script>
+</body>
+</html>

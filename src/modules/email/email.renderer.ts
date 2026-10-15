@@ -73,7 +73,7 @@ export async function renderEmail(
 ): Promise<RenderedEmail> {
   const def = findEmail(name);
   if (!def) throw new Error(`Template email tidak dikenal: ${name}`);
-  const baseUrl = opts.baseUrl ?? env.publicBaseUrl;
+  const baseUrl = opts.baseUrl ?? env.appOrigin;
   const { order } = data;
   const view = {
     ...data,

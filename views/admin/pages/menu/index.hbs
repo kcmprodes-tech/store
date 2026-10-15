@@ -1,0 +1,34 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Menu & pintasan</h1>
+    <p class="page-subtitle">Link di bawah kolom pencarian dan kartu Kategori Pilihan di beranda.</p>
+  </div>
+</div>
+
+<div class="stack">
+  {{#each groups}}
+  <section class="box box-flush">
+    <div class="box-head">
+      <div>
+        <h2 class="box-title">{{title}}</h2>
+        <p class="box-desc">{{desc}}</p>
+      </div>
+      {{#if ../canEdit}}<a class="btn btn-ghost btn-sm" href="/admin/menu/baru?tempat={{slug}}">{{icon "plus" size=16}} Tambah</a>{{/if}}
+    </div>
+    {{#each items}}
+    <div class="tree-row" id="item-{{id}}">
+      {{#if (eq placement "HOME_SHORTCUT")}}<img class="thumb thumb-sm thumb-contain" src="{{image}}" alt="">{{/if}}
+      <div class="tree-main">
+        <a href="/admin/menu/{{id}}"><strong>{{label}}</strong></a>
+        <span class="small muted">{{target.kind}} · {{target.name}}{{#if target.href}} <span class="mono">({{target.href}})</span>{{/if}}</span>
+        {{#if target.warning}}<span class="small warning-text">{{icon "warning" size=14}} {{target.warning}}</span>{{/if}}
+      </div>
+      {{#unless isActive}}<span class="badge badge-warning">Disembunyikan</span>{{/unless}}
+      {{#if ../../canEdit}}{{> row-actions base=(concat "/admin/menu/" id) label=label isActive=isActive first=first last=last deleteMessage=(concat "Hapus \"" label "\" dari " ../title "? Item langsung hilang dari menu store.")}}{{/if}}
+    </div>
+    {{else}}
+    <div class="empty">{{icon "list-bullets" size=40}}<strong>Belum ada item</strong><span>{{#if (eq placement "HOME_SHORTCUT")}}Bagian Kategori Pilihan tidak tampil di beranda.{{else}}Baris menu tidak tampil di store.{{/if}}</span></div>
+    {{/each}}
+  </section>
+  {{/each}}
+</div>

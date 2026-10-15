@@ -1,0 +1,211 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/produk">Produk</a>{{icon "caret-right" size=12}}<span>{{#if product}}Ubah{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if product}}<p class="page-subtitle"><span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span> · diubah {{datetime product.updatedAt}}</p>{{/if}}
+  </div>
+  {{#if product}}
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="/admin/produk/{{product.id}}/pratinjau" target="_blank" rel="noopener">{{icon "eye" size=18}} Pratinjau</a>
+    {{#if (eq status.label "Tayang")}}<a class="btn btn-secondary" href="{{storeHref}}" target="_blank" rel="noopener">{{icon "arrow-square-out" size=18}} Lihat di store</a>{{/if}}
+    <a class="btn btn-secondary" href="/admin/log?entitas=product&id={{product.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+  {{/if}}
+</div>
+
+{{#if errors}}
+<div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body"><p><strong>Produk belum tersimpan.</strong> Periksa isian yang ditandai merah.</p>{{#if errors.variants}}<p>{{errors.variants}}</p>{{/if}}{{#if errors.images}}<p>{{errors.images}}</p>{{/if}}</div></div>
+{{/if}}
+
+<form method="post" action="{{#if product}}/admin/produk/{{product.id}}{{else}}/admin/produk{{/if}}" novalidate data-busy-form data-dirty-guard data-product-form>
+  {{> csrf}}
+  <script type="application/json" data-product-state>{{{json editorState}}}</script>
+  <fieldset class="plain-fieldset grid grid-main-side"{{#if readOnly}} disabled{{/if}}>
+    <div class="stack">
+      <section class="box">
+        <h2 class="section-block-title">Info produk</h2>
+        <div class="form-grid form-grid-2">
+          <div class="field span-2">
+            <label class="label label-req" for="title">Judul</label>
+            <input class="input{{#if errors.title}} is-invalid{{/if}}" id="title" name="title" value="{{values.title}}" maxlength="255" required data-slug-source="slug">
+            {{#if errors.title}}<p class="field-error">{{errors.title}}</p>{{/if}}
+          </div>
+          <div class="field span-2">
+            <label class="label label-req" for="slug">Slug URL</label>
+            <div class="input-group"><span class="input-addon">/produk/</span><input class="input mono{{#if errors.slug}} is-invalid{{/if}}" id="slug" name="slug" value="{{values.slug}}" maxlength="191" required></div>
+            {{#if errors.slug}}<p class="field-error">{{errors.slug}}</p>{{else}}<p class="help">Mengubah slug mengubah alamat halaman produk.</p>{{/if}}
+          </div>
+          <div class="field">
+            <label class="label label-req" for="type">Jenis</label>
+            <select class="select" id="type" name="type">
+              {{#each types}}<option value="{{value}}" {{selected value ../values.type}}>{{label}}</option>{{/each}}
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="categoryId">Kategori</label>
+            <select class="select{{#if errors.categoryId}} is-invalid{{/if}}" id="categoryId" name="categoryId">
+              <option value="">— Tanpa kategori —</option>
+              {{#each categoryOptions}}<option value="{{id}}" {{selected id ../values.categoryId}}>{{name}}</option>{{/each}}
+            </select>
+            {{#if errors.categoryId}}<p class="field-error">{{errors.categoryId}}</p>{{/if}}
+          </div>
+          <div class="field">
+            <label class="label" for="label">Label kartu</label>
+            <input class="input" id="label" name="label" value="{{values.label}}" maxlength="80" placeholder="mis. VIK Premium">
+            <p class="help">Teks kecil di kartu produk. Kosong = nama kategori.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="sku">Kode produk</label>
+            <input class="input mono{{#if errors.sku}} is-invalid{{/if}}" id="sku" name="sku" value="{{values.sku}}" maxlength="80" placeholder="STORE-…">
+            {{#if errors.sku}}<p class="field-error">{{errors.sku}}</p>{{else}}<p class="help">Tampil di "Detail Produk"; juga awalan saran kode SKU.</p>{{/if}}
+          </div>
+        </div>
+      </section>
+
+      <section class="box">
+        <div class="box-head">
+          <div><h2 class="box-title">Foto</h2><p class="box-desc">Foto pertama jadi foto kartu. JPG/PNG/WebP maks. 5 MB, bisa langsung dari kamera HP.</p></div>
+        </div>
+        <div class="photo-grid" data-images></div>
+        <div class="row mt-16">
+          <label class="btn btn-ghost btn-sm image-field-upload">{{icon "upload-simple" size=16}} Unggah foto<input type="file" accept="image/jpeg,image/png,image/webp" multiple data-images-upload></label>
+          <button class="btn btn-secondary btn-sm" type="button" data-images-add-url>{{icon "link" size=16}} Tambah dari URL</button>
+        </div>
+        {{#if errors.images}}<p class="field-error mt-8">{{errors.images}}</p>{{/if}}
+      </section>
+
+      <section class="box">
+        <h2 class="section-block-title">Deskripsi</h2>
+        <div class="rte" data-rte>
+          <div class="rte-toolbar" role="toolbar" aria-label="Format teks">
+            <button type="button" class="icon-btn" data-cmd="bold" aria-label="Tebal" title="Tebal">{{icon "text-b" size=18}}</button>
+            <button type="button" class="icon-btn" data-cmd="italic" aria-label="Miring" title="Miring">{{icon "text-italic" size=18}}</button>
+            <button type="button" class="icon-btn" data-cmd="h3" aria-label="Subjudul" title="Subjudul">{{icon "text-h-three" size=18}}</button>
+            <button type="button" class="icon-btn" data-cmd="insertUnorderedList" aria-label="Daftar berpoin" title="Daftar berpoin">{{icon "list-bullets" size=18}}</button>
+            <button type="button" class="icon-btn" data-cmd="link" aria-label="Link" title="Link">{{icon "link-simple" size=18}}</button>
+            <button type="button" class="icon-btn" data-cmd="removeFormat" aria-label="Hapus format" title="Hapus format">{{icon "text-t-slash" size=18}}</button>
+          </div>
+          <div class="rte-body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Deskripsi produk" data-rte-body>{{{values.description}}}</div>
+          <input type="hidden" name="description" value="{{values.description}}" data-rte-input>
+        </div>
+      </section>
+
+      <section class="box">
+        <div class="box-head">
+          <div><h2 class="box-title">Spesifikasi</h2><p class="box-desc">Tampil di "Detail Produk" sebagai label : nilai. Baris SKU ditambahkan otomatis.</p></div>
+        </div>
+        <div class="spec-list" data-specs></div>
+        <button class="btn btn-ghost btn-sm mt-8" type="button" data-specs-add>{{icon "plus" size=16}} Tambah baris</button>
+      </section>
+
+      <section class="box">
+        <h2 class="section-block-title">Opsi & SKU</h2>
+        <div class="form-grid">
+          <div class="choice-group" data-option-mode>
+            <label class="choice"><input type="radio" name="optionMode" value="NONE" {{checked (eq values.optionMode "NONE")}}><span>Tanpa opsi</span></label>
+            <label class="choice"><input type="radio" name="optionMode" value="VARIAN" {{checked (eq values.optionMode "VARIAN")}}><span>Varian (mis. paket)</span></label>
+            <label class="choice"><input type="radio" name="optionMode" value="APPAREL" {{checked (eq values.optionMode "APPAREL")}}><span>Warna × Ukuran</span></label>
+          </div>
+          <div class="option-editors" data-option-editors></div>
+          <div class="sku-bulk" data-sku-bulk hidden>
+            <span class="label">Isi harga semua SKU</span>
+            <div class="row">
+              <input class="input input-sm" type="number" min="0" inputmode="numeric" placeholder="Harga jual" data-bulk-price aria-label="Harga jual semua SKU">
+              <input class="input input-sm" type="number" min="0" inputmode="numeric" placeholder="Harga coret" data-bulk-original aria-label="Harga coret semua SKU">
+              <button class="btn btn-secondary btn-sm" type="button" data-bulk-apply>Terapkan</button>
+            </div>
+          </div>
+          <div class="sku-list" data-variants></div>
+          <p class="help">Harga dalam rupiah tanpa titik. Stok diubah lewat menu <a href="/admin/stok">Stok</a>. SKU yang sudah punya riwayat stok/pesanan tidak bisa dihapus, hanya dinonaktifkan.</p>
+        </div>
+      </section>
+
+      <section class="box" data-show-when="type=DIGITAL_VIDEO">
+        <h2 class="section-block-title">Data video</h2>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label class="label" for="video-playlist">Playlist</label>
+            <input class="input" id="video-playlist" name="video[playlist]" value="{{values.video.playlist}}" maxlength="120" placeholder="mis. Beginu 5 Tahun">
+          </div>
+          <div class="field">
+            <label class="label" for="video-date">Tanggal video</label>
+            <input class="input" id="video-date" name="video[videoDate]" type="date" value="{{values.video.videoDate}}">
+          </div>
+          <div class="field span-2">
+            <label class="label" for="video-access">Poin "Akses Video Eksklusif"</label>
+            <textarea class="textarea" id="video-access" name="video[accessPoints]" rows="4" placeholder="Satu poin per baris">{{values.video.accessPoints}}</textarea>
+          </div>
+          <div class="field span-2">
+            <label class="label" for="video-url">Link video</label>
+            <input class="input mono{{#if errors.[video.mediaUrl]}} is-invalid{{/if}}" id="video-url" name="video[mediaUrl]" value="{{values.video.mediaUrl}}" inputmode="url" placeholder="https://…">
+            {{#if errors.[video.mediaUrl]}}<p class="field-error">{{errors.[video.mediaUrl]}}</p>{{else}}<p class="help">Tujuan tombol Akses video setelah dibeli.</p>{{/if}}
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="stack grid-sticky">
+      <section class="box">
+        <h2 class="section-block-title">Status</h2>
+        <div class="form-grid">
+          <div class="choice-group">
+            <label class="choice"><input type="radio" name="status" value="DRAFT" {{checked (eq values.status "DRAFT")}}><span>Draft</span></label>
+            <label class="choice"><input type="radio" name="status" value="PUBLISHED" {{checked (eq values.status "PUBLISHED")}}><span>Tayang</span></label>
+            <label class="choice"><input type="radio" name="status" value="ARCHIVED" {{checked (eq values.status "ARCHIVED")}}><span>Arsip</span></label>
+          </div>
+          <div class="field" data-show-when="status=PUBLISHED">
+            <label class="label" for="publishedAt">Jadwal tayang (WIB)</label>
+            <input class="input" id="publishedAt" name="publishedAt" type="datetime-local" value="{{dtlocal values.publishedAt}}">
+            <p class="help">Kosong = tayang saat disimpan. Isi tanggal mendatang untuk menjadwalkan.</p>
+          </div>
+          {{#if product}}<p class="small muted">Dibuat {{datetime product.createdAt}} · terjual {{number product.soldCount}}</p>{{/if}}
+        </div>
+      </section>
+
+      <section class="box">
+        <h2 class="section-block-title">Dijual di luar store</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label" for="externalUrl">Link luar</label>
+            <input class="input mono{{#if errors.externalUrl}} is-invalid{{/if}}" id="externalUrl" name="externalUrl" value="{{values.externalUrl}}" inputmode="url" placeholder="https://plus.kompas.com/…">
+            {{#if errors.externalUrl}}<p class="field-error">{{errors.externalUrl}}</p>{{else}}<p class="help">Untuk membership, VIK, atau event: kartu produk langsung membuka link ini.</p>{{/if}}
+          </div>
+          <div class="field">
+            <label class="label" for="priceSuffix">Akhiran harga</label>
+            <input class="input" id="priceSuffix" name="priceSuffix" value="{{values.priceSuffix}}" maxlength="20" placeholder="/bulan">
+          </div>
+        </div>
+      </section>
+
+      <section class="box" data-show-when="type=PHYSICAL">
+        <h2 class="section-block-title">Pengiriman</h2>
+        <div class="field">
+          <label class="label" for="weightGram">Berat</label>
+          <div class="input-group input-group-end"><input class="input{{#if errors.weightGram}} is-invalid{{/if}}" id="weightGram" name="weightGram" type="number" min="0" inputmode="numeric" value="{{values.weightGram}}"><span class="input-addon">gram</span></div>
+          {{#if errors.weightGram}}<p class="field-error">{{errors.weightGram}}</p>{{else}}<p class="help">Untuk hitung ongkir (Tahap 3).</p>{{/if}}
+        </div>
+      </section>
+
+      {{#if product}}{{#unless readOnly}}
+      <section class="box">
+        <h2 class="section-block-title">Lainnya</h2>
+        <div class="stack">
+          <button class="btn btn-secondary btn-block" type="submit" form="form-archive">{{#if (eq product.status "ARCHIVED")}}{{icon "arrow-counter-clockwise" size=18}} Kembalikan jadi draft{{else}}{{icon "archive" size=18}} Arsipkan{{/if}}</button>
+          {{#if deletable}}<button class="btn btn-danger btn-block" type="submit" form="form-delete">{{icon "trash" size=18}} Hapus produk</button>{{else}}<p class="help">Produk dengan riwayat stok/pesanan tidak bisa dihapus — arsipkan saja.</p>{{/if}}
+        </div>
+      </section>
+      {{/unless}}{{/if}}
+    </aside>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/produk">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan produk</button>
+  </div>
+  {{/unless}}
+</form>
+
+{{#if product}}
+<form id="form-archive" method="post" action="/admin/produk/{{product.id}}/arsip"{{#unless (eq product.status "ARCHIVED")}} data-confirm="Arsipkan &quot;{{product.title}}&quot;? Produk tidak tampil lagi di store." data-confirm-ok="Arsipkan"{{/unless}} hidden>{{> csrf}}</form>
+<form id="form-delete" method="post" action="/admin/produk/{{product.id}}/hapus" data-confirm="Hapus &quot;{{product.title}}&quot; permanen? Tindakan ini tidak bisa dibatalkan." data-danger data-confirm-icon="trash" data-confirm-ok="Hapus" hidden>{{> csrf}}</form>
+{{/if}}

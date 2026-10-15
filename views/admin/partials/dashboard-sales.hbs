@@ -1,0 +1,103 @@
+{{!-- Penjualan & analitik (Admin, Finance, Marketing). Kartu angka utama sekaligus pemilih periode;
+     grafik & rincian di bawahnya mengikuti periode terpilih. --}}
+<section class="sales" id="penjualan" aria-labelledby="penjualan-title">
+  <div class="section-head">
+    {{!-- Judul sudah tampil sebagai tab "Penjualan"; tetap ada untuk pembaca layar --}}
+    <h2 class="sr-only" id="penjualan-title">Penjualan</h2>
+    <p class="section-desc">Pesanan yang sudah dibayar, tidak termasuk yang dibatalkan. Waktu WIB. Pilih periode untuk melihat grafik & rinciannya.</p>
+  </div>
+
+  <nav class="kpi-row" aria-label="Periode penjualan">
+    {{#each sales.kpis}}
+    <a class="kpi{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="true"{{/if}}>
+      <span class="kpi-label">{{label}}</span>
+      <span class="kpi-value">{{rupiah revenue}}</span>
+      <span class="kpi-meta">{{number orders}} pesanan dibayar</span>
+      {{#if delta}}
+      <span class="kpi-delta{{#if delta.up}} is-up{{else if delta.down}} is-down{{/if}}">
+        {{#if delta.up}}{{icon "trend-up" size=16 weight="bold"}} Naik {{delta.pct}}%{{else if delta.down}}{{icon "trend-down" size=16 weight="bold"}} Turun {{delta.pct}}%{{else}}Sama{{/if}}
+        <span class="muted">vs {{previousLabel}}</span>
+      </span>
+      {{else}}
+      <span class="kpi-delta muted">Belum ada penjualan {{previousLabel}}</span>
+      {{/if}}
+    </a>
+    {{/each}}
+  </nav>
+
+  <section class="box chart-box" aria-labelledby="grafik-penjualan">
+    <div class="box-head">
+      <div>
+        <h3 class="box-title" id="grafik-penjualan">Penjualan per {{sales.chart.unit}} · {{sales.periodLabel}}</h3>
+        <p class="box-desc">Total {{rupiah sales.chart.total}}</p>
+      </div>
+    </div>
+    <div class="chart" data-chart tabindex="0" role="group" aria-label="Grafik penjualan per {{sales.chart.unit}}, {{sales.periodLabel}}. Tekan panah kiri atau kanan untuk membaca nilainya; tabel lengkap ada di bawah grafik.">
+      <div class="chart-y" aria-hidden="true">
+        {{#each sales.chart.ticks}}<span style="bottom: {{y}}%">{{label}}</span>{{/each}}
+      </div>
+      <div class="chart-plot">
+        <div class="chart-grid" aria-hidden="true">{{#each sales.chart.ticks}}<span style="bottom: {{y}}%"></span>{{/each}}</div>
+        <div class="chart-bars">
+          {{#each sales.chart.bars}}
+          <div class="chart-col{{#if future}} is-future{{/if}}" data-chart-col data-label="{{full}}" data-value="{{revenueText}}" data-orders="{{orders}}" data-height="{{height}}">
+            <span class="chart-bar" style="height: {{height}}%"></span>
+          </div>
+          {{/each}}
+        </div>
+        <div class="chart-tip" hidden data-chart-tip><strong data-chart-tip-value></strong><span data-chart-tip-label></span></div>
+        {{#if sales.chart.empty}}<p class="chart-empty">Belum ada penjualan di periode ini.</p>{{/if}}
+      </div>
+      <div class="chart-x" aria-hidden="true">
+        {{#each sales.chart.bars}}<span>{{#if showLabel}}{{label}}{{/if}}</span>{{/each}}
+      </div>
+      <p class="sr-only" aria-live="polite" data-chart-live></p>
+    </div>
+    <details class="disclosure mt-16">
+      <summary>Lihat tabel</summary>
+      <div class="table-wrap">
+        <table class="table table-compact">
+          <thead><tr><th>{{#if (eq sales.chart.unit "bulan")}}Bulan{{else}}Tanggal{{/if}}</th><th class="text-right">Pesanan</th><th class="text-right">Penjualan</th></tr></thead>
+          <tbody>
+            {{#each sales.chart.bars}}{{#unless future}}<tr><td>{{full}}</td><td class="text-right">{{number orders}}</td><td class="text-right">{{revenueText}}</td></tr>{{/unless}}{{/each}}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <div class="grid grid-3 mt-16">
+    <section class="box" aria-labelledby="ringkasan-penjualan">
+      <h3 class="section-block-title" id="ringkasan-penjualan">Ringkasan · {{sales.periodLabel}}</h3>
+      <dl class="kv">
+        <div><dt>Penjualan</dt><dd><strong>{{rupiah sales.breakdown.summary.revenue}}</strong></dd></div>
+        <div><dt>Pesanan dibayar</dt><dd>{{number sales.breakdown.summary.orders}}</dd></div>
+        <div><dt>Rata-rata per pesanan</dt><dd>{{rupiah sales.breakdown.summary.aov}}</dd></div>
+        <div><dt>Barang terjual</dt><dd>{{number sales.breakdown.summary.items}}</dd></div>
+        <div><dt>Refund dikirim</dt><dd>{{rupiah sales.breakdown.summary.refunds}}{{#if sales.breakdown.summary.refundCount}} <span class="small muted">({{sales.breakdown.summary.refundCount}})</span>{{/if}}</dd></div>
+        <div><dt>Batal & kedaluwarsa</dt><dd>{{number sales.breakdown.summary.canceled}} pesanan</dd></div>
+      </dl>
+    </section>
+
+    <section class="box" aria-labelledby="produk-terlaris">
+      <div class="box-head"><h3 class="box-title" id="produk-terlaris">Produk terlaris</h3><span class="small muted">menurut penjualan</span></div>
+      {{> hbars list=sales.breakdown.products unit="terjual"}}
+    </section>
+
+    <section class="box" aria-labelledby="per-kategori">
+      <div class="box-head"><h3 class="box-title" id="per-kategori">Penjualan per kategori</h3></div>
+      {{> hbars list=sales.breakdown.categories unit="terjual"}}
+    </section>
+  </div>
+
+  <div class="grid grid-2 mt-16">
+    <section class="box" aria-labelledby="per-cara-kirim">
+      <div class="box-head"><h3 class="box-title" id="per-cara-kirim">Cara pengiriman</h3></div>
+      {{> hbars list=sales.breakdown.fulfillment unit="pesanan"}}
+    </section>
+    <section class="box" aria-labelledby="per-metode-bayar">
+      <div class="box-head"><h3 class="box-title" id="per-metode-bayar">Metode pembayaran</h3></div>
+      {{> hbars list=sales.breakdown.methods unit="pesanan"}}
+    </section>
+  </div>
+</section>

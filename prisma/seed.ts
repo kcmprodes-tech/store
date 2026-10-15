@@ -6,7 +6,9 @@
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { createPrisma } from '../src/lib/prisma.js';
+import { createPrisma, prisma as appPrisma } from '../src/lib/prisma.js';
+import { seedAdmins } from './seed-admins.js';
+import { seedSampleOrders } from './seed-orders.js';
 import { discountPercent, parseIndonesianDate, parsePrice } from '../src/lib/format.js';
 
 const prisma = createPrisma();
@@ -71,13 +73,19 @@ const MORE_COLLECTIONS: { key: string; title: string; icon: string; first?: stri
   { key: 'membership', title: 'Membership', icon: 'cat-membership.png', rules: { kcat: 'membership' } },
 ];
 
-const HOME_SECTIONS: [string, string][] = [
-  ['terlaris', 'Terlaris'],
-  ['rekomendasi', 'Rekomendasi untukmu'],
-  ['merchandise', 'Merchandise pilihan'],
-  ['baru', 'Baru di store'],
-  ['related', 'Produk terkait'],
+/** Seksi produk: isi manual dari list prototipe, "Lihat Semua" ke koleksi `seeAll`. */
+const HOME_SECTIONS: { key: string; title: string; limit: number; seeAll?: string; moreButton?: boolean; related?: boolean }[] = [
+  { key: 'terlaris', title: 'Terlaris', limit: 4, seeAll: 'terlaris' },
+  { key: 'rekomendasi', title: 'Rekomendasi untukmu', limit: 4, seeAll: 'rekomendasi' },
+  { key: 'merchandise', title: 'Merchandise pilihan', limit: 4, seeAll: 'merchandise' },
+  { key: 'baru', title: 'Baru di store', limit: 12, seeAll: 'terbaru', moreButton: true },
+  { key: 'related', title: 'Produk terkait', limit: 8, related: true },
 ];
+
+/** Menu di bawah kolom pencarian (key koleksi; label = judul koleksi). */
+const SEARCH_MENU = ['terlaris', 'rekomendasi', 'merchandise', 'video-premium', 'event', 'membership'];
+/** Kartu Kategori Pilihan di beranda (key koleksi; label & gambar = judul & ikon koleksi). */
+const HOME_SHORTCUTS = ['diskon', 'rekomendasi', 'terbaru', 'merchandise', 'membership', 'event'];
 
 const COLORS: [string, string][] = [['Hitam', '#1F1F1F'], ['Putih', '#FFFFFF'], ['Grey', '#9A9A9A']];
 
@@ -180,6 +188,9 @@ function pricing(p: ProtoProduct) {
 
 async function clearAll() {
   // Urutan: tabel anak dulu, lalu induk.
+  await prisma.navigationItem.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.clientRequest.deleteMany();
   await prisma.videoAccess.deleteMany();
   await prisma.promoRedemption.deleteMany();
   await prisma.payment.deleteMany();
@@ -424,20 +435,10 @@ async function seedCuration(productIds: Map<string, number>) {
     })),
   });
 
-  for (const [i, [key, title]] of HOME_SECTIONS.entries()) {
-    await prisma.homeSection.create({
-      data: {
-        key,
-        title,
-        sortOrder: i,
-        items: { create: (store[key] ?? []).map((p, j) => ({ productId: productIds.get(p.id)!, sortOrder: j })) },
-      },
-    });
-  }
-
   // urutan tab: terlaris, rekomendasi, terbaru, diskon, merchandise, video-premium, event, membership
+  const collections = new Map<string, { id: number; title: string; icon: string | null }>();
   for (const [i, c] of [...COLLECTIONS, ...MORE_COLLECTIONS].entries()) {
-    await prisma.collection.create({
+    const created = await prisma.collection.create({
       data: {
         key: c.key,
         title: c.title,
@@ -451,7 +452,44 @@ async function seedCuration(productIds: Map<string, number>) {
         },
       },
     });
+    collections.set(c.key, created);
   }
+
+  for (const [i, s] of HOME_SECTIONS.entries()) {
+    await prisma.homeSection.create({
+      data: {
+        key: s.key,
+        title: s.title,
+        sortOrder: i,
+        placement: s.related ? 'PRODUCT_RELATED' : 'HOME',
+        productLimit: s.limit,
+        seeAllType: s.seeAll ? 'COLLECTION' : 'NONE',
+        seeAllCollectionId: s.seeAll ? collections.get(s.seeAll)!.id : null,
+        showMoreButton: Boolean(s.moreButton),
+        items: { create: (store[s.key] ?? []).map((p, j) => ({ productId: productIds.get(p.id)!, sortOrder: j })) },
+      },
+    });
+  }
+
+  await prisma.navigationItem.createMany({
+    data: [
+      ...SEARCH_MENU.map((key, i) => ({ placement: 'SEARCH_MENU' as const, key, i })),
+      ...HOME_SHORTCUTS.map((key, i) => ({ placement: 'HOME_SHORTCUT' as const, key, i })),
+    ].map(({ placement, key, i }) => {
+      const c = collections.get(key)!;
+      return {
+        placement,
+        label: c.title,
+        imageUrl: placement === 'HOME_SHORTCUT' ? c.icon : null,
+        linkType: 'COLLECTION' as const,
+        collectionId: c.id,
+        sortOrder: i,
+      };
+    }),
+  });
+
+  // Menu Kategori: Membership langsung ke halaman koleksinya.
+  await prisma.category.update({ where: { slug: 'membership' }, data: { landingCollectionId: collections.get('membership')!.id } });
 }
 
 async function seedCommerce(warehouseId: number, productIds: Map<string, number>) {
@@ -490,6 +528,8 @@ async function seedCommerce(warehouseId: number, productIds: Map<string, number>
       { key: 'refund_max_days', value: 14 },
       { key: 'invoice_prefix', value: 'SKC' },
       { key: 'video_access_url', value: 'https://store.kompas.com/video-premium/history' },
+      // Ambang peringatan stok menipis untuk SKU yang tidak punya ambang sendiri.
+      { key: 'low_stock_threshold_default', value: 5 },
     ],
   });
 
@@ -522,6 +562,9 @@ async function main() {
   const warehouse = await seedInventory(variants);
   await seedCuration(productIds);
   await seedCommerce(warehouse.id, productIds);
+  await seedAdmins(prisma); // akun CMS tidak ikut dikosongkan clearAll()
+  const orders = await seedSampleOrders(prisma);
+  console.log(`✔ ${orders} pesanan contoh untuk CMS (pembeli *@contoh.store.test).`);
 
   const [products, skus, movements, levels] = await Promise.all([
     prisma.product.count(),
@@ -537,4 +580,4 @@ main()
     console.error(err);
     process.exitCode = 1;
   })
-  .finally(() => prisma.$disconnect());
+  .finally(() => Promise.all([prisma.$disconnect(), appPrisma.$disconnect()]));

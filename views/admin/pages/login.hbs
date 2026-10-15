@@ -1,0 +1,26 @@
+<div class="auth-card">
+  <div class="auth-card-head">
+    <h1 class="auth-card-title">Login</h1>
+  </div>
+
+  {{#if error}}
+  <div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body">{{error}}</div></div>
+  {{/if}}
+
+  <form class="auth-form" method="post" action="/admin/login" novalidate data-busy-form>
+    <input type="hidden" name="next" value="{{next}}">
+    <div class="auth-fields">
+      <div>
+        <label class="sr-only" for="email">Email</label>
+        <input class="input auth-input" id="email" name="email" type="email" placeholder="Email" autocomplete="username" inputmode="email" value="{{email}}" required autofocus>
+      </div>
+      <div class="password-field">
+        <label class="sr-only" for="password">Password</label>
+        <input class="input auth-input" id="password" name="password" type="password" placeholder="Password" autocomplete="current-password" required>
+        <button class="icon-btn" type="button" data-toggle-password="password" aria-label="Tampilkan password">{{icon "eye" size=20}}</button>
+      </div>
+    </div>
+    <a class="auth-forgot" href="/admin/lupa-password">Lupa password</a>
+    <button class="btn auth-submit" type="submit">Login</button>
+  </form>
+</div>

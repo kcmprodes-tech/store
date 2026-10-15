@@ -1,0 +1,71 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Stok</h1>
+    <p class="page-subtitle">{{location.name}} · tersedia = fisik − dipesan. {{number total}} SKU.</p>
+  </div>
+  <div class="page-actions">
+    {{#if canEdit}}
+    <a class="btn btn-primary" href="/admin/stok/masuk">{{icon "arrow-square-in" size=18}} Barang masuk</a>
+    <a class="btn btn-ghost" href="/admin/stok/penyesuaian">{{icon "sliders-horizontal" size=18}} Penyesuaian</a>
+    {{/if}}
+    <a class="btn btn-secondary" href="/admin/stok/riwayat">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Status stok">
+  {{#each tabs}}<a class="tab{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>{{label}} <span class="count">{{count}}</span></a>{{/each}}
+</nav>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/stok" role="search">
+    {{#unless (eq filters.status "semua")}}<input type="hidden" name="status" value="{{filters.status}}">{{/unless}}
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input" type="search" name="q" value="{{filters.q}}" placeholder="Cari produk atau SKU" aria-label="Cari SKU">
+    </div>
+    <button class="btn btn-neutral" type="submit">Cari</button>
+  </form>
+  {{#if rows.length}}
+  <div class="table-wrap">
+    <table class="table table-cards">
+      <thead><tr><th>Produk / SKU</th><th class="text-right">Fisik</th><th class="text-right">Dipesan</th><th class="text-right">Tersedia</th><th class="text-right">Ambang</th><th>Status</th><th class="col-actions"><span class="sr-only">Aksi</span></th></tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr>
+          <td class="cell-main">
+            <div class="cell-title">
+              {{#if image}}<img class="thumb thumb-sm" src="{{image}}" alt="" loading="lazy">{{/if}}
+              <span><a href="/admin/produk/{{productId}}"><strong>{{title}}</strong></a><span class="small muted">{{#if variantName}}{{variantName}} · {{/if}}<span class="mono">{{sku}}</span></span></span>
+            </div>
+          </td>
+          <td data-label="Fisik" class="text-right">{{number onHand}}</td>
+          <td data-label="Dipesan" class="text-right">{{number reserved}}</td>
+          <td data-label="Tersedia" class="text-right"><strong>{{number available}}</strong></td>
+          <td data-label="Ambang" class="text-right"><span>{{threshold}}{{#unless customThreshold}} <span class="muted small">(default)</span>{{/unless}}</span></td>
+          <td data-label="Status">{{#if (eq state "habis")}}<span class="badge badge-error">Habis</span>{{else if (eq state "menipis")}}<span class="badge badge-warning">Menipis</span>{{else}}<span class="badge badge-success">Aman</span>{{/if}}</td>
+          <td class="col-actions">
+            <div class="row-actions">
+              {{#if ../canEdit}}
+              <a class="btn btn-secondary btn-sm btn-icon" href="/admin/stok/masuk?sku={{variantId}}" aria-label="Barang masuk {{sku}}" title="Barang masuk">{{icon "plus" size=16}}</a>
+              <a class="btn btn-secondary btn-sm btn-icon" href="/admin/stok/penyesuaian?sku={{variantId}}" aria-label="Sesuaikan {{sku}}" title="Penyesuaian">{{icon "sliders-horizontal" size=16}}</a>
+              {{/if}}
+              <a class="btn btn-secondary btn-sm btn-icon" href="/admin/stok/riwayat?varian={{variantId}}" aria-label="Riwayat {{sku}}" title="Riwayat">{{icon "clock-counter-clockwise" size=16}}</a>
+            </div>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "warehouse" size=40}}<strong>Tidak ada SKU</strong><span>Ubah filter atau kata kunci.</span></div>
+  {{/if}}
+</section>
+<p class="help mt-16">{{icon "info" size=16}} Ambang default diatur di Pengaturan; ambang per SKU diatur di form produk. Produk digital/membership tidak dilacak stoknya.</p>

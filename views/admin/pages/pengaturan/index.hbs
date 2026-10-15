@@ -1,0 +1,43 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Pengaturan</h1>
+    <p class="page-subtitle">Berlaku langsung di store setelah disimpan.</p>
+  </div>
+  <div class="page-actions"><a class="btn btn-secondary" href="/admin/log?entitas=setting">{{icon "clock-counter-clockwise" size=18}} Riwayat</a></div>
+</div>
+
+<form class="stack narrow" method="post" action="/admin/pengaturan" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <section class="box">
+    <h2 class="section-block-title">{{icon "whatsapp-logo" size=20}} WhatsApp store</h2>
+    <div class="field">
+      <label class="label" for="whatsapp">Nomor WhatsApp</label>
+      <input class="input mono{{#if errors.whatsapp}} is-invalid{{/if}}" id="whatsapp" name="whatsapp" value="{{values.whatsapp}}" inputmode="tel" placeholder="6281234567890">
+      {{#if errors.whatsapp}}<p class="field-error">{{errors.whatsapp}}</p>{{else}}<p class="help">Dipakai tombol "Butuh bantuan?" dan "Tanya pesanan ini". Boleh diketik 08…, otomatis jadi 62…. Kosongkan untuk memakai nomor dari .env{{#if settings.whatsappFromEnv}} (sekarang terisi){{/if}}.</p>{{/if}}
+    </div>
+    {{#if settings.whatsappEffective}}
+    <p class="mt-8"><a class="btn btn-ghost btn-sm" href="https://wa.me/{{settings.whatsappEffective}}" target="_blank" rel="noopener">{{icon "arrow-square-out" size=16}} Uji nomor yang aktif sekarang</a>{{#if settings.whatsappFromEnv}} <span class="small muted">dari .env</span>{{/if}}</p>
+    {{else}}
+    <p class="help mt-8">{{icon "warning" size=14}} Belum ada nomor — tombol WhatsApp disembunyikan di store.</p>
+    {{/if}}
+  </section>
+
+  <section class="box">
+    <h2 class="section-block-title">{{icon "warehouse" size=20}} Stok</h2>
+    <div class="field">
+      <label class="label label-req" for="lowStock">Ambang stok menipis (default)</label>
+      <div class="input-group input-group-end narrow-input"><input class="input{{#if errors.lowStock}} is-invalid{{/if}}" id="lowStock" name="lowStock" type="number" min="0" max="1000" inputmode="numeric" value="{{values.lowStock}}"><span class="input-addon">pcs</span></div>
+      {{#if errors.lowStock}}<p class="field-error">{{errors.lowStock}}</p>{{else}}<p class="help">SKU dengan stok tersedia ≤ angka ini masuk peringatan stok menipis. Bisa diubah per SKU di form produk.</p>{{/if}}
+    </div>
+  </section>
+
+  <section class="box">
+    <h2 class="section-block-title">{{icon "package" size=20}} Proteksi paket</h2>
+    <p><span class="badge">Disembunyikan dulu</span></p>
+    <p class="help mt-8">Biaya {{rupiah settings.protectionFee}} tersimpan, tetapi tidak tampil dan tidak masuk total di checkout (keputusan 13 Okt 2026). Pengaturannya dibuka lagi saat dibutuhkan.</p>
+  </section>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan pengaturan</button>
+  </div>
+</form>

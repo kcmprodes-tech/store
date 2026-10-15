@@ -1,0 +1,26 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Banner hero</h1>
+    <p class="page-subtitle">Carousel di paling atas beranda · {{liveCount}} sedang tayang. Urutan di sini = urutan slide.</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/banner/baru">{{icon "plus" size=18}} Banner baru</a></div>
+  {{/if}}
+</div>
+
+<section class="box box-flush">
+  {{#each banners}}
+  <div class="tree-row" id="banner-{{id}}">
+    <img class="thumb thumb-banner" src="{{imageUrl}}" alt="">
+    <div class="tree-main">
+      <a href="/admin/banner/{{id}}"><strong>{{title}}</strong></a>
+      <span class="small muted mono">{{#if href}}{{href}}{{else}}tanpa link{{/if}}</span>
+      {{#if (or startsAt endsAt)}}<span class="small muted">{{#if startsAt}}Mulai {{datetime startsAt}}{{/if}}{{#if (and startsAt endsAt)}} · {{/if}}{{#if endsAt}}Selesai {{datetime endsAt}}{{/if}}</span>{{/if}}
+    </div>
+    <span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span>
+    {{#if ../canEdit}}{{> row-actions base=(concat "/admin/banner/" id) label=title isActive=isActive first=first last=last deleteMessage=(concat "Hapus banner \"" title "\"? Banner langsung hilang dari beranda store.")}}{{/if}}
+  </div>
+  {{else}}
+  <div class="empty">{{icon "image" size=40}}<strong>Belum ada banner</strong><span>Bagian banner tidak tampil di beranda.</span></div>
+  {{/each}}
+</section>

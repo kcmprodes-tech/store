@@ -1,0 +1,74 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Produk</h1>
+    <p class="page-subtitle">{{number total}} produk{{#if filters.q}} cocok dengan "{{filters.q}}"{{/if}}</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/produk/baru">{{icon "plus" size=18}} Produk baru</a></div>
+  {{/if}}
+</div>
+
+<nav class="tabs" aria-label="Status produk">
+  {{#each tabs}}<a class="tab{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>{{label}} <span class="count">{{count}}</span></a>{{/each}}
+</nav>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/produk" role="search">
+    {{#unless (eq filters.status "semua")}}<input type="hidden" name="status" value="{{filters.status}}">{{/unless}}
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input" type="search" name="q" value="{{filters.q}}" placeholder="Cari judul, slug, atau SKU" aria-label="Cari produk">
+    </div>
+    <select class="select" name="jenis" data-autosubmit aria-label="Jenis">
+      <option value="">Semua jenis</option>
+      {{#each types}}<option value="{{value}}" {{selected value ../filters.jenis}}>{{label}}</option>{{/each}}
+    </select>
+    <select class="select" name="kategori" data-autosubmit aria-label="Kategori">
+      <option value="">Semua kategori</option>
+      {{#each categoryOptions}}<option value="{{id}}" {{selected id ../filters.kategori}}>{{name}}</option>{{/each}}
+    </select>
+    <select class="select" name="stok" data-autosubmit aria-label="Stok">
+      <option value="">Semua stok</option>
+      <option value="menipis" {{selected "menipis" filters.stok}}>Stok menipis</option>
+      <option value="habis" {{selected "habis" filters.stok}}>Stok habis</option>
+    </select>
+    <button class="btn btn-neutral" type="submit">Cari</button>
+    {{#if resetHref}}<a class="btn btn-plain" href="{{resetHref}}">Reset</a>{{/if}}
+  </form>
+
+  {{#if products.length}}
+  <div class="table-wrap">
+    <table class="table table-cards">
+      <thead>
+        <tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Diubah</th></tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+        <tr>
+          <td class="cell-main">
+            <a class="cell-title" href="/admin/produk/{{id}}">
+              {{#if image}}<img class="thumb" src="{{image}}" alt="" loading="lazy">{{else}}<span class="thumb thumb-empty">{{icon "image" size=20}}</span>{{/if}}
+              <span><strong>{{title}}</strong><span class="small muted">{{typeLabel}} · {{skuCount}} SKU</span></span>
+            </a>
+          </td>
+          <td data-label="Kategori">{{categoryName}}</td>
+          <td data-label="Harga" class="nowrap">{{priceText}}</td>
+          <td data-label="Stok">{{#if (eq stock null)}}<span class="muted">Tidak dilacak</span>{{else}}{{#if stockLow}}<span class="badge badge-warning">{{number stock}}</span>{{else}}{{number stock}}{{/if}}{{/if}}</td>
+          <td data-label="Status"><span class="badge{{#if status.tone}} badge-{{status.tone}}{{/if}}">{{status.label}}</span></td>
+          <td data-label="Diubah" class="small muted nowrap">{{datetime updatedAt}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "package" size=40}}<strong>Tidak ada produk</strong><span>Ubah filter atau kata kunci pencarian.</span></div>
+  {{/if}}
+</section>

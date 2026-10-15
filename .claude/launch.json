@@ -8,6 +8,13 @@
       "port": 3000
     },
     {
+      "name": "cms",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3101,
+      "autoPort": true
+    },
+    {
       "name": "prototipe",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "4300", "--directory", "../dummy-kompascom-product/build"],

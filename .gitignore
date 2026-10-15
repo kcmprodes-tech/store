@@ -6,3 +6,5 @@ src/generated/
 *.log
 .DS_Store
 .vercel/
+public/uploads/
+storage/

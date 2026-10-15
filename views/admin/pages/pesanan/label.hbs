@@ -1,0 +1,34 @@
+<article class="ship-label" aria-label="Label kirim {{o.invoiceNo}}">
+  <header class="ship-label-head">
+    <strong>Store Kompas.com</strong>
+    <span>{{#if o.courier}}{{o.courier}}{{else}}Kurir belum dipilih{{/if}}</span>
+  </header>
+  {{#if trackingBarcode}}
+  <div class="ship-label-barcode">{{{trackingBarcode}}}<span class="ship-label-code">{{o.trackingNo}}</span></div>
+  {{else}}
+  <p class="ship-label-missing">No resi belum diisi</p>
+  {{/if}}
+  <section class="ship-label-to">
+    <span class="ship-label-caption">Kepada</span>
+    {{#if address}}
+    <strong>{{#if address.recipient}}{{address.recipient}}{{else}}{{o.buyerName}}{{/if}}</strong>
+    <span>{{#if address.phone}}{{address.phone}}{{else}}{{phone}}{{/if}}</span>
+    <span>{{address.street}}</span>
+    <span>{{address.region}}</span>
+    {{else}}
+    <strong>{{o.buyerName}}</strong><span>{{phone}}</span>
+    {{/if}}
+  </section>
+  <section class="ship-label-from">
+    <span class="ship-label-caption">Dari</span>
+    <span><strong>Store Kompas.com</strong>{{#if sender}} · {{sender.address}}{{/if}}</span>
+  </section>
+  <footer class="ship-label-foot">
+    <div class="ship-label-qr">{{{invoiceQr}}}</div>
+    <div class="ship-label-meta">
+      <div class="ship-label-invoice">{{{invoiceBarcode}}}<span class="ship-label-code">{{o.invoiceNo}}</span></div>
+      <span>{{itemCount}} barang · {{date o.createdAt}}</span>
+      <ul>{{#each o.items}}<li>{{sku}} ×{{qty}}</li>{{/each}}</ul>
+    </div>
+  </footer>
+</article>

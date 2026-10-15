@@ -2,6 +2,28 @@
 
 > Disetujui 13 Oktober 2026. Tahap 0–2 dikerjakan lebih dulu; Tahap 3–6 di sesi berikutnya.
 
+## Status Tahap 4 — CMS MVP (13 Oktober 2026, branch `cms`)
+
+**CMS MVP di `/admin` selesai** (branch `cms`, belum di-merge ke `main`). Cara masuk ada di [README](../README.md#cms-admin).
+
+- **Prasyarat store (Langkah 1):** menu di bawah pencarian, menu Kategori (desktop & mobile), kartu Kategori Pilihan, dan seksi produk beranda kini dirender dari database. HTML 26 halaman × desktop/mobile dibandingkan dengan sebelum perubahan dan hasilnya identik (kecuali tag JSON label kategori di `/produk` & `/cari`). Dropdown kategori pencarian dan breadcrumb apparel juga dari DB.
+  - Migrasi `storefront_from_db` ikut mengisi data setara template lama, jadi DB yang sudah ada cukup di-migrate tanpa seed ulang.
+  - Halaman baru `/seksi/:key` = "Lihat semua" otomatis untuk seksi baru.
+- **CMS:**
+  - Login akun terpisah (scrypt), sesi ter-hash, CSRF, batas percobaan login, wajib ganti password saat login pertama.
+  - 6 peran dengan matriks hak akses (`src/admin/permissions.ts`) dan log perubahan sebelum → sesudah.
+  - Modul: Dasbor, Produk & varian, Kategori, Banner hero, Seksi produk, Koleksi, Menu & pintasan, Stok (barang masuk, penyesuaian, riwayat, stok menipis), Promo, Pengaturan, Pengguna CMS, Log.
+  - Responsif (sidebar desktop, menu bawah di HP) + PWA (manifest + service worker), KOMPAS.com Design System.
+- **Database:** 39 tabel, 5 migrasi (`storefront_from_db`, `cms_admin` baru).
+- **Tes:** 131 tes otomatis.
+
+Catatan & keputusan selama pengerjaan:
+- **Kategori Pilihan** = daftar pintasan bebas (label, gambar, tujuan), disimpan di `navigation_items` bersama menu bawah pencarian.
+- **Kategori disembunyikan** hanya hilang dari menu & filter; produknya tetap tayang.
+- **Promo** dari CMS baru dipakai checkout di Tahap 3. Sampai saat itu checkout tetap memakai DJFXA54/PAYDAY25 bawaan prototipe.
+- **Deskripsi produk** disimpan semantik (`h2.pdp-description-heading`, `ul > li`). Ikon centang ditambahkan saat dirender (`decorateDescription`).
+- **Belum dikerjakan (sesuai rencana):** modul Pesanan, refund, dan laporan penjualan (menunggu Tahap 3), scan QR/barcode, notifikasi push, cache offline, dark mode, pustaka media, dan kolom SEO.
+
 ## Status implementasi (13 Oktober 2026)
 
 **Tahap 0–2 selesai.** Cara menjalankan ada di [README](../README.md).

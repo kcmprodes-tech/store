@@ -1,0 +1,31 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Pengguna CMS</h1>
+    <p class="page-subtitle">Akun CMS terpisah dari akun Kompas.com. Hak akses mengikuti peran.</p>
+  </div>
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/pengguna/baru">{{icon "user-plus" size=18}} Pengguna baru</a></div>
+</div>
+
+<section class="box box-flush">
+  <div class="table-wrap">
+    <table class="table table-cards">
+      <thead><tr><th>Nama</th><th>Peran</th><th>Status</th><th>Login terakhir</th><th class="col-actions"><span class="sr-only">Aksi</span></th></tr></thead>
+      <tbody>
+        {{#each users}}
+        <tr>
+          <td class="cell-main">
+            <div class="cell-title">
+              <span class="adm-avatar" aria-hidden="true">{{initials name}}</span>
+              <span><a href="/admin/pengguna/{{id}}"><strong>{{name}}{{#if isSelf}} (Anda){{/if}}</strong></a><span class="small muted">{{email}}</span></span>
+            </div>
+          </td>
+          <td data-label="Peran"><div class="row">{{#each roleList}}<span class="badge badge-plain badge-info">{{this}}</span>{{/each}}</div></td>
+          <td data-label="Status">{{#if isActive}}{{#if mustChangePassword}}<span class="badge badge-warning">Belum ganti password</span>{{else}}<span class="badge badge-success">Aktif</span>{{/if}}{{else}}<span class="badge">Nonaktif</span>{{/if}}</td>
+          <td data-label="Login terakhir" class="small muted">{{#if lastLoginAt}}{{datetime lastLoginAt}}{{else}}Belum pernah{{/if}}</td>
+          <td class="col-actions"><a class="btn btn-secondary btn-sm" href="/admin/pengguna/{{id}}">{{icon "pencil-simple" size=16}} Ubah</a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</section>

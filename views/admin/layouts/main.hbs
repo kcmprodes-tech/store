@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  {{> head}}
+</head>
+<body class="adm">
+  <a class="adm-skip" href="#main">Lewati ke konten</a>
+
+  {{!-- Desktop (Figma 233:1131): sidebar kartu melayang; akun pindah ke avatar di bar atas --}}
+  <aside class="adm-sidebar" aria-label="Menu CMS">
+    {{> brand}}
+    <nav aria-label="Navigasi CMS">{{> nav-groups}}</nav>
+  </aside>
+
+  <div class="adm-shell">
+    <header class="adm-appbar">
+      {{#if backHref}}
+      <a class="icon-btn adm-appbar-back" href="{{backHref}}" aria-label="Kembali">{{icon "arrow-left" size=22}}</a>
+      {{else}}
+      <a class="adm-brand-mark" href="/admin" aria-label="Dashboard CMS">{{icon "storefront" weight="fill" size=20}}</a>
+      {{/if}}
+      <h1 class="adm-appbar-title">{{#if pageTitle}}{{pageTitle}}{{else}}CMS Store{{/if}}</h1>
+      <button class="icon-btn" type="button" data-sheet-open="sheet-account" aria-label="Akun {{admin.name}}">
+        <span class="adm-avatar" aria-hidden="true">{{initials admin.name}}</span>
+      </button>
+    </header>
+
+    {{!-- Bar atas desktop: sapaan (dashboard) di kiri; cari, bantuan, kotak masuk, akun di kanan --}}
+    <div class="adm-topbar{{#if wideMain}} adm-main-wide{{/if}}">
+      <div class="adm-topbar-lead">
+        {{#if greeting}}
+        <h1 class="adm-greeting"><span>Halo, {{admin.name}}</span>{{#each admin.roles}}<span class="badge badge-role">{{roleLabel this}}</span>{{/each}}</h1>
+        <p class="adm-greeting-sub">Ringkasan Store Kompas.com hari ini</p>
+        {{/if}}
+      </div>
+      <div class="adm-topbar-tools">
+        <div class="adm-topbar-search">{{> search-box sid="topbar-search" compact=true}}</div>
+        <div class="adm-pop">
+          <button class="adm-topbar-btn" type="button" aria-label="Bantuan dan pintasan" title="Bantuan dan pintasan" aria-expanded="false" aria-controls="pop-bantuan" data-popover-toggle>{{icon "question" size=20}}</button>
+          <div class="adm-popover adm-popover-end adm-popover-help" id="pop-bantuan" hidden>
+            <p class="adm-popover-title">Pintasan keyboard</p>
+            <dl class="shortcut-list">
+              <div><dt><kbd>/</kbd></dt><dd>Cari pesanan, produk, SKU, promo, kategori</dd></div>
+              <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Pilih saran pencarian</dd></div>
+              <div><dt><kbd>Enter</kbd></dt><dd>Buka saran terpilih</dd></div>
+              <div><dt><kbd>Esc</kbd></dt><dd>Tutup saran atau menu</dd></div>
+            </dl>
+            <p class="adm-popover-title">Bantuan</p>
+            <p class="small muted">Lupa password atau butuh akses modul lain? Hubungi Admin CMS.</p>
+            <a class="adm-popover-link" href="/admin/akun/password">{{icon "key" size=16}} Ganti password</a>
+          </div>
+        </div>
+        <a class="adm-topbar-btn" href="/admin/notifikasi" aria-label="Kotak masuk{{#if unread}}, {{unread}} belum dibaca{{/if}}" title="Kotak masuk">
+          {{icon "bell" size=20}}{{#if unread}}<span class="adm-topbar-dot" aria-hidden="true"></span>{{/if}}
+        </a>
+        <div class="adm-pop">
+          <button class="adm-topbar-avatar" type="button" aria-label="Akun {{admin.name}}" title="Akun" aria-expanded="false" aria-controls="pop-akun" data-popover-toggle>
+            <span class="adm-avatar" aria-hidden="true">{{initials admin.name}}</span>
+          </button>
+          <div class="adm-popover adm-popover-end adm-popover-account" id="pop-akun" hidden>{{> account}}</div>
+        </div>
+      </div>
+    </div>
+
+    <main id="main" class="adm-main{{#if wideMain}} adm-main-wide{{/if}}">
+      {{{body}}}
+    </main>
+  </div>
+
+  <nav class="adm-bottomnav" aria-label="Menu utama">
+    {{#each nav.bottom}}
+    <a class="adm-bottomnav-item{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>
+      {{icon this.icon size=24 weight=(ifv active "fill" "regular")}}<span>{{label}}</span>
+      {{#if badge}}<b class="adm-nav-badge" title="{{badge}} {{badgeTitle}}">{{badge}}</b>{{/if}}
+    </a>
+    {{/each}}
+    <button class="adm-bottomnav-item{{#if nav.moreActive}} is-active{{/if}}" type="button" data-sheet-open="sheet-more">
+      {{icon "dots-three-circle" size=24 weight=(ifv nav.moreActive "fill" "regular")}}<span>Lainnya</span>
+    </button>
+  </nav>
+
+  <div class="adm-sheet" id="sheet-more" data-sheet hidden>
+    <div class="adm-sheet-panel" role="dialog" aria-modal="true" aria-label="Semua menu">
+      <div class="adm-sheet-handle" aria-hidden="true"></div>
+      {{> nav-groups}}
+    </div>
+  </div>
+
+  <div class="adm-sheet" id="sheet-account" data-sheet hidden>
+    <div class="adm-sheet-panel" role="dialog" aria-modal="true" aria-label="Akun">
+      <div class="adm-sheet-handle" aria-hidden="true"></div>
+      {{> account}}
+    </div>
+  </div>
+
+  {{#if flash}}
+  <div class="toast is-{{flash.type}}" role="status" data-toast>
+    {{#if (eq flash.type "error")}}{{icon "warning-circle" size=20 weight="fill"}}{{else if (eq flash.type "info")}}{{icon "info" size=20 weight="fill"}}{{else}}{{icon "check-circle" size=20 weight="fill"}}{{/if}}
+    <span class="toast-text">{{flash.message}}</span>
+    <button class="icon-btn" type="button" data-toast-close aria-label="Tutup">{{icon "x" size=18}}</button>
+  </div>
+  {{/if}}
+
+  {{!-- Dialog konfirmasi (pola AlertDialog shadcn/ui): ikon, judul, deskripsi, lalu Batal · Aksi. Diisi oleh admin.js. --}}
+  <dialog class="alert-dialog" role="alertdialog" data-confirm-dialog data-media="question" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form class="alert-dialog-content" method="dialog">
+      <div class="alert-dialog-header">
+        <span class="alert-dialog-media" aria-hidden="true">
+          <span data-icon="question">{{icon "question" size=24}}</span>
+          <span data-icon="warning">{{icon "warning" size=24}}</span>
+          <span data-icon="trash">{{icon "trash" size=24}}</span>
+          <span data-icon="check">{{icon "check-circle" size=24}}</span>
+        </span>
+        <h2 class="alert-dialog-title" id="confirm-title" data-confirm-title>Yakin?</h2>
+        <p class="alert-dialog-description" id="confirm-text" data-confirm-text></p>
+      </div>
+      <div class="alert-dialog-footer">
+        <button class="btn btn-secondary" value="cancel" data-confirm-cancel autofocus>Batal</button>
+        <button class="btn btn-primary" value="ok" data-confirm-ok>Ya, lanjutkan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/cms/admin.js?v={{assetVersion}}" defer></script>
+  {{#each scripts}}<script src="{{this}}?v={{@root.assetVersion}}" defer></script>{{/each}}
+</body>
+</html>

@@ -1,0 +1,111 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/seksi">Seksi produk</a>{{icon "caret-right" size=12}}<span>{{#if section}}{{section.title}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if section}}<p class="page-subtitle">{{#if section.isActive}}Sekarang tampil {{liveCount}} produk{{else}}Disembunyikan dari store{{/if}}</p>{{/if}}
+  </div>
+  {{#if section}}
+  <div class="page-actions">
+    {{#if seeAllHref}}<a class="btn btn-secondary" href="{{seeAllHref}}" target="_blank" rel="noopener">{{icon "arrow-square-out" size=18}} Halaman Lihat semua</a>{{/if}}
+    <a class="btn btn-secondary" href="/admin/log?entitas=home_section&id={{section.id}}">{{icon "clock-counter-clockwise" size=18}} Riwayat</a>
+  </div>
+  {{/if}}
+</div>
+
+{{#if errors}}<div class="alert alert-error form-errors" role="alert">{{icon "warning-circle" weight="fill"}}<div class="alert-body">Periksa kembali isian yang ditandai.</div></div>{{/if}}
+
+<form method="post" action="{{#if section}}/admin/seksi/{{section.id}}{{else}}/admin/seksi{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <fieldset class="plain-fieldset stack"{{#if readOnly}} disabled{{/if}}>
+    <section class="box">
+      <div class="form-grid form-grid-2">
+        <div class="field">
+          <label class="label label-req" for="title">Judul seksi</label>
+          <input class="input{{#if errors.title}} is-invalid{{/if}}" id="title" name="title" value="{{values.title}}" maxlength="120" required data-slug-source="key">
+          {{#if errors.title}}<p class="field-error">{{errors.title}}</p>{{/if}}
+        </div>
+        <div class="field">
+          <label class="label label-req" for="key">Key</label>
+          <div class="input-group"><span class="input-addon">/seksi/</span><input class="input mono{{#if errors.key}} is-invalid{{/if}}" id="key" name="key" value="{{values.key}}" maxlength="60" required></div>
+          {{#if errors.key}}<p class="field-error">{{errors.key}}</p>{{else}}<p class="help">Alamat halaman "Lihat semua" otomatis seksi ini.</p>{{/if}}
+        </div>
+        <div class="field">
+          <span class="label">Tempat</span>
+          <div class="choice-group">
+            <label class="choice"><input type="radio" name="placement" value="HOME" {{checked (eq values.placement "HOME")}}><span>{{icon "house" size=16}} Beranda</span></label>
+            <label class="choice"><input type="radio" name="placement" value="PRODUCT_RELATED" {{checked (eq values.placement "PRODUCT_RELATED")}}><span>{{icon "squares-four" size=16}} Produk terkait</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Status</span>
+          <label class="switch"><input type="checkbox" name="isActive" {{checked values.isActive}}><span class="check-text"><span>Tampil di store</span></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="box">
+      <h2 class="section-block-title">Isi produk</h2>
+      <div class="form-grid">
+        <div class="choice-group">
+          <label class="choice"><input type="radio" name="source" value="MANUAL" {{checked (eq values.source "MANUAL")}}><span>{{icon "hand-pointing" size=16}} Pilih manual</span></label>
+          <label class="choice"><input type="radio" name="source" value="RULE" {{checked (eq values.source "RULE")}}><span>{{icon "magic-wand" size=16}} Otomatis dari aturan</span></label>
+        </div>
+        <div data-show-when="source=MANUAL">
+          {{> product-picker name="productIds" products=values.products label="Produk (urutan = urutan tampil)" error=errors.productIds help="Produk draft/arsip/terjadwal otomatis tidak tampil sampai tayang."}}
+        </div>
+        <div data-show-when="source=RULE">
+          {{> rules-fields values=values categoryOptions=categoryOptions preview=true limitField="productLimit"}}
+        </div>
+        <div class="field narrow">
+          <label class="label label-req" for="productLimit">Jumlah produk yang tampil</label>
+          <input class="input{{#if errors.productLimit}} is-invalid{{/if}}" id="productLimit" name="productLimit" type="number" min="1" max="48" inputmode="numeric" value="{{values.productLimit}}" required>
+          {{#if errors.productLimit}}<p class="field-error">{{errors.productLimit}}</p>{{else}}<p class="help">Grid beranda 4 kolom di desktop, 2 kolom di HP — kelipatan 4 paling rapi.</p>{{/if}}
+        </div>
+      </div>
+    </section>
+
+    <section class="box" data-show-when="placement=HOME">
+      <h2 class="section-block-title">Link "Lihat semua"</h2>
+      <div class="form-grid">
+        <div class="choice-group">
+          <label class="choice"><input type="radio" name="seeAllType" value="NONE" {{checked (eq values.seeAllType "NONE")}}><span>Tidak ada</span></label>
+          <label class="choice"><input type="radio" name="seeAllType" value="SECTION_PAGE" {{checked (eq values.seeAllType "SECTION_PAGE")}}><span>Halaman seksi ini</span></label>
+          <label class="choice"><input type="radio" name="seeAllType" value="COLLECTION" {{checked (eq values.seeAllType "COLLECTION")}}><span>Koleksi</span></label>
+          <label class="choice"><input type="radio" name="seeAllType" value="CATEGORY" {{checked (eq values.seeAllType "CATEGORY")}}><span>Kategori</span></label>
+          <label class="choice"><input type="radio" name="seeAllType" value="URL" {{checked (eq values.seeAllType "URL")}}><span>Link lain</span></label>
+        </div>
+        <p class="help" data-show-when="seeAllType=SECTION_PAGE">Halaman otomatis berisi semua produk seksi ini, memakai tampilan halaman koleksi.</p>
+        <div class="field" data-show-when="seeAllType=COLLECTION">
+          <label class="label label-req" for="seeAllCollectionId">Koleksi</label>
+          <select class="select{{#if errors.seeAllCollectionId}} is-invalid{{/if}}" id="seeAllCollectionId" name="seeAllCollectionId">
+            <option value="">Pilih koleksi…</option>
+            {{#each collections}}<option value="{{id}}" {{selected id ../values.seeAllCollectionId}}>{{title}} (/koleksi/{{key}}){{#unless isActive}} — nonaktif{{/unless}}</option>{{/each}}
+          </select>
+          {{#if errors.seeAllCollectionId}}<p class="field-error">{{errors.seeAllCollectionId}}</p>{{/if}}
+        </div>
+        <div class="field" data-show-when="seeAllType=CATEGORY">
+          <label class="label label-req" for="seeAllCategoryId">Kategori</label>
+          <select class="select{{#if errors.seeAllCategoryId}} is-invalid{{/if}}" id="seeAllCategoryId" name="seeAllCategoryId">
+            <option value="">Pilih kategori…</option>
+            {{#each categoryTargets}}<option value="{{id}}" {{selected id ../values.seeAllCategoryId}}>{{name}}</option>{{/each}}
+          </select>
+          {{#if errors.seeAllCategoryId}}<p class="field-error">{{errors.seeAllCategoryId}}</p>{{/if}}
+        </div>
+        <div class="field" data-show-when="seeAllType=URL">
+          <label class="label label-req" for="seeAllUrl">Link</label>
+          <input class="input mono{{#if errors.seeAllUrl}} is-invalid{{/if}}" id="seeAllUrl" name="seeAllUrl" value="{{values.seeAllUrl}}" inputmode="url" placeholder="/produk?category=buku">
+          {{#if errors.seeAllUrl}}<p class="field-error">{{errors.seeAllUrl}}</p>{{/if}}
+        </div>
+        <div data-show-when="seeAllType=SECTION_PAGE,COLLECTION,CATEGORY,URL">
+          <label class="check"><input type="checkbox" name="showMoreButton" {{checked values.showMoreButton}}><span class="check-text"><span>Tambah tombol "Lihat semua" di bawah grid</span><span class="help">Seperti di seksi "Baru di store".</span></span></label>
+        </div>
+      </div>
+    </section>
+  </fieldset>
+  {{#unless readOnly}}
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/seksi">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} Simpan</button>
+  </div>
+  {{/unless}}
+</form>

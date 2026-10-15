@@ -32,15 +32,22 @@ enum ProductStatus {
 }
 
 model Category {
-  id        Int        @id @default(autoincrement())
-  parentId  Int?       @map("parent_id")
-  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryTree")
-  slug      String     @unique @db.VarChar(80)
-  name      String     @db.VarChar(120)
-  icon      String?    @db.VarChar(255)
-  sortOrder Int        @default(0) @map("sort_order")
-  products  Product[]
+  id                  Int              @id @default(autoincrement())
+  parentId            Int?             @map("parent_id")
+  parent              Category?        @relation("CategoryTree", fields: [parentId], references: [id])
+  children            Category[]       @relation("CategoryTree")
+  slug                String           @unique @db.VarChar(80)
+  name                String           @db.VarChar(120)
+  icon                String?          @db.VarChar(255)
+  sortOrder           Int              @default(0) @map("sort_order")
+  /// false = disembunyikan dari menu Kategori, dropdown pencarian, dan filter (produknya tetap tayang).
+  isActive            Boolean          @default(true) @map("is_active")
+  /// Tujuan khusus di menu Kategori, mis. Membership → koleksi membership. Kosong = /produk?category=…
+  landingCollectionId Int?             @map("landing_collection_id")
+  landingCollection   Collection?      @relation("CategoryLanding", fields: [landingCollectionId], references: [id], onDelete: SetNull)
+  products            Product[]
+  navigationItems     NavigationItem[]
+  seeAllSections      HomeSection[]    @relation("SectionSeeAllCategory")
 
   @@map("categories")
 }
@@ -86,12 +93,12 @@ model Product {
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String  @db.VarChar(500)
-  alt       String? @db.VarChar(255)
-  sortOrder Int     @default(0) @map("sort_order")
+  id            Int                 @id @default(autoincrement())
+  productId     Int                 @map("product_id")
+  product       Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url           String              @db.VarChar(500)
+  alt           String?             @db.VarChar(255)
+  sortOrder     Int                 @default(0) @map("sort_order")
   /// Foto milik pilihan tertentu (mis. Warna: Putih). Saat pilihan itu dipilih, galeri pindah ke foto pertamanya.
   optionValueId Int?                @map("option_value_id")
   optionValue   ProductOptionValue? @relation(fields: [optionValueId], references: [id], onDelete: SetNull)
@@ -129,24 +136,28 @@ model ProductOptionValue {
 }
 
 model ProductVariant {
-  id            Int                  @id @default(autoincrement())
-  productId     Int                  @map("product_id")
-  product       Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku           String               @unique @db.VarChar(120)
+  id                Int                  @id @default(autoincrement())
+  productId         Int                  @map("product_id")
+  product           Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku               String               @unique @db.VarChar(120)
   /// Label varian untuk tampilan, mis. "Bundling Plus" atau "Hitam, XL".
-  name          String?              @db.VarChar(160)
-  price         Int
-  priceOriginal Int?                 @map("price_original")
+  name              String?              @db.VarChar(160)
+  price             Int
+  priceOriginal     Int?                 @map("price_original")
   /// Indeks gambar galeri yang dipakai saat varian dipilih.
-  imageIndex    Int?                 @map("image_index")
-  trackStock    Boolean              @default(true) @map("track_stock")
-  isActive      Boolean              @default(true) @map("is_active")
-  sortOrder     Int                  @default(0) @map("sort_order")
-  optionValues  VariantOptionValue[]
-  inventory     InventoryLevel[]
-  movements     StockMovement[]
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
+  imageIndex        Int?                 @map("image_index")
+  trackStock        Boolean              @default(true) @map("track_stock")
+  /// Kode barcode label SKU (opsional; tanpa barcode, scan memakai kode SKU). Tidak boleh sama dengan SKU lain.
+  barcode           String?              @unique @db.VarChar(64)
+  /// Ambang peringatan stok menipis; kosong = pengaturan low_stock_threshold_default.
+  lowStockThreshold Int?                 @map("low_stock_threshold")
+  isActive          Boolean              @default(true) @map("is_active")
+  sortOrder         Int                  @default(0) @map("sort_order")
+  optionValues      VariantOptionValue[]
+  inventory         InventoryLevel[]
+  movements         StockMovement[]
+  cartItems         CartItem[]
+  orderItems        OrderItem[]
 
   @@index([productId, sortOrder])
   @@map("product_variants")
@@ -190,13 +201,53 @@ model Banner {
   @@map("banners")
 }
 
-model HomeSection {
-  id        Int               @id @default(autoincrement())
-  key       String            @unique @db.VarChar(60)
-  title     String            @db.VarChar(120)
-  sortOrder Int               @default(0) @map("sort_order")
-  items     HomeSectionItem[]
+enum SectionPlacement {
+  /// Seksi produk di beranda.
+  HOME
+  /// "Produk terkait" di halaman detail, keranjang, dan pencarian.
+  PRODUCT_RELATED
+}
 
+enum SectionSource {
+  /// Produk dipilih manual (home_section_items).
+  MANUAL
+  /// Produk otomatis dari aturan (rules).
+  RULE
+}
+
+enum SeeAllType {
+  NONE
+  /// Halaman /seksi/:key berisi semua produk seksi ini.
+  SECTION_PAGE
+  COLLECTION
+  CATEGORY
+  URL
+}
+
+/// Seksi produk (beranda atau produk terkait). Tidak ada seksi yang dikunci; semua diatur dari CMS.
+model HomeSection {
+  id                 Int               @id @default(autoincrement())
+  key                String            @unique @db.VarChar(60)
+  title              String            @db.VarChar(120)
+  placement          SectionPlacement  @default(HOME)
+  sortOrder          Int               @default(0) @map("sort_order")
+  isActive           Boolean           @default(true) @map("is_active")
+  source             SectionSource     @default(MANUAL)
+  /// Aturan isi otomatis (FeedRules): { kcat?, ksub?, discounted?, recentDays?, sort? }
+  rules              Json?
+  /// Jumlah produk yang tampil.
+  productLimit       Int               @default(4) @map("product_limit")
+  seeAllType         SeeAllType        @default(NONE) @map("see_all_type")
+  seeAllCollectionId Int?              @map("see_all_collection_id")
+  seeAllCollection   Collection?       @relation("SectionSeeAllCollection", fields: [seeAllCollectionId], references: [id], onDelete: Restrict)
+  seeAllCategoryId   Int?              @map("see_all_category_id")
+  seeAllCategory     Category?         @relation("SectionSeeAllCategory", fields: [seeAllCategoryId], references: [id], onDelete: Restrict)
+  seeAllUrl          String?           @map("see_all_url") @db.VarChar(500)
+  /// Tombol "Lihat semua" tambahan di bawah grid.
+  showMoreButton     Boolean           @default(false) @map("show_more_button")
+  items              HomeSectionItem[]
+
+  @@index([placement, sortOrder])
   @@map("home_sections")
 }
 
@@ -217,12 +268,53 @@ model Collection {
   key       String           @unique @db.VarChar(60)
   title     String           @db.VarChar(120)
   icon      String?          @db.VarChar(255)
-  /// Aturan filter: { only?: bool, discounted?: bool, kcat?: string, ksub?: string, sort?: string }
+  /// Aturan isi (FeedRules + only): { only?, discounted?, kcat?, ksub?, recentDays?, sort? }
   rules     Json?
   sortOrder Int              @default(0) @map("sort_order")
+  /// false = halaman /koleksi/:key tidak tersedia (404).
+  isActive  Boolean          @default(true) @map("is_active")
   items     CollectionItem[]
 
+  navigationItems NavigationItem[]
+  landingFor      Category[]       @relation("CategoryLanding")
+  seeAllSections  HomeSection[]    @relation("SectionSeeAllCollection")
+
   @@map("collections")
+}
+
+enum NavPlacement {
+  /// Menu di bawah kolom pencarian.
+  SEARCH_MENU
+  /// Kartu "Kategori Pilihan" di beranda.
+  HOME_SHORTCUT
+}
+
+enum LinkType {
+  COLLECTION
+  CATEGORY
+  URL
+}
+
+/// Item menu bawah pencarian dan kartu Kategori Pilihan.
+model NavigationItem {
+  id           Int          @id @default(autoincrement())
+  placement    NavPlacement
+  label        String       @db.VarChar(80)
+  /// Gambar kartu Kategori Pilihan.
+  imageUrl     String?      @map("image_url") @db.VarChar(500)
+  linkType     LinkType     @map("link_type")
+  collectionId Int?         @map("collection_id")
+  collection   Collection?  @relation(fields: [collectionId], references: [id], onDelete: Restrict)
+  categoryId   Int?         @map("category_id")
+  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  url          String?      @db.VarChar(500)
+  sortOrder    Int          @default(0) @map("sort_order")
+  isActive     Boolean      @default(true) @map("is_active")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([placement, sortOrder])
+  @@map("navigation_items")
 }
 
 /// Produk kurasi yang tampil paling depan di sebuah koleksi.
@@ -264,6 +356,7 @@ model StockLocation {
   inventory       InventoryLevel[]
   movements       StockMovement[]
   pickupLocations PickupLocation[]
+  orderItems      OrderItem[]
 
   @@map("stock_locations")
 }
@@ -306,13 +399,13 @@ model StockMovement {
 // ───────────────────────── Pengguna ─────────────────────────
 
 model User {
-  id          Int           @id @default(autoincrement())
-  ssoId       String?       @unique @map("sso_id") @db.VarChar(120)
-  name        String        @db.VarChar(160)
-  email       String        @unique @db.VarChar(191)
-  phone       String?       @db.VarChar(30)
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  id          Int               @id @default(autoincrement())
+  ssoId       String?           @unique @map("sso_id") @db.VarChar(120)
+  name        String            @db.VarChar(160)
+  email       String            @unique @db.VarChar(191)
+  phone       String?           @db.VarChar(30)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
   addresses   Address[]
   wishlists   Wishlist[]
   carts       Cart[]
@@ -527,6 +620,18 @@ model Order {
   paidAt            DateTime?            @map("paid_at")
   completedAt       DateTime?            @map("completed_at")
   canceledAt        DateTime?            @map("canceled_at")
+  /// Salinan nama & HP pembeli untuk pencarian CS dan pencocokan saat ambil di tempat.
+  buyerName         String?              @map("buyer_name") @db.VarChar(160)
+  buyerPhone        String?              @map("buyer_phone") @db.VarChar(30)
+  packedAt          DateTime?            @map("packed_at")
+  packedBy          String?              @map("packed_by") @db.VarChar(191)
+  shippedAt         DateTime?            @map("shipped_at")
+  shippedBy         String?              @map("shipped_by") @db.VarChar(191)
+  /// Waktu siap diambil (dasar pengingat "belum diambil").
+  readyAt           DateTime?            @map("ready_at")
+  pickedUpAt        DateTime?            @map("picked_up_at")
+  pickedUpBy        String?              @map("picked_up_by") @db.VarChar(191)
+  cancelReason      String?              @map("cancel_reason") @db.VarChar(255)
   createdAt         DateTime             @default(now()) @map("created_at")
   updatedAt         DateTime             @updatedAt @map("updated_at")
   items             OrderItem[]
@@ -534,30 +639,116 @@ model Order {
   payments          Payment[]
   promoRedemption   PromoRedemption?
   videoAccess       VideoAccess[]
+  attachments       OrderAttachment[]
+  refunds           Refund[]
+  returns           OrderReturn[]
 
   @@index([userId, createdAt])
   @@index([status, paymentDueAt])
+  @@index([trackingNo])
+  @@index([buyerPhone])
   @@map("orders")
 }
 
 /// Snapshot item saat pesanan dibuat, supaya perubahan katalog tidak mengubah riwayat.
 model OrderItem {
-  id            Int             @id @default(autoincrement())
-  orderId       Int             @map("order_id")
-  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  variantId     Int?            @map("variant_id")
-  variant       ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
-  productTitle  String          @map("product_title") @db.VarChar(255)
-  sku           String          @db.VarChar(120)
-  optionLabel   String?         @map("option_label") @db.VarChar(160)
-  imageUrl      String?         @map("image_url") @db.VarChar(500)
-  price         Int
-  priceOriginal Int?            @map("price_original")
-  qty           Int
-  note          String?         @db.VarChar(255)
+  id              Int             @id @default(autoincrement())
+  orderId         Int             @map("order_id")
+  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId       Int?            @map("variant_id")
+  variant         ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productTitle    String          @map("product_title") @db.VarChar(255)
+  sku             String          @db.VarChar(120)
+  optionLabel     String?         @map("option_label") @db.VarChar(160)
+  imageUrl        String?         @map("image_url") @db.VarChar(500)
+  price           Int
+  priceOriginal   Int?            @map("price_original")
+  qty             Int
+  note            String?         @db.VarChar(255)
+  /// Lokasi stok baris ini; kosong = stok tidak dilacak (digital/membership), tanpa gerakan stok.
+  stockLocationId Int?            @map("stock_location_id")
+  stockLocation   StockLocation?  @relation(fields: [stockLocationId], references: [id])
+  /// Jumlah yang masih di-reserve (dilepas saat dikirim/diambil atau batal).
+  reservedQty     Int             @default(0) @map("reserved_qty")
+  /// Jumlah yang sudah keluar dari gudang (OUT).
+  shippedQty      Int             @default(0) @map("shipped_qty")
+  /// Jumlah yang sudah diterima kembali lewat retur.
+  returnedQty     Int             @default(0) @map("returned_qty")
+  /// Centang daftar kemas.
+  packedQty       Int             @default(0) @map("packed_qty")
 
   @@index([orderId])
   @@map("order_items")
+}
+
+enum AttachmentKind {
+  PACKAGE
+  RETURN
+}
+
+/// Foto paket/retur. File disimpan privat (storage/private), disajikan lewat /admin/berkas/:id.
+model OrderAttachment {
+  id          Int            @id @default(autoincrement())
+  orderId     Int            @map("order_id")
+  order       Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  returnId    Int?           @map("return_id")
+  orderReturn OrderReturn?   @relation(fields: [returnId], references: [id], onDelete: SetNull)
+  kind        AttachmentKind
+  path        String         @db.VarChar(255)
+  mime        String         @db.VarChar(40)
+  sizeBytes   Int            @map("size_bytes")
+  note        String?        @db.VarChar(255)
+  createdBy   String         @map("created_by") @db.VarChar(191)
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@map("order_attachments")
+}
+
+enum RefundStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+/// Pengembalian dana: diajukan CS, diputuskan Finance (orang berbeda), tenggat 14 hari sejak diajukan.
+model Refund {
+  id            Int          @id @default(autoincrement())
+  orderId       Int          @map("order_id")
+  order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount        Int
+  reason        String       @db.VarChar(500)
+  status        RefundStatus @default(REQUESTED)
+  requestedById Int?         @map("requested_by_id")
+  requestedBy   String       @map("requested_by") @db.VarChar(191)
+  requestedAt   DateTime     @default(now()) @map("requested_at")
+  dueAt         DateTime     @map("due_at")
+  decidedById   Int?         @map("decided_by_id")
+  decidedBy     String?      @map("decided_by") @db.VarChar(191)
+  decidedAt     DateTime?    @map("decided_at")
+  decisionNote  String?      @map("decision_note") @db.VarChar(500)
+  completedBy   String?      @map("completed_by") @db.VarChar(191)
+  completedAt   DateTime?    @map("completed_at")
+
+  @@index([status, dueAt])
+  @@index([orderId])
+  @@map("refunds")
+}
+
+/// Retur diterima gudang: items = [{ orderItemId, receivedQty, restockQty }].
+model OrderReturn {
+  id          Int               @id @default(autoincrement())
+  orderId     Int               @map("order_id")
+  order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  items       Json
+  note        String?           @db.VarChar(500)
+  createdBy   String            @map("created_by") @db.VarChar(191)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  attachments OrderAttachment[]
+
+  @@index([orderId])
+  @@map("order_returns")
 }
 
 /// Sumber timeline "Detail Transaksi".
@@ -567,6 +758,8 @@ model OrderStatusHistory {
   order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
   status    OrderStatus
   note      String?     @db.VarChar(255)
+  /// Pelaku perubahan: email staf, "pembeli", atau "sistem".
+  actor     String?     @db.VarChar(191)
   createdAt DateTime    @default(now()) @map("created_at")
 
   @@index([orderId, createdAt])
@@ -621,4 +814,177 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("settings")
+}
+
+// ───────────────────────── CMS (/admin) ─────────────────────────
+
+enum AdminRole {
+  ADMIN
+  EDITOR
+  MARKETING
+  CS
+  GUDANG
+  FINANCE
+}
+
+/// Akun CMS (terpisah dari akun pembeli/SSO). Hak akses per peran ada di src/admin/permissions.ts.
+model AdminUser {
+  id                 Int                @id @default(autoincrement())
+  email              String             @unique @db.VarChar(191)
+  name               String             @db.VarChar(120)
+  /// scrypt$N$r$p$salt$hash (lihat src/admin/auth/password.ts).
+  passwordHash       String             @map("password_hash") @db.VarChar(255)
+  isActive           Boolean            @default(true) @map("is_active")
+  /// Wajib ganti password saat login berikutnya (akun baru / password di-reset).
+  mustChangePassword Boolean            @default(false) @map("must_change_password")
+  lastLoginAt        DateTime?          @map("last_login_at")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+  /// Pilihan notifikasi: { types: { [jenis]: bool }, quietStart: "21:00", quietEnd: "07:00" }
+  notificationPrefs  Json?              @map("notification_prefs")
+  roles              AdminUserRole[]
+  sessions           AdminSession[]
+  auditLogs          AuditLog[]
+  notifications      Notification[]
+  pushSubscriptions  PushSubscription[]
+  passkeys           AdminPasskey[]
+  clientRequests     ClientRequest[]
+
+  @@map("admin_users")
+}
+
+model AdminUserRole {
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  role        AdminRole
+
+  @@id([adminUserId, role])
+  @@map("admin_user_roles")
+}
+
+/// Sesi login CMS. id = SHA-256 dari token di cookie (token asli tidak disimpan).
+model AdminSession {
+  id          String    @id @db.Char(64)
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  csrfToken   String    @map("csrf_token") @db.VarChar(64)
+  ip          String?   @db.VarChar(64)
+  userAgent   String?   @map("user_agent") @db.VarChar(255)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  lastSeenAt  DateTime  @default(now()) @map("last_seen_at")
+  /// Batas mutlak umur sesi (sesi juga berakhir setelah 7 hari tanpa aktivitas).
+  expiresAt   DateTime  @map("expires_at")
+
+  @@index([adminUserId])
+  @@map("admin_sessions")
+}
+
+/// Log perubahan CMS: siapa, kapan, apa (nilai sebelum → sesudah).
+model AuditLog {
+  id          Int        @id @default(autoincrement())
+  adminUserId Int?       @map("admin_user_id")
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  /// Salinan email pelaku, tetap terbaca walau akunnya dihapus.
+  actorEmail  String     @map("actor_email") @db.VarChar(191)
+  /// create, update, delete, login, logout, stock.in, stock.adjust, …
+  action      String     @db.VarChar(40)
+  /// product, category, banner, home_section, collection, navigation_item, promo, setting, admin_user, stock, …
+  entityType  String     @map("entity_type") @db.VarChar(40)
+  entityId    String?    @map("entity_id") @db.VarChar(80)
+  /// Nama objek saat diubah (mis. judul produk).
+  entityLabel String?    @map("entity_label") @db.VarChar(255)
+  summary     String?    @db.VarChar(255)
+  /// { field: [sebelum, sesudah] }; password tidak pernah dicatat.
+  changes     Json?
+  ip          String?    @db.VarChar(64)
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([adminUserId, createdAt])
+  @@map("audit_logs")
+}
+
+/// Notifikasi di aplikasi (lonceng). dedupeKey mencegah notifikasi ganda untuk kejadian yang sama.
+model Notification {
+  id          Int       @id @default(autoincrement())
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  type        String    @db.VarChar(40)
+  title       String    @db.VarChar(160)
+  body        String    @db.VarChar(500)
+  url         String    @db.VarChar(255)
+  dedupeKey   String?   @map("dedupe_key") @db.VarChar(120)
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@unique([adminUserId, dedupeKey])
+  @@index([adminUserId, readAt, createdAt])
+  @@map("notifications")
+}
+
+/// Langganan Web Push per perangkat.
+model PushSubscription {
+  id            Int       @id @default(autoincrement())
+  adminUserId   Int       @map("admin_user_id")
+  adminUser     AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  endpoint      String    @unique @db.VarChar(500)
+  p256dh        String    @db.VarChar(200)
+  auth          String    @db.VarChar(100)
+  /// Sidik kunci VAPID yang dipakai saat berlangganan (ganti kunci = langganan lama tidak berlaku).
+  vapidKeyId    String    @map("vapid_key_id") @db.VarChar(16)
+  /// Sesi saat berlangganan; logout di perangkat itu menghapus langganannya.
+  sessionId     String?   @map("session_id") @db.Char(64)
+  userAgent     String?   @map("user_agent") @db.VarChar(255)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastSuccessAt DateTime? @map("last_success_at")
+  failCount     Int       @default(0) @map("fail_count")
+
+  @@index([adminUserId])
+  @@map("push_subscriptions")
+}
+
+/// Passkey (sidik jari / Face ID) untuk login CMS.
+model AdminPasskey {
+  id           Int       @id @default(autoincrement())
+  adminUserId  Int       @map("admin_user_id")
+  adminUser    AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  credentialId String    @unique @map("credential_id") @db.VarChar(512)
+  publicKey    Bytes     @map("public_key") @db.Blob
+  counter      BigInt    @default(0)
+  transports   Json?
+  name         String    @db.VarChar(80)
+  backedUp     Boolean   @default(false) @map("backed_up")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  lastUsedAt   DateTime? @map("last_used_at")
+
+  @@index([adminUserId])
+  @@map("admin_passkeys")
+}
+
+/// Challenge WebAuthn sekali pakai (≤5 menit), terikat cookie singkat.
+model AdminAuthChallenge {
+  id          String   @id @db.Char(43)
+  challenge   String   @db.VarChar(128)
+  purpose     String   @db.VarChar(20)
+  adminUserId Int?     @map("admin_user_id")
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([expiresAt])
+  @@map("admin_auth_challenges")
+}
+
+/// Kunci idempoten kiriman dari HP (mode sinyal lemah): kiriman yang sama tidak diproses dua kali.
+model ClientRequest {
+  id          Int       @id @default(autoincrement())
+  adminUserId Int       @map("admin_user_id")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  key         String    @db.VarChar(64)
+  requestHash String    @map("request_hash") @db.Char(64)
+  response    Json?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@unique([adminUserId, key])
+  @@map("client_requests")
 }

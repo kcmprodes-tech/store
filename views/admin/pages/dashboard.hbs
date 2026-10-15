@@ -1,0 +1,148 @@
+{{!-- Dashboard — desain Figma "Store-kompascom" node 233:1131. Di desktop sapaan & kotak cari ada di bar atas (layout);
+     di HP tampil di sini. Tab: Pesanan (ringkasan) · Penjualan (analitik, bila peran boleh melihat penjualan). --}}
+<div class="page-head dashboard-hello">
+  <div class="page-head-text">
+    <h1 class="page-title">Halo, {{admin.name}}</h1>
+    <p class="page-subtitle">{{roleNames}} · ringkasan Store Kompas.com hari ini</p>
+  </div>
+</div>
+
+<div class="dashboard-search">{{> search-box sid="dashboard-search"}}</div>
+
+<div class="dash-tabs">
+  {{#if sales}}
+  <div class="dash-tablist" role="tablist" aria-label="Isi dashboard" data-dash-tabs>
+    <a class="dash-tab{{#unless salesTab}} is-active{{/unless}}" id="tab-ringkasan" href="/admin" role="tab" aria-selected="{{#if salesTab}}false{{else}}true{{/if}}" aria-controls="panel-ringkasan"{{#if salesTab}} tabindex="-1"{{/if}} data-dash-tab="ringkasan">{{overviewLabel}}</a>
+    <a class="dash-tab{{#if salesTab}} is-active{{/if}}" id="tab-penjualan" href="/admin?tab=penjualan" role="tab" aria-selected="{{#if salesTab}}true{{else}}false{{/if}}" aria-controls="panel-penjualan"{{#unless salesTab}} tabindex="-1"{{/unless}} data-dash-tab="penjualan">Penjualan</a>
+  </div>
+  {{else}}
+  <div class="dash-tablist"><span class="dash-tab is-active">{{overviewLabel}}</span></div>
+  {{/if}}
+  {{#if perms.stok.edit}}<a class="btn btn-secondary btn-sm dash-tabs-action" href="/admin/stok/masuk">Barang masuk</a>{{/if}}
+</div>
+
+<div class="dash-panel" id="panel-ringkasan"{{#if sales}} role="tabpanel" aria-labelledby="tab-ringkasan"{{/if}}{{#if salesTab}} hidden{{/if}}>
+  {{#if cards.length}}
+  <div class="summary-cards-wrap">
+  <div class="summary-cards">
+    {{#each cards}}
+    <section class="summary-card" aria-labelledby="ringkasan-{{key}}">
+      <div class="summary-card-head">
+        <div class="summary-card-text">
+          <h2 class="summary-card-label" id="ringkasan-{{key}}">{{label}}</h2>
+          {{#if breakdown}}
+          {{!-- Angka + caret: klik untuk rincian status (titik warna) --}}
+          <div class="adm-pop summary-card-pop">
+            <button class="summary-card-value summary-card-toggle" type="button" aria-expanded="false" aria-controls="rincian-{{key}}" aria-label="{{number value}} {{lower label}}, lihat rincian status" data-popover-toggle>
+              {{number value}}{{icon "caret-down" size=14 weight="bold" class="summary-card-toggle-caret"}}
+            </button>
+            <div class="adm-popover summary-breakdown" id="rincian-{{key}}" hidden>
+              <p class="adm-popover-title">Rincian {{lower label}}</p>
+              <ul class="summary-breakdown-list">
+                {{#each breakdown}}
+                <li><a href="{{href}}"{{#if title}} title="{{title}}"{{/if}}><span class="dot dot-{{tone}}" aria-hidden="true"></span><span class="summary-breakdown-label">{{label}}</span><strong>{{number count}}</strong></a></li>
+                {{/each}}
+              </ul>
+            </div>
+          </div>
+          {{else}}
+          <p class="summary-card-value">{{number value}}</p>
+          {{/if}}
+        </div>
+        <span class="summary-card-icon" aria-hidden="true">{{icon this.icon size=24}}</span>
+      </div>
+      <div class="summary-card-actions">
+        <a class="summary-card-view" href="{{viewHref}}" aria-label="{{viewLabel}} {{label}}">{{viewLabel}}{{icon "caret-down" size=14 weight="bold" class="summary-card-caret"}}</a>
+        {{#if newHref}}<a class="btn btn-primary btn-sm btn-icon btn-circle" href="{{newHref}}" aria-label="{{newLabel}}" title="{{newLabel}}">{{icon "plus" size=18 weight="bold"}}</a>{{/if}}
+      </div>
+    </section>
+    {{/each}}
+  </div>
+  </div>
+  {{/if}}
+
+  <div class="grid grid-2 dash-boxes">
+    {{#if perms.stok.view}}
+    <section class="box dash-box" aria-labelledby="judul-stok-menipis">
+      <div class="dash-box-head">
+        <h2 class="dash-box-title" id="judul-stok-menipis">Stok menipis</h2>
+        <p class="dash-box-desc">{{number lowCount}} SKU dengan stok tersedia di bawah ambang</p>
+      </div>
+      {{#if lowStock.length}}
+      <ul class="dash-list">
+        {{#each lowStock}}
+        <li>
+          <div class="list-main">
+            <strong>{{title}}</strong>
+            <span class="small muted mono">{{sku}}</span>
+          </div>
+          {{#if (lte available 0)}}<span class="badge badge-error">Habis</span>{{else}}<span class="badge badge-warning">Sisa {{available}}</span>{{/if}}
+        </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <div class="empty">{{icon "check-circle" size=40}}<strong>Stok aman</strong><span>Tidak ada SKU di bawah ambang.</span></div>
+      {{/if}}
+      <div class="dash-box-foot"><a class="btn btn-neutral btn-sm" href="/admin/stok?status=menipis" aria-label="Lihat semua stok menipis">Lihat semua</a></div>
+    </section>
+    {{/if}}
+
+    {{#if perms.pesanan.view}}
+    <section class="box dash-box" aria-labelledby="judul-pesanan-terbaru">
+      <div class="dash-box-head">
+        <h2 class="dash-box-title" id="judul-pesanan-terbaru">Pesanan terbaru</h2>
+        <p class="dash-box-desc">5 pesanan yang paling baru masuk</p>
+      </div>
+      {{#if recentOrders.length}}
+      <ul class="dash-list recent-orders">
+        {{#each recentOrders}}
+        <li>
+          <span class="recent-order-icon" title="{{fulfillment.label}}">{{icon fulfillment.icon size=20}}</span>
+          <div class="list-main">
+            <a class="recent-order-no mono" href="/admin/pesanan/{{invoiceNo}}">{{invoiceNo}}</a>
+            <span class="small muted">{{buyerName}} · {{_count.items}} barang · <span class="nowrap">{{datetime createdAt}}</span></span>
+          </div>
+          <div class="recent-order-side">
+            <strong>{{rupiah total}}</strong>
+            <span class="badge badge-{{status.tone}}">{{status.label}}</span>
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <div class="empty">{{icon "receipt" size=40}}<strong>Belum ada pesanan</strong><span>Pesanan baru akan muncul di sini.</span></div>
+      {{/if}}
+      <div class="dash-box-foot"><a class="btn btn-neutral btn-sm" href="/admin/pesanan?status=semua" aria-label="Lihat semua pesanan">Lihat semua</a></div>
+    </section>
+    {{else if perms.produk.view}}
+    <section class="box dash-box" aria-labelledby="judul-draft">
+      <div class="dash-box-head">
+        <h2 class="dash-box-title" id="judul-draft">Draft & terjadwal</h2>
+        <p class="dash-box-desc">Produk yang belum tampil di store</p>
+      </div>
+      {{#if scheduled.length}}
+      <ul class="dash-list">
+        {{#each scheduled}}
+        <li>
+          <div class="list-main">
+            <a href="/admin/produk/{{id}}"><strong>{{title}}</strong></a>
+            <span class="small muted">Diubah {{datetime updatedAt}}</span>
+          </div>
+          {{#if isScheduled}}<span class="badge badge-info">{{date publishedAt}}</span>{{else}}<span class="badge">Draft</span>{{/if}}
+        </li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <div class="empty">{{icon "files" size=40}}<strong>Tidak ada draft</strong><span>Semua produk sudah tayang atau diarsipkan.</span></div>
+      {{/if}}
+      <div class="dash-box-foot"><a class="btn btn-neutral btn-sm" href="/admin/produk?status=draft" aria-label="Lihat semua draft produk">Lihat semua</a></div>
+    </section>
+    {{/if}}
+  </div>
+</div>
+
+{{#if sales}}
+<div class="dash-panel" id="panel-penjualan" role="tabpanel" aria-labelledby="tab-penjualan"{{#unless salesTab}} hidden{{/unless}}>
+  {{> dashboard-sales sales=sales}}
+</div>
+{{/if}}

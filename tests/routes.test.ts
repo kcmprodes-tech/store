@@ -66,7 +66,10 @@ describe('data dari database', () => {
   it('detail produk bervarian merender chip dari product_variants', async () => {
     const res = await request(app).get('/produk/source-18').set('User-Agent', DESKTOP_UA);
     expect(res.text.match(/data-product-format="/g)?.length).toBe(4);
-    expect(res.text).toContain('data-product-format="Basic" data-price="50000" data-price-original="100000" data-discount="50" data-stock="0"');
+    // Stok dibaca dari DB dev (bisa berubah lewat CMS), harga & diskon dari seed
+    const basic = await prisma.inventoryLevel.findFirst({ where: { variant: { sku: 'STORE-PESTABOLA-634812-BASIC' } } });
+    const available = basic ? basic.onHand - basic.reserved : 0;
+    expect(res.text).toContain(`data-product-format="Basic" data-price="50000" data-price-original="100000" data-discount="50" data-stock="${available}"`);
     // Detail Produk: label | : | nilai (titik dua sejajar)
     expect(res.text).toContain('<span class="pdp-spec-label">SKU</span><span class="pdp-spec-sep">:</span><span class="pdp-spec-value">STORE-PESTABOLA-634812</span>');
     expect(res.text).toContain('<span class="pdp-spec-full">Termasuk akses Kompas Digital Premium</span>');

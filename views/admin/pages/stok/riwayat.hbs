@@ -1,0 +1,59 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/stok">Stok</a>{{icon "caret-right" size=12}}<span>Riwayat</span></nav>
+    <h1 class="page-title">{{#if sku}}Riwayat {{sku.title}}{{else}}Riwayat mutasi stok{{/if}}</h1>
+    <p class="page-subtitle">{{#if sku}}<span class="mono">{{sku.sku}}</span> · fisik {{sku.onHand}} · dipesan {{sku.reserved}} · tersedia {{sku.available}}{{else}}{{number total}} mutasi, terbaru di atas{{/if}}</p>
+  </div>
+  {{#if sku}}{{#if canEdit}}
+  <div class="page-actions">
+    <a class="btn btn-primary" href="/admin/stok/masuk?sku={{sku.id}}">{{icon "plus" size=18}} Barang masuk</a>
+    <a class="btn btn-ghost" href="/admin/stok/penyesuaian?sku={{sku.id}}">{{icon "sliders-horizontal" size=18}} Penyesuaian</a>
+  </div>
+  {{/if}}{{/if}}
+</div>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/stok/riwayat">
+    {{#if filters.varian}}<input type="hidden" name="varian" value="{{filters.varian}}">{{/if}}
+    <select class="select" name="tipe" data-autosubmit aria-label="Jenis mutasi">
+      <option value="">Semua jenis</option>
+      {{#each types}}<option value="{{value}}" {{selected value ../filters.tipe}}>{{label}}</option>{{/each}}
+    </select>
+    <select class="select" name="oleh" data-autosubmit aria-label="Oleh">
+      <option value="">Semua pengguna</option>
+      {{#each actors}}<option value="{{this}}" {{selected this ../filters.oleh}}>{{this}}</option>{{/each}}
+    </select>
+    <input class="input input-date" type="date" name="dari" value="{{filters.dari}}" aria-label="Dari tanggal">
+    <input class="input input-date" type="date" name="sampai" value="{{filters.sampai}}" aria-label="Sampai tanggal">
+    <button class="btn btn-secondary" type="submit">Terapkan</button>
+    {{#if sku}}<a class="btn btn-plain" href="/admin/stok/riwayat">Semua SKU</a>{{/if}}
+  </form>
+  {{#if movements.length}}
+  <div class="table-wrap">
+    <table class="table table-cards">
+      <thead><tr><th>Waktu</th><th>SKU</th><th>Jenis</th><th class="text-right">Jumlah</th><th>Keterangan</th><th>Oleh</th></tr></thead>
+      <tbody>
+        {{#each movements}}
+        <tr>
+          <td class="cell-main small nowrap">{{datetime createdAt}}</td>
+          <td data-label="SKU"><a href="/admin/stok/riwayat?varian={{variant.id}}"><span class="mono">{{variant.sku}}</span></a><span class="small muted block">{{variant.product.title}}</span></td>
+          <td data-label="Jenis"><span class="badge badge-plain{{#if (eq type "IN")}} badge-success{{else if (eq type "ADJUST")}} badge-info{{/if}}">{{typeLabel}}</span></td>
+          <td data-label="Jumlah" class="text-right nowrap"><strong class="{{#if positive}}qty-plus{{else}}qty-minus{{/if}}">{{#if positive}}+{{/if}}{{qtyDelta}}</strong></td>
+          <td data-label="Keterangan" class="small">{{#if refId}}<span class="mono">{{refId}}</span>{{#if note}} · {{/if}}{{/if}}{{note}}</td>
+          <td data-label="Oleh" class="small muted">{{createdBy}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "clock-counter-clockwise" size=40}}<strong>Belum ada mutasi</strong></div>
+  {{/if}}
+</section>

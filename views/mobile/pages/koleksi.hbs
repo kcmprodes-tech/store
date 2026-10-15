@@ -7,7 +7,7 @@
           <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a> <span>/</span> <span data-tab-crumb>{{tab.title}}</span>
         </nav>
         <div class="tab-hero">
-          <img class="tab-hero-icon" src="{{tab.icon}}" alt="" data-tab-icon>
+          {{#if tab.icon}}<img class="tab-hero-icon" src="{{tab.icon}}" alt="" data-tab-icon>{{/if}}
           <h1 data-tab-title>{{tab.title}}</h1>
         </div>
       </section>

@@ -39,56 +39,31 @@
       </button>
       <span class="sv2h-nav-divider" aria-hidden="true"></span>
       <nav class="sv2h-nav-links" aria-label="Navigasi Store">
-        <a href="/koleksi/terlaris">Terlaris</a>
-        <a href="/koleksi/rekomendasi">Rekomendasi</a>
-        <a href="/koleksi/merchandise">Merchandise</a>
-        <a href="/koleksi/video-premium">Video premium</a>
-        <a href="/koleksi/event">Event</a>
-        <a href="/koleksi/membership">Membership</a>
+        {{#each storeChrome.searchMenu}}
+        <a href="{{attr href}}">{{label}}</a>
+        {{/each}}
       </nav>
 
       <div class="sv2h-kategori-panel sv2k" id="sv2h-kategori-panel" data-kategori-panel hidden>
         <div class="sv2k-main">
           <ul class="sv2k-cats">
-            <li><a class="sv2k-cat is-active" href="/produk?category=merchandise" data-kcat="merchandise">Merchandise</a></li>
-            <li><a class="sv2k-cat" href="/produk?category=buku" data-kcat="buku">Buku</a></li>
-            <li><a class="sv2k-cat" href="/koleksi/membership" data-kcat="membership">Membership</a></li>
-            <li><a class="sv2k-cat" href="/produk?category=digital" data-kcat="digital">Digital</a></li>
-            <li><a class="sv2k-cat" href="/produk?category=event" data-kcat="event">Event</a></li>
+            {{#each storeChrome.categories}}
+            <li><a class="sv2k-cat{{#if @first}} is-active{{/if}}" href="{{attr href}}" data-kcat="{{slug}}">{{name}}</a></li>
+            {{/each}}
           </ul>
           <a class="sv2k-all" href="/produk">Lihat semua <span aria-hidden="true">&rarr;</span></a>
         </div>
         <div class="sv2k-subs">
-          <div class="sv2k-sub" data-ksub="merchandise">
-            <p class="sv2k-sub-title">Merchandise</p>
-            <a href="/produk?category=merchandise&amp;sub=apparel">Apparel</a>
-            <a href="/produk?category=merchandise&amp;sub=accessories">Accessories</a>
-            <a href="/produk?category=merchandise&amp;sub=drinkware">Drinkware</a>
-          </div>
-          <div class="sv2k-sub" data-ksub="buku" hidden>
-            <p class="sv2k-sub-title">Buku</p>
-            <a href="/produk?category=buku&amp;sub=novel">Novel</a>
-            <a href="/produk?category=buku&amp;sub=quran">Quran</a>
-            <a href="/produk?category=buku&amp;sub=biografi">Biografi</a>
-            <a href="/produk?category=buku&amp;sub=ensiklopedia">Ensiklopedia</a>
-          </div>
-          <div class="sv2k-sub" data-ksub="membership" hidden>
-            <p class="sv2k-sub-title">Membership</p>
+          {{#each storeChrome.categories}}
+          <div class="sv2k-sub" data-ksub="{{slug}}"{{#unless @first}} hidden{{/unless}}>
+            <p class="sv2k-sub-title">{{name}}</p>
+            {{#each children}}
+            <a href="{{attr href}}">{{name}}</a>
+            {{else}}
             <p class="sv2k-empty">Tidak ada sub-kategori.</p>
+            {{/each}}
           </div>
-          <div class="sv2k-sub" data-ksub="digital" hidden>
-            <p class="sv2k-sub-title">Digital</p>
-            <a href="/produk?category=digital&amp;sub=video-premium">Video premium</a>
-            <a href="/produk?category=digital&amp;sub=konten-premium">Konten premium</a>
-            <a href="/produk?category=digital&amp;sub=sticker">Sticker</a>
-          </div>
-          <div class="sv2k-sub" data-ksub="event" hidden>
-            <p class="sv2k-sub-title">Event</p>
-            <a href="/produk?category=event&amp;sub=aktivitas">Aktivitas</a>
-            <a href="/produk?category=event&amp;sub=webinar">Webinar</a>
-            <a href="/produk?category=event&amp;sub=workshop">Workshop</a>
-            <a href="/produk?category=event&amp;sub=tour">Tour</a>
-          </div>
+          {{/each}}
         </div>
       </div>
     </div>

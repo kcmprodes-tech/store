@@ -1,0 +1,18 @@
+{{!-- Kolom gambar: unggah dari perangkat/kamera atau tempel URL. Parameter: name, value, label, help, error, required, id --}}
+<div class="field image-field" data-image-field>
+  <label class="label{{#if required}} label-req{{/if}}" for="{{id}}">{{label}}</label>
+  <div class="image-field-body">
+    <div class="image-field-preview">
+      <img src="{{value}}" alt="" data-image-preview{{#unless value}} hidden{{/unless}}>
+      <span class="image-field-empty" data-image-empty{{#if value}} hidden{{/if}}>{{icon "image" size=28}}</span>
+    </div>
+    <div class="image-field-controls">
+      <label class="btn btn-secondary btn-sm image-field-upload">
+        {{icon "upload-simple" size=16}} <span data-image-upload-label>Unggah foto</span>
+        <input type="file" accept="image/jpeg,image/png,image/webp" data-image-file>
+      </label>
+      <input class="input mono{{#if error}} is-invalid{{/if}}" id="{{id}}" name="{{name}}" value="{{value}}" inputmode="url" autocomplete="off" placeholder="/uploads/… atau https://…" data-image-url>
+    </div>
+  </div>
+  {{#if error}}<p class="field-error">{{error}}</p>{{else if help}}<p class="help">{{help}}</p>{{/if}}
+</div>

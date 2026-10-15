@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  {{> head}}
+</head>
+<body class="adm adm-print">
+  <div class="print-toolbar">
+    <button class="btn btn-primary" type="button" data-print>{{icon "printer" size=18}} Cetak</button>
+    <span class="help">Atur ukuran kertas 100 × 150 mm, margin tidak ada, skala 100%.</span>
+  </div>
+  {{{body}}}
+  <script src="/cms/admin.js?v={{assetVersion}}" defer></script>
+</body>
+</html>

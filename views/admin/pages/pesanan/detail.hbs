@@ -1,0 +1,353 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/pesanan">Pesanan</a>{{icon "caret-right" size=12}}<span>Detail</span></nav>
+    <h1 class="page-title mono-title">{{o.invoiceNo}}</h1>
+    <p class="page-subtitle row">
+      <span class="badge badge-{{status.tone}}">{{status.label}}</span>
+      {{#if late}}<span class="badge badge-{{late.tone}}">{{late.label}}</span>{{/if}}
+      <span class="nowrap">{{icon fulfillment.icon size=16}} {{fulfillment.label}}</span>
+      <span class="nowrap muted">Dibuat {{datetime o.createdAt}}</span>
+    </p>
+  </div>
+  <div class="page-actions">
+    {{#if actions.label}}<a class="btn btn-secondary" href="/admin/pesanan/{{o.invoiceNo}}/label" target="_blank" rel="noopener">{{icon "printer" size=18}} Cetak label</a>{{/if}}
+    <a class="btn btn-secondary" href="/admin/log?entitas=order&id={{o.invoiceNo}}">{{icon "clock-counter-clockwise" size=18}} Log</a>
+  </div>
+</div>
+
+{{!-- ───────── Langkah berikutnya (paling atas, terutama di HP) ───────── --}}
+<section class="box next-step" aria-labelledby="next-title">
+  {{#if (eq o.status "UNPAID")}}
+    <div class="next-step-head">{{icon "hourglass" size=28}}<div><h2 id="next-title" class="box-title">Menunggu pembayaran</h2><p class="box-desc">Batas bayar {{datetime o.paymentDueAt}}. Lewat dari itu pesanan otomatis kedaluwarsa dan stok dilepas.</p></div></div>
+    {{#if actions.simulatePay}}
+    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/bayar-simulasi" data-busy-form>
+      {{> csrf}}
+      <div class="next-step-actions"><button class="btn btn-secondary" type="submit">{{icon "credit-card" size=18}} Tandai dibayar (simulasi)</button></div>
+      <p class="help mt-8 text-right">Hanya di development, pengganti notifikasi pembayaran Xendit sampai Tahap 3.</p>
+    </form>
+    {{/if}}
+
+  {{else if actions.pack}}
+    <div class="next-step-head">{{icon "package" size=28}}<div><h2 id="next-title" class="box-title">Kemas pesanan</h2><p class="box-desc">Centang setiap barang yang sudah masuk paket.{{#if actions.photo}} Foto paket bisa ditambahkan di bawah.{{/if}}</p></div></div>
+    <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/kemas" data-busy-form>
+      {{> csrf}}
+      <ul class="pack-list">
+        {{#each items}}
+        <li>
+          <label class="check pack-item">
+            <input type="checkbox" name="packed" value="{{id}}" {{checked (gt packedQty 0)}}>
+            {{#if imageUrl}}<img class="thumb thumb-sm" src="{{imageUrl}}" alt="" loading="lazy">{{/if}}
+            <span class="check-text"><strong>{{productTitle}}</strong><span class="small muted">{{#if optionLabel}}{{optionLabel}} · {{/if}}<span class="mono">{{sku}}</span></span></span>
+            <span class="pack-qty">×{{qty}}</span>
+          </label>
+        </li>
+        {{/each}}
+      </ul>
+      <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "check" size=18}} Selesai dikemas</button></div>
+    </form>
+
+  {{else if (and actions.tracking (not o.trackingNo))}}
+    <div class="next-step-head">{{icon "barcode" size=28}}<div><h2 id="next-title" class="box-title">Isi no resi</h2><p class="box-desc">Dikemas {{datetime o.packedAt}} oleh {{o.packedBy}}.</p></div></div>
+    {{> order-tracking-form}}
+
+  {{else if actions.handoverCourier}}
+    <div class="next-step-row">
+      <div class="next-step-head">{{icon "truck" size=28}}<div><h2 id="next-title" class="box-title">Serahkan ke kurir</h2><p class="box-desc">{{o.courier}} · resi <span class="mono">{{o.trackingNo}}</span><br>Stok baru berkurang saat paket diserahkan.</p></div></div>
+      <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-kurir" data-busy-form data-confirm="Paket {{o.invoiceNo}} sudah diterima kurir {{o.courier}}? Status jadi Dikirim dan stok berkurang. Langkah ini tidak bisa dibatalkan." data-confirm-icon="check" data-confirm-ok="Ya, sudah diserahkan">
+        {{> csrf}}
+        <div class="next-step-actions">
+          <button class="btn btn-secondary" type="button" data-toggle-panel="ubah-resi" aria-controls="ubah-resi" aria-expanded="false">{{icon "pencil-simple" size=18}} Ubah kurir / no resi</button>
+          <button class="btn btn-primary" type="submit">{{icon "hand-arrow-up" size=18}} Sudah diserahkan ke kurir</button>
+        </div>
+      </form>
+    </div>
+    <div class="next-step-panel" id="ubah-resi" hidden>
+      {{> order-tracking-form}}
+    </div>
+
+  {{else if actions.readyPickup}}
+    <div class="next-step-row">
+      <div class="next-step-head">{{icon "storefront" size=28}}<div><h2 id="next-title" class="box-title">Siapkan untuk diambil</h2><p class="box-desc">Siapkan {{itemCount}} barang di {{o.pickupLocation.name}}, lalu tandai siap.<br>Pembeli akan dikabari.</p></div></div>
+      <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/siap-diambil" data-busy-form>
+        {{> csrf}}
+        <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "check" size=18}} Tandai siap diambil</button></div>
+      </form>
+    </div>
+
+  {{else if (eq o.status "READY_PICKUP")}}
+    <div class="next-step-head">{{icon "storefront" size=28}}<div><h2 id="next-title" class="box-title">Menunggu pembeli datang</h2><p class="box-desc">Siap diambil sejak {{datetime o.readyAt}} di {{o.pickupLocation.name}}.</p></div></div>
+    {{#if actions.handoverPickup}}
+    <form class="handover-form" method="post" action="/admin/pesanan/{{o.invoiceNo}}/serahkan-pembeli" data-busy-form>
+      {{> csrf}}
+      <div class="field">
+        <label class="label" for="phone4">4 digit terakhir no HP pembeli</label>
+        <input class="input input-lg mono" id="phone4" name="phone4" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" required placeholder="····">
+        <p class="help">Lebih cepat: pindai QR di HP pembeli dengan kamera, layar serah terima terbuka otomatis.</p>
+      </div>
+      <div class="next-step-actions"><button class="btn btn-primary" type="submit">{{icon "hand-arrow-up" size=18}} Serahkan ke pembeli</button></div>
+    </form>
+    {{/if}}
+    {{#if pickupQr}}
+    <details class="disclosure mt-16">
+      <summary>QR pengambilan (sama dengan yang dilihat pembeli)</summary>
+      <div class="qr-box">{{{pickupQr}}}</div>
+      <p class="help">Sampai Tahap 3, QR ini belum tampil di halaman pesanan store; di sini untuk uji coba scan.</p>
+    </details>
+    {{/if}}
+
+  {{else if (eq o.status "PROCESSING")}}
+    <div class="next-step-head">{{icon "package" size=28}}<div><h2 id="next-title" class="box-title">Sedang diproses gudang</h2><p class="box-desc">{{stage.label}}. Dibayar {{datetime o.paidAt}}.</p></div></div>
+
+  {{else if (eq o.status "SHIPPED")}}
+    <div class="next-step-row">
+      <div class="next-step-head">{{icon "truck" size=28}}<div><h2 id="next-title" class="box-title">Dalam pengiriman</h2><p class="box-desc">{{o.courier}} · resi <span class="mono">{{o.trackingNo}}</span> · diserahkan {{datetime o.shippedAt}}<br>Otomatis selesai {{datetime autoCompleteAt}}.</p></div></div>
+      {{#if actions.complete}}
+      <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/selesai" data-busy-form data-confirm="Pembeli sudah menerima pesanan {{o.invoiceNo}}? Status jadi Selesai. Retur dan refund tetap bisa dicatat sesudahnya." data-confirm-icon="check" data-confirm-ok="Ya, tandai selesai">
+        {{> csrf}}
+        <div class="next-step-actions"><button class="btn btn-secondary" type="submit">{{icon "check-circle" size=18}} Tandai selesai (sudah diterima)</button></div>
+      </form>
+      {{/if}}
+    </div>
+
+  {{else if (eq o.status "COMPLETED")}}
+    <div class="next-step-head is-done">{{icon "check-circle" size=28 weight="fill"}}<div><h2 id="next-title" class="box-title">Selesai</h2><p class="box-desc">{{datetime o.completedAt}}{{#if o.pickedUpAt}} · diambil pembeli, diserahkan oleh {{o.pickedUpBy}}{{/if}}{{#if (eq o.fulfillment "DIGITAL")}} · akses produk digital aktif{{/if}}</p></div></div>
+
+  {{else if (eq o.status "CANCELED")}}
+    <div class="next-step-head is-muted">{{icon "x-circle" size=28}}<div><h2 id="next-title" class="box-title">Dibatalkan</h2><p class="box-desc">{{datetime o.canceledAt}} · {{o.cancelReason}}</p></div></div>
+
+  {{else}}
+    <div class="next-step-head is-muted">{{icon "clock" size=28}}<div><h2 id="next-title" class="box-title">Kedaluwarsa</h2><p class="box-desc">Tidak dibayar sampai {{datetime o.paymentDueAt}}. Stok yang dipesan sudah dilepas.</p></div></div>
+  {{/if}}
+</section>
+
+<div class="grid grid-main-side mt-16">
+  <div class="stack">
+    <section class="box">
+      <div class="box-head"><h2 class="box-title">Barang ({{itemCount}})</h2></div>
+      <ul class="list order-items">
+        {{#each items}}
+        <li>
+          {{#if imageUrl}}<img class="thumb" src="{{imageUrl}}" alt="" loading="lazy">{{else}}<span class="thumb thumb-empty">{{icon "image" size=20}}</span>{{/if}}
+          <div class="list-main">
+            <strong>{{#if productId}}<a href="/admin/produk/{{productId}}">{{productTitle}}</a>{{else}}{{productTitle}}{{/if}}</strong>
+            <span class="small muted">{{#if optionLabel}}{{optionLabel}} · {{/if}}<span class="mono">{{sku}}</span></span>
+            {{#if note}}<span class="small">Catatan: {{note}}</span>{{/if}}
+            {{#if returnedQty}}<span class="small warning-text">{{returnedQty}} diretur</span>{{/if}}
+          </div>
+          <div class="text-right nowrap">
+            <span class="small muted">{{qty}} × {{rupiah price}}</span><br>
+            <strong>{{rupiah lineTotal}}</strong>
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+      <dl class="totals">
+        <div><dt>Subtotal</dt><dd>{{rupiah o.subtotal}}</dd></div>
+        {{#if (eq o.fulfillment "SHIPPING")}}<div><dt>Ongkos kirim</dt><dd>{{rupiah o.shippingFee}}</dd></div>{{/if}}
+        {{#if o.protectionFee}}<div><dt>Proteksi paket</dt><dd>{{rupiah o.protectionFee}}</dd></div>{{/if}}
+        {{#if o.discount}}<div><dt>Diskon{{#if o.promoCode}} ({{o.promoCode}}){{/if}}</dt><dd>−{{rupiah o.discount}}</dd></div>{{/if}}
+        <div class="totals-grand"><dt>Total</dt><dd>{{rupiah o.total}}</dd></div>
+      </dl>
+    </section>
+
+    {{#if (or photos.length actions.photo)}}
+    <section class="box">
+      <div class="box-head">
+        <div><h2 class="box-title">Foto</h2><p class="box-desc">Bukti paket & retur. Hanya bisa dilihat di CMS.</p></div>
+        {{#if actions.photo}}
+        <label class="btn btn-secondary btn-sm upload-btn">
+          {{icon "camera" size=18}} <span data-photo-label>Ambil foto</span>
+          <input type="file" accept="image/*" capture="environment" data-order-photo="/admin/pesanan/{{o.invoiceNo}}/foto?jenis={{#if (or (eq o.status "SHIPPED") (eq o.status "COMPLETED"))}}retur{{else}}paket{{/if}}">
+        </label>
+        {{/if}}
+      </div>
+      {{#if photos.length}}
+      <ul class="photo-strip">
+        {{#each photos}}
+        <li><a href="/admin/berkas/{{id}}" target="_blank" rel="noopener"><img src="/admin/berkas/{{id}}" alt="{{kind}} {{datetime createdAt}}" loading="lazy"></a><span class="small muted">{{kind}} · {{createdBy}}</span></li>
+        {{/each}}
+      </ul>
+      {{else}}
+      <p class="help">Belum ada foto.</p>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if (or returns.length actions.retur)}}
+    <section class="box">
+      <div class="box-head"><div><h2 class="box-title">Retur</h2><p class="box-desc">Barang yang dikembalikan pembeli. Barang rusak tidak masuk stok lagi.</p></div></div>
+      {{#each returns}}
+      <div class="return-entry">
+        <p><strong>{{datetime createdAt}}</strong> · {{createdBy}}</p>
+        <ul class="small">{{#each lines}}<li><span class="mono">{{sku}}</span>: diterima {{receivedQty}}, masuk stok {{restockQty}}</li>{{/each}}</ul>
+        {{#if note}}<p class="small muted">{{note}}</p>{{/if}}
+      </div>
+      {{/each}}
+      {{#if actions.retur}}
+      <details class="disclosure"{{#unless returns.length}} open{{/unless}}>
+        <summary>Catat retur</summary>
+        <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/retur" data-busy-form data-confirm="Catat retur ini? Barang yang masuk stok langsung bisa dijual lagi." data-confirm-ok="Catat retur">
+          {{> csrf}}
+          <div class="table-wrap">
+            <table class="table table-compact">
+              <thead><tr><th>Barang</th><th class="text-right">Diterima</th><th class="text-right">Masuk stok</th></tr></thead>
+              <tbody>
+                {{#each items}}{{#if (gt returnable 0)}}
+                <tr>
+                  <td><strong>{{productTitle}}</strong><br><span class="small muted mono">{{sku}}</span> <span class="small muted">· maks {{returnable}}</span></td>
+                  <td class="text-right"><input class="input input-sm narrow-input" type="number" name="retur[id{{id}}][received]" min="0" max="{{returnable}}" value="0" inputmode="numeric" aria-label="Diterima {{sku}}"></td>
+                  <td class="text-right"><input class="input input-sm narrow-input" type="number" name="retur[id{{id}}][restock]" min="0" max="{{returnable}}" value="0" inputmode="numeric" aria-label="Masuk stok {{sku}}"></td>
+                </tr>
+                {{/if}}{{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="field mt-8">
+            <label class="label" for="retur-note">Catatan kondisi barang</label>
+            <textarea class="textarea" id="retur-note" name="note" rows="2" maxlength="500" placeholder="Mis. kemasan sobek, 1 kaos noda"></textarea>
+          </div>
+          <button class="btn btn-primary mt-8" type="submit">Catat retur</button>
+        </form>
+      </details>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if refunds.length}}
+    <section class="box">
+      <div class="box-head"><h2 class="box-title">Refund</h2></div>
+      <ul class="list">
+        {{#each refunds}}
+        <li>
+          <div class="list-main">
+            <strong>{{rupiah amount}} · {{reason}}</strong>
+            <span class="small muted">Diajukan {{requestedBy}}, {{datetime requestedAt}} · tenggat {{date dueAt}}</span>
+          </div>
+          <span class="row">
+            <span class="badge badge-{{badge.tone}}">{{badge.label}}</span>
+            {{#if overdue}}<span class="badge badge-error">Lewat tenggat</span>{{/if}}
+            {{#if @root.perms.refund.view}}<a class="btn btn-plain btn-sm" href="/admin/refund/{{id}}">Buka</a>{{/if}}
+          </span>
+        </li>
+        {{/each}}
+      </ul>
+    </section>
+    {{/if}}
+
+    <section class="box">
+      <div class="box-head"><h2 class="box-title">Riwayat</h2></div>
+      <ol class="timeline">
+        {{#each history}}
+        <li>
+          <span class="timeline-dot is-{{badge.tone}}" aria-hidden="true"></span>
+          <div>
+            <p><strong>{{#if note}}{{note}}{{else}}{{badge.label}}{{/if}}</strong></p>
+            <p class="small muted">{{datetime createdAt}} · {{#if actor}}{{actor}}{{else}}sistem{{/if}}</p>
+          </div>
+        </li>
+        {{/each}}
+      </ol>
+    </section>
+  </div>
+
+  <aside class="stack grid-sticky">
+    <section class="box">
+      <h2 class="section-block-title">Pembeli</h2>
+      <p><strong>{{o.buyerName}}</strong></p>
+      {{#if phone}}<p class="mono">{{phone}}</p>{{/if}}
+      <p class="small muted">{{o.user.email}}</p>
+      {{#if whatsapp.length}}
+      <h3 class="label mt-16">Kirim WhatsApp</h3>
+      <ul class="wa-list">
+        {{#each whatsapp}}
+        <li><a class="wa-item" href="{{href}}" target="_blank" rel="noopener">{{icon "whatsapp-logo" size=20}}<span><strong>{{label}}</strong><span class="small muted">{{text}}</span></span></a></li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </section>
+
+    <section class="box">
+      {{#if (eq o.fulfillment "SHIPPING")}}
+      <h2 class="section-block-title">Alamat kirim</h2>
+      {{#if address}}
+      <p><strong>{{address.recipient}}</strong>{{#if address.label}} <span class="badge badge-plain">{{address.label}}</span>{{/if}}</p>
+      {{#if address.phone}}<p class="small">{{address.phone}}</p>{{/if}}
+      <p>{{address.street}}</p>
+      <p>{{address.region}}</p>
+      {{#if address.note}}<p class="small muted">Catatan: {{address.note}}</p>{{/if}}
+      {{else}}<p class="muted">Alamat tidak tersedia.</p>{{/if}}
+      <dl class="kv mt-16">
+        <div><dt>Kurir</dt><dd>{{#if o.courier}}{{o.courier}}{{else}}—{{/if}}</dd></div>
+        <div><dt>No resi</dt><dd class="mono">{{#if o.trackingNo}}{{o.trackingNo}}{{else}}—{{/if}}</dd></div>
+        {{#if o.packedAt}}<div><dt>Dikemas</dt><dd>{{datetime o.packedAt}}<br><span class="small muted">{{o.packedBy}}</span></dd></div>{{/if}}
+        {{#if o.shippedAt}}<div><dt>Diserahkan</dt><dd>{{datetime o.shippedAt}}<br><span class="small muted">{{o.shippedBy}}</span></dd></div>{{/if}}
+      </dl>
+      {{else if (eq o.fulfillment "PICKUP")}}
+      <h2 class="section-block-title">Ambil di tempat</h2>
+      {{#if o.pickupLocation}}
+      <p><strong>{{o.pickupLocation.name}}</strong></p>
+      <p class="small">{{o.pickupLocation.address}}</p>
+      <p class="small muted">{{o.pickupLocation.openingHours}}</p>
+      {{/if}}
+      {{#if pickupCancelFrom}}{{#if (eq o.status "READY_PICKUP")}}<p class="help mt-8">Belum diambil sampai {{date pickupCancelFrom}}? CS boleh membatalkan + mengajukan refund.</p>{{/if}}{{/if}}
+      {{else}}
+      <h2 class="section-block-title">Produk digital</h2>
+      <p class="small">Akses video aktif otomatis setelah dibayar; dicabut bila refund selesai.</p>
+      {{/if}}
+    </section>
+
+    <section class="box">
+      <h2 class="section-block-title">Pembayaran</h2>
+      <dl class="kv">
+        <div><dt>Metode</dt><dd>{{#if paymentMethod}}{{paymentMethod}}{{else}}—{{/if}}</dd></div>
+        <div><dt>Status</dt><dd>{{#if o.paidAt}}Dibayar {{datetime o.paidAt}}{{else}}Belum dibayar{{/if}}</dd></div>
+        <div><dt>Total</dt><dd><strong>{{rupiah o.total}}</strong></dd></div>
+        {{#if (gt o.total actions.remaining)}}<div><dt>Sisa setelah refund</dt><dd>{{rupiah actions.remaining}}</dd></div>{{/if}}
+      </dl>
+    </section>
+
+    {{#if (or actions.cancel actions.refund)}}
+    <section class="box">
+      <h2 class="section-block-title">Aksi lain</h2>
+      {{#if actions.refund}}
+      <details class="disclosure">
+        <summary>Ajukan refund</summary>
+        <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/refund" data-busy-form data-confirm="Ajukan refund? Finance akan memutuskan." data-confirm-ok="Ajukan">
+          {{> csrf}}
+          <div class="field">
+            <label class="label label-req" for="refund-amount">Jumlah (maks {{rupiah actions.remaining}})</label>
+            <div class="input-group"><span class="input-addon">Rp</span><input class="input" id="refund-amount" name="amount" inputmode="numeric" value="{{actions.remaining}}" required></div>
+          </div>
+          <div class="field mt-8">
+            <label class="label label-req" for="refund-reason">Alasan</label>
+            <select class="select" id="refund-reason" name="reason" required>{{#each refundReasons}}<option>{{this}}</option>{{/each}}</select>
+          </div>
+          <div class="field mt-8">
+            <label class="label" for="refund-detail">Keterangan</label>
+            <textarea class="textarea" id="refund-detail" name="detail" rows="2" maxlength="400"></textarea>
+          </div>
+          <button class="btn btn-primary mt-8" type="submit">Ajukan refund</button>
+        </form>
+      </details>
+      {{/if}}
+      {{#if actions.cancel}}
+      <details class="disclosure">
+        <summary>Batalkan pesanan</summary>
+        <form method="post" action="/admin/pesanan/{{o.invoiceNo}}/batal" data-busy-form data-confirm="Batalkan pesanan {{o.invoiceNo}}? Stok yang dipesan dilepas{{#if o.paidAt}} dan refund penuh diajukan otomatis{{/if}}." data-confirm-ok="Ya, batalkan" data-danger>
+          {{> csrf}}
+          <div class="field">
+            <label class="label label-req" for="cancel-reason">Alasan</label>
+            <select class="select" id="cancel-reason" name="reason" required>{{#each cancelReasons}}<option>{{this}}</option>{{/each}}</select>
+          </div>
+          <div class="field mt-8">
+            <label class="label" for="cancel-detail">Keterangan</label>
+            <input class="input" id="cancel-detail" name="detail" maxlength="160">
+          </div>
+          <button class="btn btn-danger mt-8" type="submit">Batalkan pesanan</button>
+        </form>
+      </details>
+      {{/if}}
+    </section>
+    {{/if}}
+  </aside>
+</div>

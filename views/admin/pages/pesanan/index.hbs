@@ -1,0 +1,62 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Pesanan</h1>
+    <p class="page-subtitle">{{number total}} pesanan{{#if filters.terlambat}} terlambat diproses{{/if}}. Yang paling lama menunggu tampil paling atas.</p>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Status pesanan">
+  {{#each tabs}}<a class="tab{{#if active}} is-active{{/if}}" href="{{href}}"{{#if active}} aria-current="page"{{/if}}>{{label}} <span class="count">{{count}}</span></a>{{/each}}
+</nav>
+
+<section class="box box-flush">
+  <form class="toolbar" method="get" action="/admin/pesanan" role="search">
+    {{#unless (eq filters.status "proses")}}<input type="hidden" name="status" value="{{filters.status}}">{{/unless}}
+    {{#if filters.terlambat}}<input type="hidden" name="terlambat" value="1">{{/if}}
+    <div class="input-search">
+      {{icon "magnifying-glass" size=18}}
+      <input class="input" type="search" name="q" value="{{filters.q}}" placeholder="No invoice, nama, no HP, atau resi" aria-label="Cari pesanan" autocomplete="off">
+    </div>
+    <select class="select" name="cara" aria-label="Cara kirim" data-autosubmit>
+      {{#each fulfillmentOptions}}<option value="{{value}}" {{selected value ../filters.cara}}>{{label}}</option>{{/each}}
+    </select>
+    <button class="btn btn-neutral" type="submit">Cari</button>
+  </form>
+  {{#if clearLateHref}}
+  <div class="filter-note">{{icon "warning" size=16}} Hanya pesanan yang diproses lebih dari 2 hari. <a href="{{clearLateHref}}">Tampilkan semua</a></div>
+  {{/if}}
+  {{#if rows.length}}
+  <ul class="order-list">
+    {{#each rows}}
+    <li>
+      <a class="order-row" href="/admin/pesanan/{{invoiceNo}}">
+        <span class="order-row-icon" title="{{fulfillment.label}}">{{icon fulfillment.icon size=22}}</span>
+        <span class="order-row-main">
+          <span class="order-row-top">
+            <strong class="mono">{{invoiceNo}}</strong>
+            <span class="badge badge-{{status.tone}}">{{status.label}}</span>
+            {{#if late}}<span class="badge badge-{{late.tone}}">{{late.label}}</span>{{/if}}
+          </span>
+          <span class="order-row-buyer">{{buyerName}} · {{summary}}</span>
+          <span class="small muted">{{whenLabel}} {{datetime when}}{{#if trackingNo}} · resi <span class="mono">{{trackingNo}}</span>{{/if}}</span>
+        </span>
+        <span class="order-row-side">
+          <strong>{{rupiah total}}</strong>
+          <span class="small muted">{{qty}} barang</span>
+          {{#if stage}}<span class="order-stage is-{{stage.tone}}">{{stage.label}}</span>{{/if}}
+        </span>
+      </a>
+    </li>
+    {{/each}}
+  </ul>
+  <div class="pagination">
+    <span>Halaman {{page}} dari {{pages}}</span>
+    <span class="row">
+      {{#if prevHref}}<a class="btn btn-secondary btn-sm" href="{{prevHref}}">{{icon "caret-left" size=16}} Sebelumnya</a>{{/if}}
+      {{#if nextHref}}<a class="btn btn-secondary btn-sm" href="{{nextHref}}">Berikutnya {{icon "caret-right" size=16}}</a>{{/if}}
+    </span>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "receipt" size=40}}<strong>{{#if filters.q}}Pesanan tidak ditemukan{{else}}Tidak ada pesanan di sini{{/if}}</strong><span>{{#if filters.q}}Coba no invoice lengkap, 4 digit terakhir HP, atau no resi.{{else}}Pilih tab lain untuk melihat pesanan dengan status berbeda.{{/if}}</span></div>
+  {{/if}}
+</section>

@@ -6,12 +6,16 @@ import {
   getCollectionProducts,
   getHomeSections,
   getProductBySlug,
+  getRelatedProducts,
+  getSectionPage,
   getWishlistProducts,
   listPublished,
   listVideos,
+  type ProductWithRelations,
 } from '../modules/catalog/catalog.service.js';
 import { formatNumber, formatRupiah } from '../lib/format.js';
 import { getSettings } from '../lib/settings.js';
+import { sectionSeeAllHref } from '../modules/storefront/storefront.service.js';
 import { toCards, toPdpJson, toPdpVM } from '../view/mappers.js';
 
 export const web = Router();
@@ -28,7 +32,7 @@ async function mockUserId() {
 }
 
 async function relatedCards() {
-  return toCards((await getHomeSections()).related ?? []);
+  return toCards(await getRelatedProducts());
 }
 
 // ───────────── Katalog ─────────────
@@ -41,11 +45,16 @@ web.get(
       pageTitle: 'Store',
       storev2: {
         hero: banners.map((b) => ({ image: b.imageUrl, image_mobile: b.imageMobileUrl, title: b.title, href: b.href ?? '#' })),
-        terlaris: toCards(sections.terlaris ?? []),
-        rekomendasi: toCards(sections.rekomendasi ?? []),
-        merchandise: toCards(sections.merchandise ?? []),
-        baru: toCards(sections.baru ?? []),
       },
+      homeSections: sections.map(({ section, products }) => {
+        const seeAllHref = sectionSeeAllHref(section);
+        return {
+          title: section.title,
+          products: toCards(products),
+          seeAllHref,
+          moreHref: section.showMoreButton ? seeAllHref : null,
+        };
+      }),
     });
   }),
 );
@@ -67,6 +76,21 @@ web.get(
     await res.renderPage('koleksi', {
       pageTitle: collection.title,
       tab: { key: collection.key, title: collection.title, icon: collection.icon },
+      storev2: { semua: toCards(products) },
+    });
+  }),
+);
+
+/** Halaman "Lihat semua" milik seksi produk: semua produk seksi, memakai tampilan halaman koleksi. */
+web.get(
+  '/seksi/:key',
+  route(async (req, res, next) => {
+    const result = await getSectionPage(String(req.params.key));
+    if (!result) return next();
+    const { section, products } = result;
+    await res.renderPage('koleksi', {
+      pageTitle: section.title,
+      tab: { key: section.key, title: section.title, icon: null },
       storev2: { semua: toCards(products) },
     });
   }),
@@ -94,25 +118,29 @@ web.get(
     const product = await getProductBySlug(String(req.params.slug));
     if (!product) return next();
     if (product.externalUrl) return res.redirect(302, product.externalUrl);
-
-    const related = await relatedCards();
-    if (product.type === 'DIGITAL_VIDEO') {
-      return res.renderPage('detail-video', {
-        pageTitle: product.title,
-        product: toPdpVM(product),
-        storev2: { video: [toPdpJson(product)], related },
-      });
-    }
-    if (product.options.some((o) => o.name === 'Warna' || o.name === 'Ukuran')) {
-      return res.renderPage('detail-apparel', {
-        pageTitle: product.title,
-        product: toPdpVM(product),
-        storev2: { apparel: [toPdpJson(product)], related },
-      });
-    }
-    await res.renderPage('detail', { pageTitle: product.title, product: toPdpVM(product), storev2: { related } });
+    await renderProductPage(res, product);
   }),
 );
+
+/** Halaman detail produk (video / apparel / umum). Dipakai juga pratinjau produk draft di CMS. */
+export async function renderProductPage(res: Response, product: ProductWithRelations) {
+  const related = await relatedCards();
+  if (product.type === 'DIGITAL_VIDEO') {
+    return res.renderPage('detail-video', {
+      pageTitle: product.title,
+      product: toPdpVM(product),
+      storev2: { video: [toPdpJson(product)], related },
+    });
+  }
+  if (product.options.some((o) => o.name === 'Warna' || o.name === 'Ukuran')) {
+    return res.renderPage('detail-apparel', {
+      pageTitle: product.title,
+      product: toPdpVM(product),
+      storev2: { apparel: [toPdpJson(product)], related },
+    });
+  }
+  await res.renderPage('detail', { pageTitle: product.title, product: toPdpVM(product), storev2: { related } });
+}
 
 web.get(
   '/wishlist',

@@ -1,0 +1,33 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">Koleksi</h1>
+    <p class="page-subtitle">Halaman /koleksi/… yang dipakai menu, Kategori Pilihan, dan link "Lihat semua".</p>
+  </div>
+  {{#if canEdit}}
+  <div class="page-actions"><a class="btn btn-primary" href="/admin/koleksi/baru">{{icon "plus" size=18}} Koleksi baru</a></div>
+  {{/if}}
+</div>
+
+<section class="box box-flush">
+  {{#each collections}}
+  <div class="tree-row" id="koleksi-{{id}}">
+    {{#if this.icon}}<img class="thumb thumb-sm thumb-contain" src="{{this.icon}}" alt="">{{else}}<span class="thumb thumb-sm thumb-contain thumb-empty">{{icon "stack" size=18}}</span>{{/if}}
+    <div class="tree-main">
+      <a href="/admin/koleksi/{{id}}"><strong>{{title}}</strong></a>
+      <span class="small muted"><span class="mono">{{href}}</span> · {{sourceText}}</span>
+      <span class="small muted">{{usedText}}</span>
+    </div>
+    {{#unless isActive}}<span class="badge badge-warning">Nonaktif</span>{{/unless}}
+    <div class="row-actions">
+      <a class="btn btn-secondary btn-sm btn-icon" href="{{href}}" target="_blank" rel="noopener" aria-label="Buka {{title}} di store" title="Buka di store">{{icon "arrow-square-out" size=16}}</a>
+      {{#if ../canEdit}}
+      <form method="post" action="/admin/koleksi/{{id}}/tampil"{{#if isActive}} data-confirm="Nonaktifkan koleksi &quot;{{title}}&quot;? Halamannya jadi 404 dan menu/link yang menautnya ikut disembunyikan."{{/if}}>{{> csrf}}<button class="btn btn-secondary btn-sm btn-icon" type="submit" aria-label="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}} {{title}}" title="{{#if isActive}}Nonaktifkan{{else}}Aktifkan{{/if}}">{{#if isActive}}{{icon "eye" size=16}}{{else}}{{icon "eye-slash" size=16}}{{/if}}</button></form>
+      <a class="btn btn-secondary btn-sm btn-icon" href="/admin/koleksi/{{id}}" aria-label="Ubah {{title}}" title="Ubah">{{icon "pencil-simple" size=16}}</a>
+      <form method="post" action="/admin/koleksi/{{id}}/hapus" data-confirm="Hapus koleksi &quot;{{title}}&quot;? Halamannya jadi 404 dan koleksi tidak bisa dikembalikan." data-danger data-confirm-icon="trash" data-confirm-ok="Hapus">{{> csrf}}<button class="btn btn-danger btn-sm btn-icon" type="submit" aria-label="Hapus {{title}}" title="Hapus">{{icon "trash" size=16}}</button></form>
+      {{/if}}
+    </div>
+  </div>
+  {{else}}
+  <div class="empty">{{icon "stack" size=40}}<strong>Belum ada koleksi</strong></div>
+  {{/each}}
+</section>

@@ -12,7 +12,8 @@ Rencana lengkap dan tahapan ada di [docs/PERENCANAAN.md](docs/PERENCANAAN.md).
 | 1 | Skema database lengkap (katalog, stok, pesanan) + seed dari data prototipe | ✅ |
 | 2 | Storefront: semua halaman dirender server dari MySQL | ✅ |
 | 3 | Transaksi (keranjang, checkout, pesanan, reservasi stok) lewat API | berikutnya |
-| 4–5 | CMS `/admin` dan sistem stok | berikutnya |
+| 4 | CMS `/admin` MVP: katalog, tampilan store, stok, promo, pengguna & log | ✅ (branch `cms`) |
+| 5 | Stok lanjutan (opname, impor/ekspor CSV), pesanan & laporan di CMS | berikutnya |
 
 Di Tahap 2, keranjang, checkout, pesanan, alamat, promo, dan login masih memakai perilaku prototipe (`localStorage` di browser). Katalog, harga, stok, kurasi beranda, koleksi, pencarian, dan wishlist sudah dari database.
 
@@ -39,6 +40,7 @@ Template desktop/mobile dipilih dari User-Agent. Untuk mencoba di browser deskto
 | `npm run typecheck` | Cek TypeScript |
 | `npm run build` / `npm start` | Build produksi ke `dist/` lalu jalankan |
 | `npm run db:studio` | Lihat/ubah isi database di browser (Prisma Studio) |
+| `npm run db:seed-admin` | Buat akun CMS (Admin pertama + akun uji dev) tanpa menghapus data lain |
 | `npm run db:reset` | Hapus database, migrasi ulang, dan seed |
 | `node scripts/purge-legacy-css.mjs ../dummy-kompascom-product` | Bangun ulang CSS chrome kompas.com (footer, popup login) dari prototipe |
 
@@ -49,16 +51,20 @@ prisma/              skema, migrasi, seed + data sumber (seed-data/)
 src/
   app.ts, server.ts  aplikasi Express
   web/routes.ts      route halaman + redirect URL prototipe (*.html)
-  modules/catalog/   query katalog (produk, kurasi, koleksi, stok tersedia)
+  modules/catalog/   query katalog (produk, seksi & koleksi via FeedRules, stok tersedia)
+  modules/storefront/ menu, Kategori Pilihan, pohon kategori (cache + invalidateStorefront)
   modules/email/     daftar email pembeli, renderer (Handlebars + juice), data contoh, pratinjau
+  admin/             CMS /admin: auth/, permissions.ts, audit.ts, render.ts, modules/<modul>/
+  adapters/storage/  penyimpanan file upload (lokal → nanti CDN)
   view/              engine Handlebars per platform + mapper data → bentuk `storev2.*`
-  lib/               prisma, format rupiah, deteksi device
+  lib/               prisma, format rupiah, deteksi device, settings
 views/
   desktop|mobile/    layouts/, partials/ (header store, footer), pages/ (15 halaman)
   shared/partials/   kartu produk, popup login
+  admin/             layout, partial, dan halaman CMS (satu template responsif)
   emails/            template email pembeli (layouts/, partials/, satu file per email)
-assets/sass/         store-v2.scss (sumber CSS store)
-public/              css/ (hasil build), js/store-v2.js, images/store-v2/, vendor/kompas/ (CSS chrome)
+assets/sass/         store-v2.scss (CSS store), admin.scss (CSS CMS), _kds-tokens.scss (token KDS)
+public/              css/ (hasil build), js/store-v2.js, cms/ (JS & ikon PWA CMS), images/, uploads/ (gitignore)
 scripts/             utilitas (penyaring CSS chrome)
 tests/               vitest + supertest
 ```
@@ -75,8 +81,58 @@ tests/               vitest + supertest
 | `/wishlist`, `/keranjang`, `/checkout`, `/akun` | wishlist, cart, payment, account |
 | `/pembayaran/:invoice`, `/pembayaran/:invoice/berhasil` | payment-instruction, payment-success |
 | `/pesanan/:invoice`, `/pesanan/:invoice/diambil` | order-detail, pickup-success |
+| `/seksi/:key` | halaman "Lihat semua" otomatis milik seksi produk (tampilan koleksi) |
 
 URL lama prototipe (`koleksi.html?tab=…`, `detail.html?product=…`, dst.) di-redirect 301 ke route baru.
+
+## CMS (/admin)
+
+CMS untuk tim Editor, Marketing, CS / Order, Gudang, Finance, dan Admin. Tampilan responsif dengan sidebar di desktop dan menu bawah di HP, bisa dipasang sebagai aplikasi (PWA), dan memakai KOMPAS.com Design System.
+
+**Masuk:** buka `http://localhost:3000/admin` (atau port server Anda).
+- `npm run db:seed` (atau `npm run db:seed-admin`, yang **tidak** menyentuh data lain — pakai ini untuk database yang sudah berisi) membuat **Admin pertama** (`ADMIN_EMAIL`, default `ardi.suhanda@kompas.com`).
+  - Password awalnya dibaca dari `ADMIN_INITIAL_PASSWORD` di `.env`. Kalau kosong, seed membuat password acak dan menuliskannya ke `.env`.
+  - Password ini wajib diganti saat login pertama.
+- Khusus development, seed juga membuat **akun uji per peran**: `admin|editor|marketing|cs|gudang|finance@cms.test`. Passwordnya `CMS_TEST_PASSWORD` di `.env` (dibuat otomatis kalau kosong).
+- Akun lain dibuat Admin di menu **Pengguna CMS**. Password sementaranya tampil sekali dan wajib diganti.
+- Akun yang sudah ada tidak diubah oleh seed ulang. Seed tetap **menghapus katalog dan pengaturan**, jadi perubahan dari CMS ikut hilang; gunakan hanya di development.
+
+**Hak akses** (detail di `src/admin/permissions.ts`): Admin semua modul. Selain Admin:
+
+| Peran | Bisa mengubah | Hanya melihat |
+|---|---|---|
+| Editor | Produk, Kategori, Banner & seksi, Koleksi & menu | Stok |
+| Marketing | Promo, Banner & seksi | Produk, Kategori, Koleksi & menu |
+| CS / Order | — | Produk, Stok, Promo |
+| Gudang | Stok | Produk |
+| Finance | — | Produk, Stok, Promo |
+
+Semua akun bisa melihat log perubahannya sendiri; Admin melihat semua.
+
+**Modul:**
+- Dashboard
+- Produk & varian: foto, deskripsi, spesifikasi, opsi Varian atau Warna × Ukuran + SKU, status & jadwal tayang, link luar, pratinjau draft
+- Kategori
+- Banner hero
+- Seksi produk beranda (manual/otomatis, tanpa batas)
+- Koleksi
+- Menu & pintasan (menu bawah pencarian + Kategori Pilihan)
+- Stok: barang masuk, penyesuaian, riwayat, stok menipis
+- Promo
+- Pengaturan: WhatsApp store, ambang stok
+- Pengguna CMS
+- Log perubahan
+
+Semua perubahan langsung tampil di store.
+
+**Keamanan:**
+- Password di-hash (scrypt) dan sesi disimpan sebagai hash token. Cookie `skc_admin` memakai `Path=/admin`, HttpOnly, SameSite=Lax.
+- CSRF dicegah dengan cek Origin dan token sesi.
+- Percobaan login dibatasi per IP+email.
+- Header CSP, `X-Frame-Options: DENY`, `no-store`, dan `noindex`.
+- Upload foto (JPG/PNG/WebP ≤ 5 MB) dicek dari isi file dan disimpan di `public/uploads/` (gitignore).
+
+**Belum ada:** modul pesanan, refund, dan laporan penjualan. Ketiganya menunggu transaksi pindah ke database (Tahap 3). Promo dari CMS baru dipakai checkout di tahap itu.
 
 ## Membagikan link cepat (tanpa hosting)
 
@@ -100,7 +156,7 @@ cloud karena Vercel tidak bisa menjangkau MySQL di laptop; contoh yang sudah dis
 3. **Environment Variables** (Production & Preview):
    - `DATABASE_URL` = connection string langkah 1 (wajib, akhiran `?sslaccept=strict`)
    - `DATABASE_POOL_SIZE` = `5`
-   - `PUBLIC_BASE_URL` = alamat Vercel-nya, mis. `https://store-xxx.vercel.app` (untuk link di email; isi setelah deploy pertama)
+   - `APP_ORIGIN` = alamat Vercel-nya, mis. `https://store-xxx.vercel.app` (link di email & QR pengambilan; isi setelah deploy pertama)
    - `WHATSAPP_NUMBER` = opsional
 4. **Deploy.** Deploy *Production* otomatis menjalankan `prisma migrate deploy` lalu mengisi data awal kalau database
    masih kosong (`scripts/seed-if-empty.ts`); deploy berikutnya tidak menimpa data. Deploy *Preview* tidak mengubah database.
@@ -109,11 +165,14 @@ Setelah itu setiap push ke `main` otomatis tayang. Mode produksi menutup halaman
 (`/__email`, `/__prototipe`). TLS database dibaca dari parameter URL: `sslaccept=strict` / `ssl-mode=VERIFY_*`
 (sertifikat dicek, CA tambahan lewat `DATABASE_CA_CERT`) atau `sslaccept=accept_invalid_certs` / `ssl-mode=REQUIRED`.
 
+Catatan CMS di Vercel: disk fungsi Vercel tidak permanen, jadi foto yang diunggah lewat CMS (`public/uploads/`,
+`storage/`) perlu dipindah ke penyimpanan objek (adapter `src/adapters/storage/`) sebelum CMS dipakai di sana.
+
 ## Pratinjau email pembeli
 
 `http://localhost:3000/__email` (hanya di development) menampilkan semua template email dengan data contoh,
 lengkap dengan subjek, preheader, dan tombol lebar Desktop / Mobile 375px. Satu email saja:
-`/__email/<nama>`, mis. `/__email/pembayaran-berhasil`. Link & gambar di email memakai `PUBLIC_BASE_URL`.
+`/__email/<nama>`, mis. `/__email/pembayaran-berhasil`. Link & gambar di email memakai `APP_ORIGIN`.
 
 ## QA visual terhadap prototipe
 

@@ -1,0 +1,65 @@
+<div class="page-head">
+  <div class="page-head-text">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/admin/pengguna">Pengguna CMS</a>{{icon "caret-right" size=12}}<span>{{#if user}}{{user.email}}{{else}}Baru{{/if}}</span></nav>
+    <h1 class="page-title">{{pageTitle}}</h1>
+    {{#if user}}<p class="page-subtitle">{{user.email}} · login terakhir {{#if user.lastLoginAt}}{{datetime user.lastLoginAt}}{{else}}belum pernah{{/if}}</p>{{/if}}
+  </div>
+  {{#if user}}
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="/admin/log?pelaku={{user.id}}">{{icon "clock-counter-clockwise" size=18}} Aktivitas</a>
+  </div>
+  {{/if}}
+</div>
+
+<form class="box narrow" method="post" action="{{#if user}}/admin/pengguna/{{user.id}}{{else}}/admin/pengguna{{/if}}" novalidate data-busy-form data-dirty-guard>
+  {{> csrf}}
+  <div class="form-grid">
+    <div class="field">
+      <label class="label label-req" for="name">Nama</label>
+      <input class="input{{#if errors.name}} is-invalid{{/if}}" id="name" name="name" value="{{values.name}}" maxlength="120" required autocomplete="off">
+      {{#if errors.name}}<p class="field-error">{{errors.name}}</p>{{/if}}
+    </div>
+    {{#unless user}}
+    <div class="field">
+      <label class="label label-req" for="email">Email</label>
+      <input class="input{{#if errors.email}} is-invalid{{/if}}" id="email" name="email" type="email" value="{{values.email}}" maxlength="191" required autocomplete="off" inputmode="email">
+      {{#if errors.email}}<p class="field-error">{{errors.email}}</p>{{else}}<p class="help">Password sementara dibuat otomatis dan ditampilkan sekali setelah disimpan.</p>{{/if}}
+    </div>
+    {{/unless}}
+    <fieldset class="field plain-fieldset">
+      <legend class="label label-req">Peran</legend>
+      <div class="role-list">
+        {{#each roleOptions}}
+        <label class="check role-option">
+          <input type="checkbox" name="roles" value="{{role}}" {{checked (includes ../values.roles role)}}>
+          <span class="check-text"><span class="label">{{label}}</span><span class="help">{{desc}}</span></span>
+        </label>
+        {{/each}}
+      </div>
+      {{#if errors.roles}}<p class="field-error">{{errors.roles}}</p>{{/if}}
+    </fieldset>
+    {{#if user}}
+    <label class="switch">
+      <input type="checkbox" name="isActive" {{checked values.isActive}}{{#if isSelf}} disabled{{/if}}>
+      <span class="check-text"><span class="label">Akun aktif</span><span class="help">{{#if isSelf}}Anda tidak bisa menonaktifkan akun sendiri.{{else}}Akun nonaktif tidak bisa login; sesinya langsung dikeluarkan.{{/if}}</span></span>
+    </label>
+    {{#if isSelf}}<input type="hidden" name="isActive" value="on">{{/if}}
+    {{#if errors.isActive}}<p class="field-error">{{errors.isActive}}</p>{{/if}}
+    {{/if}}
+  </div>
+  <div class="form-actions">
+    <a class="btn btn-secondary" href="/admin/pengguna">Batal</a>
+    <button class="btn btn-primary" type="submit">{{icon "check" size=18}} {{#if user}}Simpan{{else}}Buat akun{{/if}}</button>
+  </div>
+</form>
+
+{{#if user}}{{#unless isSelf}}
+<section class="box narrow mt-16">
+  <h2 class="section-block-title">Reset password</h2>
+  <p class="help">Membuat password sementara baru dan mengeluarkan semua sesi akun ini. Pengguna wajib menggantinya saat login.</p>
+  <form class="mt-16" method="post" action="/admin/pengguna/{{user.id}}/reset-password" data-confirm="Reset password {{user.email}}? Semua sesinya akan dikeluarkan." data-confirm-ok="Reset password">
+    {{> csrf}}
+    <button class="btn btn-danger" type="submit">{{icon "key" size=18}} Reset password</button>
+  </form>
+</section>
+{{/unless}}{{/if}}

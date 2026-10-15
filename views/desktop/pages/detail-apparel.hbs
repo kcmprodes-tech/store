@@ -2,10 +2,10 @@
 <main data-pdp-apparel class="product-detail-page kompas-container py-6">
       <nav class="pdp-breadcrumb" aria-label="Breadcrumb">
         <a href="https://www.kompas.com/">Beranda</a> <span>/</span> <a href="/">Store</a>
+        {{#each product.crumbs}}
         <span>/</span>
-        <a href="/produk?category=merchandise">Merchandise</a>
-        <span>/</span>
-        <a href="/produk?category=merchandise&amp;sub=apparel">Apparel</a>
+        <a href="{{attr href}}">{{name}}</a>
+        {{/each}}
         <span>/</span>
         <span data-apparel-crumb></span>
       </nav>
