@@ -32,7 +32,7 @@ describe('template email', () => {
       // semua link & gambar absolut (email dibuka di luar situs)
       const urls = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1]);
       for (const url of urls) expect(url, url).toMatch(/^https:\/\//);
-      expect(html).toContain(`${BASE}/images/store-v2/logo-store-rev.png`);
+      expect(html).toContain(`${BASE}/images/store-v2/logo-store-rev2.png`);
       expect(html).toContain(`https://wa.me/${FAKE_WA}?text`);
     });
   }

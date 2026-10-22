@@ -134,6 +134,20 @@ Semua perubahan langsung tampil di store.
 
 **Belum ada:** modul pesanan, refund, dan laporan penjualan. Ketiganya menunggu transaksi pindah ke database (Tahap 3). Promo dari CMS baru dipakai checkout di tahap itu.
 
+## Keamanan (audit OWASP, 15 Oktober 2026)
+
+- **Store:** CSP tanpa skrip inline (`src/lib/security.ts`), `nosniff`, `X-Frame-Options`, `Referrer-Policy`,
+  HSTS di produksi; halaman error tanpa stack trace kecuali developer di localhost; data dari CMS yang dirender
+  lewat JavaScript di-escape.
+- **CMS:** password scrypt (N=2^14, r=8, p=5, hash lama diperbarui saat login) + tolak password umum; sesi
+  maks 12 jam (8 jam tanpa aktivitas), cookie HttpOnly/SameSite/Secure; CSRF = token sesi + origin persis +
+  Fetch Metadata; batas login per IP+akun (5), per IP (30), per akun dari semua IP (20) / 15 menit, login gagal
+  & diblokir tercatat di Log perubahan; akun uji `*@cms.test` hanya bisa login dari localhost saat development.
+- **Data & alur:** link yang diisi di CMS hanya `/…` atau `https://` tanpa spasi/kutip; refund dikunci per
+  pesanan & dicek ulang saat disetujui; retur ganda ditolak; 4 digit HP saat serah terima maks 5 kali salah.
+- **Belum:** login dua langkah (passkey) untuk Admin/Finance, pembatas login di database (perlu sebelum hosting
+  multi-instance seperti Vercel), masa berlaku password sementara, dan penghapusan EXIF foto unggahan.
+
 ## Membagikan link cepat (tanpa hosting)
 
 Klik dua kali **`Bagikan Store.command`** di Finder: store dinyalakan di Mac (kalau belum), lalu muncul link publik

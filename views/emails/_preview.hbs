@@ -68,25 +68,6 @@
       <iframe class="frame" src="/__email/{{current.name}}" title="Pratinjau {{current.title}}"></iframe>
     </main>
   </div>
-  <script>
-    (function () {
-      var frame = document.querySelector('.frame');
-      var buttons = document.querySelectorAll('[data-width]');
-      function fit() {
-        try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {}
-      }
-      frame.addEventListener('load', fit);
-      Array.prototype.forEach.call(buttons, function (btn) {
-        btn.addEventListener('click', function () {
-          Array.prototype.forEach.call(buttons, function (b) {
-            b.classList.toggle('is-active', b === btn);
-            b.setAttribute('aria-pressed', String(b === btn));
-          });
-          frame.classList.toggle('is-mobile', btn.getAttribute('data-width') === 'mobile');
-          setTimeout(fit, 250);
-        });
-      });
-    })();
-  </script>
+  <script src="/js/email-preview.js"></script>
 </body>
 </html>

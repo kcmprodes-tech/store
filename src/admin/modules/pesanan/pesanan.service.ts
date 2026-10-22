@@ -358,9 +358,15 @@ export async function expireOrder(tx: Tx, orderId: number, at = new Date()) {
 
 // ───────────── Refund ─────────────
 
+/** Refund hanya untuk pesanan yang sudah dibayar dan tidak sedang diproses/dikirim ulang. */
+const REFUNDABLE: OrderStatus[] = ['SHIPPED', 'COMPLETED', 'CANCELED'];
+
 export async function requestRefund(tx: Tx, orderId: number, input: { amount: number; reason: string }, actor: Actor, at = new Date()) {
+  // kunci baris pesanan: dua pengajuan bersamaan tidak bisa sama-sama lolos cek sisa dana
+  await lockOrder(tx, orderId);
   const order = await tx.order.findUniqueOrThrow({ where: { id: orderId }, include: { refunds: true } });
   if (!order.paidAt) throw new OrderError('Pesanan belum dibayar, tidak ada dana untuk dikembalikan.');
+  if (!REFUNDABLE.includes(order.status)) throw new OrderError('Refund hanya untuk pesanan yang sudah dikirim, selesai, atau dibatalkan.');
   if (!Number.isInteger(input.amount) || input.amount <= 0) throw new HttpError(400, 'Jumlah refund tidak valid.');
   const used = order.refunds.filter((r) => r.status !== 'REJECTED').reduce((n, r) => n + r.amount, 0);
   if (used + input.amount > order.total) throw new OrderError(`Total refund melebihi total pesanan (sisa ${order.total - used}).`);
@@ -395,6 +401,13 @@ export async function decideRefund(tx: Tx, refundId: number, approve: boolean, n
   if ((actor.id && refund.requestedById === actor.id) || refund.requestedBy === actor.email) {
     throw new HttpError(403, 'Refund harus disetujui orang lain, bukan yang mengajukan.');
   }
+  if (approve) {
+    // cek ulang total saat disetujui (data lama atau pengajuan bersamaan tidak boleh melebihi total pesanan)
+    const order = await lockOrder(tx, refund.orderId);
+    const others = await tx.refund.findMany({ where: { orderId: refund.orderId, id: { not: refund.id }, status: { not: 'REJECTED' } } });
+    const used = others.reduce((n, r) => n + r.amount, 0);
+    if (used + refund.amount > order.total) throw new OrderError(`Total refund melebihi total pesanan (sisa ${order.total - used}).`);
+  }
   const updated = await tx.refund.update({
     where: { id: refund.id },
     data: { status: target, decidedBy: actor.email, decidedById: actor.id ?? null, decidedAt: at, decisionNote: note?.slice(0, 500) ?? null },
@@ -428,6 +441,8 @@ export async function receiveReturn(tx: Tx, orderId: number, lines: ReturnLine[]
   }
   const valid = lines.filter((l) => l.receivedQty > 0);
   if (!valid.length) throw new HttpError(400, 'Isi jumlah barang yang diterima.');
+  // satu baris per item: id ganda (mis. "id5" & "id05") tidak boleh melewati batas jumlah yang dikirim
+  if (new Set(valid.map((l) => l.orderItemId)).size !== valid.length) throw new HttpError(400, 'Item retur ganda.');
   for (const l of valid) {
     const item = order.items.find((i) => i.id === l.orderItemId);
     if (!item) throw new HttpError(400, 'Item retur tidak ditemukan di pesanan ini.');

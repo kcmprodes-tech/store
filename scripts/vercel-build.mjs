@@ -77,7 +77,20 @@ writeFileSync(
   JSON.stringify(
     {
       version: 3,
-      routes: [{ handle: 'filesystem' }, { src: '/(.*)', dest: '/index' }],
+      routes: [
+        // file statis dilayani CDN tanpa lewat Express → header keamanan dasar dipasang di sini
+        {
+          src: '/(.*)',
+          headers: {
+            'X-Content-Type-Options': 'nosniff',
+            'Referrer-Policy': 'strict-origin-when-cross-origin',
+            'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+          },
+          continue: true,
+        },
+        { handle: 'filesystem' },
+        { src: '/(.*)', dest: '/index' },
+      ],
     },
     null,
     2,

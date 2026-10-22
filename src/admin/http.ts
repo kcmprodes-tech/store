@@ -97,10 +97,12 @@ export const slug = (max = 80) =>
 
 /**
  * Link yang aman untuk dipasang di store: path relatif ("/koleksi/…", bukan "//…") atau https://.
- * Menolak javascript:, data:, http:, dan sejenisnya.
+ * Menolak javascript:, data:, http:, dan sejenisnya, serta spasi/karakter kontrol, tanda kutip, < >, ` dan
+ * backslash — browser membuang tab/baris baru ("/\t/evil.com" → "//evil.com") dan kutip bisa keluar dari atribut.
  */
 export function isSafeUrl(value: string) {
-  if (value.startsWith('/')) return !value.startsWith('//') && !value.startsWith('/\\');
+  if (/[\u0000-\u0020\u007f"'<>\\`]/.test(value)) return false;
+  if (value.startsWith('/')) return !value.startsWith('//');
   try {
     return new URL(value).protocol === 'https:';
   } catch {

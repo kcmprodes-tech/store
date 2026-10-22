@@ -10,7 +10,8 @@ const scrypt = (password: string, salt: Buffer, keylen: number, options: ScryptO
     scryptCb(password, salt, keylen, options, (err, key) => (err ? reject(err) : resolve(key))),
   );
 
-const PARAMS = { N: 16384, r: 8, p: 1 };
+// OWASP Password Storage: scrypt N=2^14, r=8, p=5 (memori 16 MiB, biaya ×5 dibanding p=1)
+const PARAMS = { N: 16384, r: 8, p: 5 };
 const KEYLEN = 64;
 export const MIN_PASSWORD_LENGTH = 10;
 
@@ -33,6 +34,12 @@ export async function verifyPassword(password: string, stored: string): Promise<
   return key.length === expected.length && timingSafeEqual(key, expected);
 }
 
+/** Hash lama dengan parameter lebih lemah → di-hash ulang saat login berhasil. */
+export function needsRehash(stored: string) {
+  const [algo, n, r, p] = stored.split('$');
+  return algo !== 'scrypt' || Number(n) !== PARAMS.N || Number(r) !== PARAMS.r || Number(p) !== PARAMS.p;
+}
+
 let dummyHash: Promise<string> | null = null;
 
 /** Hash pembanding untuk email yang tidak terdaftar, supaya waktu respons login tidak membocorkan akun mana yang ada. */
@@ -41,11 +48,33 @@ export function dummyPasswordHash() {
   return dummyHash;
 }
 
+/**
+ * Kata yang paling sering dipakai/ditebak penyerang (OWASP ASVS 2.1.7). Password yang isinya hampir hanya
+ * kata ini + angka/simbol (mis. "Kompas2026!", "password123") ditolak.
+ */
+const WEAK_WORDS = [
+  'password', 'passw0rd', 'katasandi', 'sandi', 'rahasia', 'admin', 'administrator', 'qwerty', 'qwertyuiop',
+  'asdfgh', 'zxcvbn', 'letmein', 'welcome', 'selamat', 'iloveyou', 'sayang', 'indonesia', 'jakarta', 'bismillah',
+  'kompas', 'kompascom', 'kgmedia', 'gramedia', 'store', 'toko', 'cms', 'login', 'user', 'abc', 'abcdef',
+];
+
+function isTrivial(password: string) {
+  const lower = password.toLowerCase();
+  if (/^(.)\1+$/.test(lower)) return true; // aaaaaaaaaa
+  const digitsOnly = /^\d+$/.test(lower);
+  if (digitsOnly && ('01234567890123456789'.includes(lower) || '98765432109876543210'.includes(lower))) return true;
+  // buang angka & simbol di tepi/tengah, sisanya hanya kata umum (boleh berulang) → lemah
+  const letters = lower.replace(/[^a-z]/g, '');
+  if (!letters) return digitsOnly && new Set(lower).size <= 3;
+  return WEAK_WORDS.some((w) => letters.replaceAll(w, '') === '' || letters === w.split('').reverse().join(''));
+}
+
 /** Pesan kesalahan untuk password baru, atau null kalau sudah memenuhi syarat. */
 export function passwordProblem(password: string, email?: string): string | null {
   if (password.length < MIN_PASSWORD_LENGTH) return `Password minimal ${MIN_PASSWORD_LENGTH} karakter.`;
   if (password.length > 200) return 'Password terlalu panjang.';
   if (email && password.toLowerCase().includes(email.split('@')[0].toLowerCase())) return 'Password tidak boleh memuat nama email.';
+  if (isTrivial(password)) return 'Password terlalu mudah ditebak. Pakai gabungan kata yang tidak umum, misalnya kalimat pendek.';
   return null;
 }
 

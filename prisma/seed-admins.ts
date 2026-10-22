@@ -45,7 +45,9 @@ export async function seedAdmins(prisma: Db) {
     console.log(`✔ Admin CMS ${email} dibuat. Password awal ada di .env (ADMIN_INITIAL_PASSWORD), wajib diganti saat login pertama.`);
   }
 
-  if (process.env.NODE_ENV === 'production') return;
+  // akun uji hanya dibuat saat development/tes (atau SEED_TEST_ACCOUNTS=1), tidak pernah di Production Vercel
+  const devLike = ['development', 'test'].includes(process.env.NODE_ENV ?? '') || process.env.SEED_TEST_ACCOUNTS === '1';
+  if (!devLike || process.env.VERCEL_ENV === 'production') return;
   const testHash = await hashPassword(envSecret('CMS_TEST_PASSWORD'));
   for (const [local, role, name] of TEST_ACCOUNTS) {
     // Akun yang sudah ada tidak diubah (password & peran tetap).

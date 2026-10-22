@@ -6,8 +6,9 @@
 import { timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import express, { Router, type ErrorRequestHandler, type RequestHandler } from 'express';
-import { isProd } from '../config/env.js';
+import express, { Router, type ErrorRequestHandler, type Request, type RequestHandler } from 'express';
+import { env } from '../config/env.js';
+import { showDebugInfo } from '../lib/security.js';
 import { authRouter } from './auth/routes.js';
 import { loadSession } from './auth/session.js';
 import { HttpError, handle } from './http.js';
@@ -70,10 +71,13 @@ const sessionLoader: RequestHandler = (req, _res, next) => {
     .catch(next);
 };
 
-function sameOrigin(source: string | undefined, host: string | undefined) {
-  if (!source || !host) return false;
+/** Origin/Referer harus persis sama (skema + host + port) dengan alamat yang sedang diakses atau APP_ORIGIN. */
+function sameOrigin(source: string | undefined, req: Request) {
+  if (!source) return false;
   try {
-    return new URL(source).host === host;
+    const origin = new URL(source).origin;
+    // req.protocol & Host: X-Forwarded-Proto hanya dipercaya dari proxy tepercaya (trust proxy); X-Forwarded-Host tidak dipakai
+    return origin === `${req.protocol}://${req.get('host')}` || origin === env.appOrigin;
   } catch {
     return false;
   }
@@ -91,8 +95,10 @@ function tokensEqual(a: string, b: string) {
  */
 const csrfProtect: RequestHandler = (req, _res, next) => {
   if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
-  const host = req.get('x-forwarded-host') ?? req.get('host');
-  if (!sameOrigin(req.get('origin') ?? req.get('referer'), host)) {
+  // Fetch Metadata: browser modern menandai request lintas situs; tolak selain dari halaman sendiri
+  const site = req.get('sec-fetch-site');
+  const crossSite = site !== undefined && site !== 'same-origin' && site !== 'none';
+  if (crossSite || !sameOrigin(req.get('origin') ?? req.get('referer'), req)) {
     return next(new HttpError(403, 'Permintaan ditolak karena asalnya tidak dikenali. Muat ulang halaman lalu coba lagi.'));
   }
   if (req.admin) {
@@ -200,7 +206,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     return;
   }
   res
-    .renderAdmin('error', { pageTitle: status === 404 ? 'Tidak ditemukan' : 'Terjadi kesalahan', status, message, stack: isProd || status < 500 ? null : String(err?.stack ?? '') }, status)
+    .renderAdmin('error', { pageTitle: status === 404 ? 'Tidak ditemukan' : 'Terjadi kesalahan', status, message, stack: status < 500 || !showDebugInfo(req) ? null : String(err?.stack ?? '') }, status)
     .catch((renderErr) => {
       console.error(renderErr);
       res.status(status).type('text').send(message);

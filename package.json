@@ -57,5 +57,8 @@
     "tsx": "^4.23.15",
     "typescript": "5.9",
     "vitest": "^5.0.4"
+  },
+  "overrides": {
+    "mariadb": "3.5.4"
   }
 }

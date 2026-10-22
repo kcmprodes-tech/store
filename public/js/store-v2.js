@@ -386,7 +386,8 @@
     var id = new URLSearchParams(location.search).get('product');
     var p = list.filter(function (x) { return x.id === id; })[0] || list[0];
     apparelProduct = p;
-    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    // aman untuk isi elemen DAN atribut (data produk berasal dari CMS)
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function each(sel, fn) { Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
     document.title = p.title + ' - Store Kompas.com';
     each('[data-apparel-title], [data-sheet-title]', function (el) { el.textContent = p.title; });
@@ -396,11 +397,11 @@
     var strip = document.querySelector('[data-pdp-thumbs-strip]');
     var media = document.querySelector('[data-pdp-gallery-swipe]');
     if (track) track.innerHTML = p.images.map(function (src, i) {
-      return '<img src="' + src + '" alt="' + esc(p.title) + ' ' + (i + 1) + '" draggable="false">';
+      return '<img src="' + esc(src) + '" alt="' + esc(p.title) + ' ' + (i + 1) + '" draggable="false">';
     }).join('');
     if (strip) strip.innerHTML = p.images.map(function (src, i) {
       return '<button class="pdp-gallery-thumb' + (i ? '' : ' is-active') + '" type="button" data-product-image="' + i +
-        '" aria-label="Lihat gambar ' + (i + 1) + '" aria-pressed="' + (i ? 'false' : 'true') + '"><img src="' + src + '" alt=""></button>';
+        '" aria-label="Lihat gambar ' + (i + 1) + '" aria-pressed="' + (i ? 'false' : 'true') + '"><img src="' + esc(src) + '" alt=""></button>';
     }).join('');
     if (media) media.setAttribute('data-gallery-count', String(p.images.length));
     var indicator = document.querySelector('[data-pdp-gallery-indicator]');
@@ -758,8 +759,19 @@
     if (title) title.textContent = label;
     if (crumb) {
       if (cat) {
-        crumb.innerHTML = '<a href="/produk">Semua produk</a> <span>/</span> ' +
-          (sub ? '<a href="/produk?category=' + cat + '">' + CAT[cat] + '</a> <span>/</span> ' : '');
+        // dibangun lewat DOM: nama kategori berasal dari CMS, jangan masuk innerHTML
+        crumb.textContent = '';
+        var crumbLink = function (href, text) {
+          var a = document.createElement('a');
+          a.href = href;
+          a.textContent = text;
+          crumb.appendChild(a);
+          var sep = document.createElement('span');
+          sep.textContent = '/';
+          crumb.append(' ', sep, ' ');
+        };
+        crumbLink('/produk', 'Semua produk');
+        if (sub) crumbLink('/produk?category=' + encodeURIComponent(cat), CAT[cat]);
         var cur = document.createElement('span');
         cur.textContent = label;
         crumb.appendChild(cur);

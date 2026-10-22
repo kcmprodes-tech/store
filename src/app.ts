@@ -2,8 +2,9 @@ import { join } from 'node:path';
 import cookieParser from 'cookie-parser';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { adminRouter } from './admin/index.js';
-import { isProd } from './config/env.js';
+import { isProd, trustProxy } from './config/env.js';
 import { deviceMiddleware } from './lib/device.js';
+import { securityHeaders, showDebugInfo } from './lib/security.js';
 import { emailPreview } from './modules/email/email.preview.js';
 import { renderMiddleware } from './view/engine.js';
 import { web } from './web/routes.js';
@@ -11,7 +12,8 @@ import { web } from './web/routes.js';
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
-  app.set('trust proxy', 1);
+  app.set('trust proxy', trustProxy);
+  app.use(securityHeaders);
 
   // Gambar unggahan CMS: browser tidak boleh menebak jenis file selain yang dikirim server.
   app.use('/uploads', (_req, res, next) => {
@@ -48,13 +50,18 @@ export function createApp() {
 
   app.use(web);
 
-  app.use((req: Request, res: Response) => {
-    res.status(404).type('text').send(`Halaman tidak ditemukan: ${req.path}`);
+  app.use((_req: Request, res: Response) => {
+    res.status(404).type('text').send('Halaman tidak ditemukan.');
   });
 
-  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error(err);
-    res.status(500).type('text').send(isProd ? 'Terjadi kesalahan pada server.' : String((err as Error)?.stack ?? err));
+  app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+    // mis. URL rusak (%ZZ) → 400, bukan 500
+    const status = typeof (err as { status?: unknown })?.status === 'number' ? (err as { status: number }).status : 500;
+    if (status >= 500) console.error(err);
+    if (res.headersSent) return;
+    const message = status < 500 ? 'Permintaan tidak valid.' : 'Terjadi kesalahan pada server.';
+    // stack trace hanya untuk developer di localhost, tidak pernah lewat tunnel/internet
+    res.status(status).type('text').send(status >= 500 && showDebugInfo(req) ? String((err as Error)?.stack ?? err) : message);
   });
 
   return app;

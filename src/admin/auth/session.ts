@@ -1,6 +1,7 @@
 /**
  * Sesi login CMS. Cookie berisi token acak; database hanya menyimpan SHA-256 token itu.
- * Sesi berakhir setelah 7 hari tanpa aktivitas, dan paling lama 30 hari sejak login.
+ * Sesi berakhir setelah 8 jam tanpa aktivitas, dan paling lama 12 jam sejak login (OWASP ASVS 3.3),
+ * jadi perangkat gudang/HP yang tertinggal tidak tetap masuk ke akun berhari-hari.
  */
 import { createHash, randomBytes } from 'node:crypto';
 import type { Request, Response } from 'express';
@@ -9,8 +10,8 @@ import { prisma } from '../../lib/prisma.js';
 import type { AdminRole } from '../../generated/prisma/client.js';
 
 export const SESSION_COOKIE = 'skc_admin';
-const IDLE_MS = 7 * 86400_000;
-const MAX_AGE_MS = 30 * 86400_000;
+const IDLE_MS = 8 * 3600_000;
+const MAX_AGE_MS = 12 * 3600_000;
 /** lastSeenAt diperbarui paling sering tiap 5 menit, supaya tidak menulis DB di setiap request. */
 const TOUCH_MS = 5 * 60_000;
 
@@ -26,7 +27,13 @@ export type AdminContext = {
 
 const sha256 = (value: string) => createHash('sha256').update(value).digest('hex');
 
-export const cookieOptions = () => ({ httpOnly: true, sameSite: 'lax' as const, secure: isProd, path: '/admin' });
+/** Secure di produksi, dan juga setiap kali diakses lewat HTTPS (mis. tunnel saat development). */
+export const cookieOptions = (req?: Request) => ({
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: isProd || Boolean(req?.secure),
+  path: '/admin',
+});
 
 export function clientIp(req: Request) {
   return (req.ip ?? '').slice(0, 64) || null;
@@ -45,7 +52,7 @@ export async function createSession(req: Request, res: Response, adminUserId: nu
       expiresAt: new Date(Date.now() + MAX_AGE_MS),
     },
   });
-  res.cookie(SESSION_COOKIE, token, { ...cookieOptions(), maxAge: MAX_AGE_MS });
+  res.cookie(SESSION_COOKIE, token, { ...cookieOptions(req), maxAge: MAX_AGE_MS });
 }
 
 /** Sesi dari cookie; null kalau tidak ada, kedaluwarsa, atau akunnya nonaktif. */
@@ -80,7 +87,7 @@ export async function loadSession(req: Request): Promise<AdminContext | null> {
 
 export async function destroySession(req: Request, res: Response) {
   if (req.admin) await prisma.adminSession.deleteMany({ where: { id: req.admin.sessionId } });
-  res.clearCookie(SESSION_COOKIE, cookieOptions());
+  res.clearCookie(SESSION_COOKIE, cookieOptions(req));
 }
 
 /** Cabut semua sesi akun (ganti password, nonaktif, ubah peran); `keepSessionId` = sesi yang sedang dipakai. */

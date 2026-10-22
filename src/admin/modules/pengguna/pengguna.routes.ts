@@ -125,7 +125,15 @@ penggunaRouter.post(
     const { name, roles, isActive } = parsed.data;
     const beforeRoles = user.roles.map((r) => r.role).sort();
     const rolesChanged = JSON.stringify(beforeRoles) !== JSON.stringify([...roles].sort());
+    const losesAdmin = user.roles.some((r) => r.role === 'ADMIN') && (!roles.includes('ADMIN') || !isActive);
     await prisma.$transaction(async (tx) => {
+      if (losesAdmin) {
+        // dikunci & dihitung ulang di dalam transaksi: dua Admin yang saling menurunkan peran bersamaan
+        // tidak boleh membuat CMS tanpa Admin aktif sama sekali
+        await tx.$queryRaw`SELECT admin_user_id FROM admin_user_roles WHERE role = 'ADMIN' FOR UPDATE`;
+        const others = await tx.adminUser.count({ where: { id: { not: user.id }, isActive: true, roles: { some: { role: 'ADMIN' } } } });
+        if (others === 0) throw new HttpError(409, 'Harus ada minimal satu Admin aktif.');
+      }
       await tx.adminUser.update({ where: { id: user.id }, data: { name, isActive } });
       if (rolesChanged) {
         await tx.adminUserRole.deleteMany({ where: { adminUserId: user.id } });

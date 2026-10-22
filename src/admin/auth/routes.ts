@@ -1,12 +1,14 @@
 /** Login, logout, dan ganti password akun CMS. */
-import { Router } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 import { audit } from '../audit.js';
 import { handle, parseForm, redirectWith } from '../http.js';
-import { dummyPasswordHash, hashPassword, passwordProblem, verifyPassword } from './password.js';
+import { isProd } from '../../config/env.js';
+import { isLocalRequest } from '../../lib/security.js';
+import { dummyPasswordHash, hashPassword, needsRehash, passwordProblem, verifyPassword } from './password.js';
 import { clientIp, createSession, destroySession, revokeSessions } from './session.js';
-import { clearLoginFailures, loginBlockedFor, recordLoginFailure } from './throttle.js';
+import { clearLoginFailures, loginBlockedFor, registerLoginAttempt } from './throttle.js';
 
 export const authRouter = Router();
 
@@ -51,20 +53,34 @@ authRouter.post(
     const ip = clientIp(req) ?? 'unknown';
     const wait = loginBlockedFor(ip, email);
     if (wait > 0) {
+      await audit(prisma, req, { action: 'login.throttled', entityType: 'auth', entityLabel: email });
       return fail(`Terlalu banyak percobaan. Coba lagi dalam ${Math.ceil(wait / 60_000)} menit.`, 429);
     }
+    // dicatat sebelum password dicek: request paralel tidak bisa melewati batas bersamaan
+    registerLoginAttempt(ip, email);
 
-    const user = await prisma.adminUser.findUnique({ where: { email: parsed.data.email } });
+    const found = await prisma.adminUser.findUnique({ where: { email: parsed.data.email } });
+    // akun uji (*@cms.test) hanya untuk development dari mesin ini: di produksi dan lewat tunnel/internet
+    // diperlakukan seperti tidak ada
+    const testOnly = found?.email.endsWith('@cms.test') && (isProd || !isLocalRequest(req));
+    const user = testOnly ? null : found;
     // Email tak dikenal tetap diperiksa ke hash dummy supaya waktu respons sama.
     const valid = await verifyPassword(parsed.data.password, user?.passwordHash ?? (await dummyPasswordHash()));
     if (!user || !valid || !user.isActive) {
-      recordLoginFailure(ip, email);
+      await audit(prisma, req, { action: 'login.fail', entityType: 'auth', entityLabel: email });
       return fail('Email atau password salah, atau akun tidak aktif.');
     }
 
     clearLoginFailures(ip, email);
     await createSession(req, res, user.id);
-    await prisma.adminUser.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+    await prisma.adminUser.update({
+      where: { id: user.id },
+      data: {
+        lastLoginAt: new Date(),
+        // parameter hash dinaikkan → hash lama diperbarui diam-diam saat login berhasil
+        ...(needsRehash(user.passwordHash) ? { passwordHash: await hashPassword(parsed.data.password) } : {}),
+      },
+    });
     await audit(prisma, req, { action: 'login', entityType: 'auth', entityId: user.id, entityLabel: user.email, actor: user });
     res.redirect(303, user.mustChangePassword ? '/admin/akun/password' : next);
   }),
@@ -89,9 +105,18 @@ const passwordSchema = z
   })
   .refine((v) => v.password === v.confirm, { path: ['confirm'], message: 'Konfirmasi password tidak sama.' });
 
+/** Halaman ganti password ada sebelum pemeriksaan login umum, jadi dijaga sendiri. */
+function requireSession(req: Request, res: Response) {
+  if (req.admin) return true;
+  if (req.method === 'GET') res.redirect(303, `/admin/login?next=${encodeURIComponent(req.originalUrl)}`);
+  else res.status(401).type('text').send('Silakan login dulu.');
+  return false;
+}
+
 authRouter.get(
   '/akun/password',
   handle(async (req, res) => {
+    if (!requireSession(req, res)) return;
     await res.renderAdmin('account-password', { pageTitle: 'Ganti password', forced: req.admin!.mustChangePassword });
   }),
 );
@@ -99,6 +124,7 @@ authRouter.get(
 authRouter.post(
   '/akun/password',
   handle(async (req, res) => {
+    if (!requireSession(req, res)) return;
     const admin = req.admin!;
     const render = (errors: Record<string, string>) =>
       res.renderAdmin('account-password', { pageTitle: 'Ganti password', forced: admin.mustChangePassword, errors }, 400);
@@ -117,7 +143,9 @@ authRouter.post(
       await tx.adminUser.update({ where: { id: admin.id }, data: { passwordHash, mustChangePassword: false } });
       await audit(tx, req, { action: 'password', entityType: 'admin_user', entityId: admin.id, entityLabel: admin.email });
     });
-    await revokeSessions(admin.id, admin.sessionId);
+    // semua sesi lama dicabut (termasuk yang sedang dipakai), lalu sesi baru dengan token baru
+    await revokeSessions(admin.id);
+    await createSession(req, res, admin.id);
     redirectWith(res, '/admin', 'success', 'Password berhasil diganti. Sesi di perangkat lain sudah dikeluarkan.');
   }),
 );

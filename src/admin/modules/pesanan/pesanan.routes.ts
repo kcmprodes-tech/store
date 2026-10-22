@@ -392,6 +392,20 @@ function sameSecret(a: string, b: string) {
 }
 
 /** Serahkan ke pembeli: wajib QR pengambilan (token) atau 4 digit terakhir HP pembeli. */
+/** Tebakan 4 digit HP saat serah terima dibatasi: 5 kali salah per pesanan → 15 menit hanya bisa lewat QR. */
+const PICKUP_FAIL_WINDOW_MS = 15 * 60_000;
+const PICKUP_MAX_FAILS = 5;
+const pickupFails = new Map<string, { count: number; since: number }>();
+
+function pickupFailCount(invoice: string, now = Date.now()) {
+  const entry = pickupFails.get(invoice);
+  if (entry && now - entry.since > PICKUP_FAIL_WINDOW_MS) {
+    pickupFails.delete(invoice);
+    return 0;
+  }
+  return entry?.count ?? 0;
+}
+
 pesananRouter.post(
   '/pesanan/:invoice/serahkan-pembeli',
   handle(async (req, res) => {
@@ -403,10 +417,21 @@ pesananRouter.post(
       }
       const byToken = Boolean(token && o.pickupToken && sameSecret(token, o.pickupToken));
       if (!byToken) {
+        if (pickupFailCount(o.invoiceNo) >= PICKUP_MAX_FAILS) {
+          throw new HttpError(429, 'Terlalu banyak salah 4 digit. Pindai QR pembeli, atau coba lagi 15 menit lagi.');
+        }
         const expected = phoneLast4(o.buyerPhone);
         if (!/^\d{4}$/.test(last4)) throw new HttpError(400, 'Isi 4 digit terakhir no HP pembeli.');
-        if (!expected || !sameSecret(last4, expected)) throw new HttpError(400, '4 digit terakhir no HP tidak cocok. Periksa lagi identitas pembeli.');
+        if (!expected || !sameSecret(last4, expected)) {
+          const entry = pickupFails.get(o.invoiceNo);
+          if (entry) entry.count += 1;
+          else pickupFails.set(o.invoiceNo, { count: 1, since: Date.now() });
+          // dicatat di luar transaksi (transaksinya dibatalkan oleh error di bawah)
+          void audit(prisma, req, { action: 'order.pickup.fail', entityType: 'order', entityId: o.invoiceNo, entityLabel: o.invoiceNo, summary: 'Salah 4 digit HP saat serah terima' }).catch(() => {});
+          throw new HttpError(400, '4 digit terakhir no HP tidak cocok. Periksa lagi identitas pembeli.');
+        }
       }
+      pickupFails.delete(o.invoiceNo);
       const r = await handoverPickup(tx, o.id, actor);
       return {
         already: r.already,
@@ -487,6 +512,10 @@ pesananRouter.post(
   express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: MAX_IMAGE_BYTES }),
   handle(async (req, res) => {
     const order = await findOrder(req.params.invoice);
+    // sama dengan tombol di halaman: hanya pesanan fisik yang sudah dibayar
+    if (order.fulfillment === 'DIGITAL' || ['UNPAID', 'EXPIRED'].includes(order.status)) {
+      throw new HttpError(409, 'Foto paket/retur hanya untuk pesanan fisik yang sudah dibayar.');
+    }
     if (!Buffer.isBuffer(req.body) || !req.body.length) throw new HttpError(415, 'Format foto harus JPG, PNG, atau WebP.');
     const type = sniffImage(req.body);
     if (!type) throw new HttpError(415, 'File ini bukan foto JPG, PNG, atau WebP.');
